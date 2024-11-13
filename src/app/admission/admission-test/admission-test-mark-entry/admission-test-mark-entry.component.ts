@@ -37,8 +37,30 @@ export class AdmissionTestMarkEntryComponent implements OnInit{
     this.admissionTestTeacherService.getAdmissionTestTeacherView(admissionTeacherId).subscribe((response:any)=>{
       this.admissionTestTeacher = response.data;
       console.log(response.data)
+      this.admissionTestTeacher.admissionTest.applicants.forEach((applicant:any) => {
+        applicant.marks = {};
+        this.admissionTestTeacher.admissionTest.admissionTestTemplate.categories.forEach((category:any) => {
+          applicant.marks[category.id] = {}; // Initialize category
+          category.subjects.forEach((subject:any) => {
+            applicant.marks[category.id][subject.id] = 0; // Initialize subject mark to 0 or a default value
+          });
+        });
+      });
+
     });
   }
+  calculateCategoryTotal(admission_applicant: any, category: any): number {
+    let total = 0;
+    if (admission_applicant.marks && admission_applicant.marks[category.id]) {
+      for (const subjectId in admission_applicant.marks[category.id]) {
+        if (admission_applicant.marks[category.id].hasOwnProperty(subjectId)) {
+          total += admission_applicant.marks[category.id][subjectId] || 0;
+        }
+      }
+    }
+    return total;
+  }
+
   changeMode(admission_applicant:any){
     admission_applicant.selected = true;
   }
