@@ -1,0 +1,185 @@
+<div class="row" *ngFor="let person of admissionApplication.admissionPersons">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Professional Experience (If Any)
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="professionalExperienceView()" *ngIf="!isProfessionalExperienceView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #professionalExperienceForm="ngForm">
+          <div class="row" ngModelGroup="professionalExperiencData" #professionalExperienceData="ngModelGroup" *ngIf="isProfessionalExperienceView">
+            <div class="col-md-12">
+              <span style="color: red;">(*) Required Field</span>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Company Name <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="text" name="companyName" class="form-control"
+                       [(ngModel)]="professionalExperience.companyName" #companyName="ngModel" required/>
+                <div>
+                  <small *ngIf="companyName.invalid && formSubmitted">Company Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Company Location <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="text" name="companyLocation" class="form-control"
+                       [(ngModel)]="professionalExperience.companyLocation" #companyLocation="ngModel" required/>
+                <div>
+                  <small *ngIf="companyLocation.invalid && formSubmitted">Company Location is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Designation</label>
+              <div class="common_input mb_20">
+                <input type="text" name="designation" class="form-control"
+                       [(ngModel)]="professionalExperience.designation" #designation="ngModel" required/>
+                <div>
+                  <small *ngIf="designation.invalid && formSubmitted">Designation is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Department</label>
+              <div class="common_input mb_20">
+                <input type="text" name="department" class="form-control" [(ngModel)]="professionalExperience.department"
+                       #department="ngModel" required/>
+                <div>
+                  <small *ngIf="department.invalid && formSubmitted">Department is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="mb-3 form-check">
+                <label class="form-label mb_10">
+                  <input type="checkbox" class="form-check-input" name="isRunning" id="isRunning"
+                         [(ngModel)]="professionalExperience.isRunning">
+                  Is Running</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Start Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="startDate" class="form-control" [(ngModel)]="professionalExperience.startDate"
+                       #startDate="ngModel" required/>
+                <div>
+                  <small *ngIf="startDate.invalid && formSubmitted">Start Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="!professionalExperience.isRunning">
+              <label class="form-label mb_10">End Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="endDate" class="form-control" [(ngModel)]="professionalExperience.endDate"
+                       #endDate="ngModel" required/>
+                <div>
+                  <small *ngIf="endDate.invalid && formSubmitted">End Date is a required field</small>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Country <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="countryId" [(ngModel)]="professionalExperience.countryId" #countryId="ngModel" required>
+                  <ng-option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="countryId.invalid && countryId.touched">Country is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Responsibilities <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+              <textarea name="responsibilities" class="form-control"
+                        [(ngModel)]="professionalExperience.responsibilities" #responsibilities="ngModel"
+                        required></textarea>
+                <div>
+                  <small *ngIf="responsibilities.invalid && formSubmitted">Responsibilities is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postProfessionalExperience()" *ngIf="isSaveButton">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putProfessionalExperience()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelProfessionalExperience()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Company Name</th>
+                  <th scope="col">Company Location</th>
+                  <th scope="col">Designation</th>
+                  <th scope="col">Department</th>
+                  <th scope="col">Country</th>
+                  <th scope="col">Company Location</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col" colspan="2" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let professional_experience of professional_experiences;let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{professional_experience.companyName}}</td>
+                  <td>{{professional_experience.companyLocation}}</td>
+                  <td>{{professional_experience.designation}}</td>
+                  <td>{{professional_experience.department}}</td>
+                  <td>{{professional_experience.country.name}}</td>
+                  <td>{{professional_experience.companyLocation}}</td>
+                  <td>{{professional_experience.startDate}}</td>
+                  <td>{{professional_experience.endDate}}</td>
+                  <td>
+                    <button class="btn btn-success btn-sm float-end" (click)="editProfessionalExperience(professional_experience)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="deleteProfessionalExperience(professional_experience)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="professional_experiences.length === 0">
+                  <td colspan="10" class="text-center"><p>No Data Found</p></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

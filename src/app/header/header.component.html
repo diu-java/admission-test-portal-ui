@@ -1,0 +1,48 @@
+<div class="container-fluid g-0">
+  <div class="row" *ngIf="profile">
+    <div class="col-lg-12 p-0">
+      <div
+        class="header_iner d-flex justify-content-between align-items-center"
+      >
+        <div class="sidebar_icon d-lg-none" (click)="sidebarIcon()">
+          <!-- <i class="ti-menu">2</i> -->
+          <img src="/assets/img/line_img2.png" alt="" />
+        </div>
+        <div
+          class="line_icon open_miniSide d-none d-lg-block"
+          id="open_miniSide"
+          (click)="openMiniSide()"
+        >
+          <!-- (click)="openMiniSide()" -->
+          <img src="/assets/img/line_img.png" alt="" />
+        </div>
+        <div
+          class="header_right d-flex justify-content-between align-items-center"
+        >
+          <div class="profile_info d-flex align-items-center">
+            <div class="profile_thumb mr_20">
+              <!-- <img src="/assets/img/transfer/mahfuz.jpeg" alt="#" /> -->
+            </div>
+            <div class="author_name">
+              <h4 class="f_s_15 f_w_500 mb-0">
+                {{ profile.firstName }} {{ profile.lastName }}
+              </h4>
+              <p class="f_s_12 f_w_400">{{ profile.username }}</p>
+            </div>
+            <div class="profile_info_iner">
+              <div class="profile_author_name">
+                <h5>{{ profile.firstName }} {{ profile.lastName }}</h5>
+                <p>{{ profile.username }}</p>
+              </div>
+              <div class="profile_info_details">
+                <a href="https://sso.diu.edu.bd/profile">My Profile </a>
+                <a (click)="logout()">Log Out </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,64 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Test
+                <!--                <button class="btn btn-danger float-end mr_10" (click)="deleteAdmissionCircular(admissionCircular)">-->
+                <!--                  <i class="fa fa-trash" aria-hidden="true"></i>-->
+                <!--                </button>-->
+                <!--                <button class="btn btn-success float-end mr_10" (click)="editAdmissionCircular(admissionCircular)">-->
+                <!--                  <i class="fa fa-edit" aria-hidden="true"></i>-->
+                <!--                </button>-->
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Code </th>
+                  <td>{{ admissionTest.code }}</td>
+                  <th>Name </th>
+                  <td>{{ admissionTest.name }}</td>
+                </tr>
+                <tr>
+                  <th>Semester</th>
+                  <td colspan="3">{{admissionTest.semester.name}}</td>
+                </tr>
+                <tr>
+                  <th>Admission Circular </th>
+                  <td>{{admissionTest.admissionCircular?.code}}</td>
+                  <th>Intake </th>
+                  <td>{{admissionTest.admissionIntake?.name}}</td>
+                </tr>
+                <tr>
+                  <th>Admission Test Template</th>
+                  <td>{{admissionTest.admissionTestTemplate.name}}</td>
+                  <th>Admission Test Committee </th>
+                  <td>{{admissionTest.admissionIntake?.name}}</td>
+                </tr>
+                <tr>
+                  <th>Enrollment Last Date</th>
+                  <td colspan="3">{{admissionTest.enrollmentLastDate | date}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-admission-test-teacher *ngIf="admissionTest.id" [admissionTest]="admissionTest"></app-admission-test-teacher>
+    <app-admission-test-applicant-enroll *ngIf="admissionTest.id" [admissionTest]="admissionTest"></app-admission-test-applicant-enroll>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

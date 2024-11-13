@@ -1,0 +1,409 @@
+<div class="row">
+  <div class="col-lg-12" *ngIf="!this.isPersonalInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Person Information
+            <button type="submit" class="btn btn-primary float-end" (click)="personalInfoView(personInformation)">
+              <i class="fa fa-user-edit mr_10" aria-hidden="true"></i>Edit
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Code</th>
+                  <td colspan="3">{{personInformation.code}}</td>
+                </tr>
+                <tr>
+                  <th>Name</th>
+                  <td colspan="3">{{personInformation.fullName}}</td>
+                </tr>
+                <tr>
+                  <th>Gender</th>
+                  <td>{{personInformation.gender.name}}</td>
+                  <th>Blood Group</th>
+                  <td>{{personInformation.bloodGroup.name}}</td>
+                </tr>
+                <tr>
+                  <th>Date of Birth</th>
+                  <td colspan="3">{{personInformation.dateOfBirth}}</td>
+                </tr>
+                <tr>
+                  <th>Place of Birth</th>
+                  <td>{{personInformation.placeOfBirth}}</td>
+                  <th>Country of Birth</th>
+                  <td><span *ngIf="personInformation.countryOfBirth">{{personInformation.countryOfBirth.name}}</span></td>
+                </tr>
+                <tr>
+                  <th>Marital Status</th>
+                  <td><span *ngIf="personInformation.maritalStatus">{{personInformation.maritalStatus.name}}</span></td>
+
+                  <th><span *ngIf="personInformation.maritalStatus"><span *ngIf="personInformation.maritalStatus.isDetail">Spouse Name</span></span></th>
+                  <td><span *ngIf="personInformation.maritalStatus"><span *ngIf="personInformation.maritalStatus.isDetail">{{personInformation.spouseCompleteName}}</span></span></td>
+                </tr>
+                <tr *ngIf="personInformation.maritalStatus">
+                  <th *ngIf="personInformation.maritalStatus.isDetail">Spouse Date of Birth</th>
+                  <td *ngIf="personInformation.maritalStatus.isDetail">{{personInformation.spouseBirthdate}}</td>
+                  <th *ngIf="personInformation.maritalStatus.isDetail">Number of Children</th>
+                  <td *ngIf="personInformation.maritalStatus.isDetail">{{personInformation.numberOfChildren}}</td>
+                </tr>
+                <tr>
+                  <th>Nationality (Country)</th>
+                  <td>{{personInformation.nationality}}</td>
+                  <th>University Email</th>
+                  <td>{{personInformation.email}}</td>
+                </tr>
+                <tr>
+                  <th>Personal Email</th>
+                  <td>{{personInformation.personalEmail}}</td>
+                  <th>Personal Phone</th>
+                  <td>{{personInformation.personalPhone}}</td>
+                </tr>
+
+                <tr>
+                  <th>E-Tin</th>
+                  <td>{{personInformation.tinId}}</td>
+                  <th>ETIN Attachment</th>
+                  <td>
+                    <button class="btn btn-primary" *ngIf="personInformation.tinAttachment"
+                            (click)="getStudentDocument(personInformation.tinAttachment.code, personInformation.tinAttachment.name, personInformation.tinAttachment.fileExtension)">
+                      Download
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <th>National ID</th>
+                  <td>{{personInformation.nationalId}}</td>
+                  <th>National Attachment</th>
+                  <td>
+                    <button class="btn btn-primary" *ngIf="personInformation.nationalAttachment"
+                            (click)="getStudentDocument(personInformation.nationalAttachment.code, personInformation.nationalAttachment.name, personInformation.nationalAttachment.fileExtension)">
+                      Download
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Birth Certificate No</th>
+                  <td>{{personInformation.birthCertificateNo}}</td>
+                  <th>Birth Certificate Attachment</th>
+                  <td>
+                    <button class="btn btn-primary" *ngIf="personInformation.birthCertificateAttachment"
+                            (click)="getStudentDocument(personInformation.birthCertificateAttachment.code, personInformation.birthCertificateAttachment.name, personInformation.birthCertificateAttachment.fileExtension)">
+                      Download
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Profile Photo</th>
+                  <td>
+                          <span *ngIf="personInformation.photoAttachment">
+                            <img [src]="'data:' + personInformation.photoAttachment.fileType + ';base64,' + personInformation.photoAttachment.file" alt="Image Preview" style="width:150px;height:150px;">
+                            <!--                          Profile Photo-->
+                          </span>
+                  </td>
+                  <th>Signature</th>
+                  <td>
+                          <span *ngIf="personInformation.signatureAttachment">
+                            <img [src]="'data:' + personInformation.signatureAttachment.fileType + ';base64,' + personInformation.signatureAttachment.file" alt="Image Preview" style="width:150px;height:150px;">
+                          </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="isPersonalInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Update Information</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #personInformationForm="ngForm">
+          <div class="row" ngModelGroup="personInformationData" #personInformationData="ngModelGroup">
+
+            <div class="col-md-3">
+              <label class="form-label mb_10">Title:</label>
+              <div class="common_input pt_10">
+                <select class="form-select" name="title" [(ngModel)]="personInformation.title" #title="ngModel"
+                        required>
+                  <option value="Mr.">Mr.</option>
+                  <option value="Ms.">Ms.</option>
+                  <option value="Mrs.">Mrs.</option>
+                </select>
+                <div>
+                  <small *ngIf="title.invalid && title.touched">Title is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label mb_10">First Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="firstName" class="form-control" [(ngModel)]="personInformation.firstName"
+                       #firstName="ngModel" required/>
+              </div>
+              <div>
+                <small *ngIf="firstName.invalid && firstName.touched">First Name is a required field</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label mb_10">Middle Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="middleName" class="form-control"
+                       [(ngModel)]="personInformation.middleName"/>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label mb_10">Last Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="lastName" class="form-control" [(ngModel)]="personInformation.lastName"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Nick Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="nickName" class="form-control" [(ngModel)]="personInformation.nickName"/>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Gender</label>
+              <div class="mb_20">
+                <ng-select name="genderId" [(ngModel)]="personInformation.genderId"
+                           #genderId="ngModel" required>
+                  <ng-option *ngFor="let gender of genders" [value]="gender.id">{{gender.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="genderId.invalid && genderId.touched">Gender is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Blood Group</label>
+              <div class="mb_20">
+                <ng-select name="bloodGroupId" [(ngModel)]="personInformation.bloodGroupId"
+                           #bloodGroupId="ngModel" required>
+                  <ng-option *ngFor="let blood_group of blood_groups"
+                             [value]="blood_group.id">{{blood_group.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="bloodGroupId.invalid && bloodGroupId.touched">Blood Group is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Religion</label>
+              <div class="mb_20">
+                <ng-select name="religionId" [(ngModel)]="personInformation.religionId">
+                  <ng-option *ngFor="let religion of religions"
+                             [value]="religion.id">{{religion.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Date of Birth</label>
+              <div class="common_input mb_20">
+                <input type="date" name="dateOfBirth" class="form-control"
+                       [(ngModel)]="personInformation.dateOfBirth"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Place of Birth</label>
+              <div class="common_input mb_20">
+                <input type="text" name="placeOfBirth" class="form-control"
+                       [(ngModel)]="personInformation.placeOfBirth"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Country of Birth</label>
+              <div class="mb_20 pt_10">
+                <ng-select name="countryOfBirth" [(ngModel)]="personInformation.countryOfBirth">
+                  <ng-option *ngFor="let country of countries" [value]="country.id">{{country.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Nationality (Country)</label>
+              <div class="common_input mb_20">
+                <input type="text" name="nationality" class="form-control"
+                       [(ngModel)]="personInformation.nationality"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Marital Status</label>
+              <div class="mb_20">
+                <ng-select (change)="selectMaritalStatus()" name="maritalStatusId" [(ngModel)]="personInformation.maritalStatusId">
+                  <ng-option *ngFor="let marital_status of marital_statuses" [value]="marital_status.id">{{marital_status.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-4" *ngIf="isMarried">
+              <label class="form-label mb_10">Spouse Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="spouseCompleteName" class="form-control" [(ngModel)]="personInformation.spouseCompleteName"/>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isMarried">
+              <label class="form-label mb_10">Spouse Date of Birth</label>
+              <div class="common_input mb_20">
+                <input type="date" name="spouseBirthdate" class="form-control"
+                       [(ngModel)]="personInformation.spouseBirthdate"/>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isMarried">
+              <label class="form-label mb_10">Number of Children</label>
+              <div class="common_input mb_20">
+                <input type="number" name="numberOfChildren" class="form-control"
+                       [(ngModel)]="personInformation.numberOfChildren"/>
+              </div>
+            </div>
+
+
+            <div class="col-md-6">
+              <label class="form-label mb_10">University Email</label>
+              <div class="common_input mb_20">
+                <input type="email" name="email" class="form-control" [(ngModel)]="personInformation.email"/>
+              </div>
+            </div>
+
+
+            <div class="col-md-6">
+              <label class="form-label mb_10" for="personalPhone">Phone</label>
+              <div class="common_input mb_20">
+                <input type="text" name="personalPhone" id="personalPhone" class="form-control"
+                       [(ngModel)]="personInformation.personalPhone"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+
+              <div class="common_input mb_20">
+                <label class="form-label mb_10" for="personalEmail">Alternative Email</label>
+                <input type="email" name="personalEmail" id="personalEmail" class="form-control"
+                       [(ngModel)]="personInformation.personalEmail"/>
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">National ID Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="nationalId" class="form-control"
+                       [(ngModel)]="personInformation.nationalId"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">NID Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="nationAttachmentId" (change)="postNID($event)"
+                       class="form-control">
+              </div>
+              <div class="mb-3" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Birth Certificate Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="nationalId" class="form-control"
+                       [(ngModel)]="personInformation.birthCertificateNo"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Birth Certificate Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="birthCertificateAttachmentId"
+                       (change)="postBirthCertificate($event)">
+              </div>
+              <div class="mb-3" *ngIf="birthCertificateMessage">
+                <span style="color: #0c4128">{{birthCertificateMessage}}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Etin</label>
+              <div class="common_input mb_20">
+                <input type="text" name="tinId" class="form-control" [(ngModel)]="personInformation.tinId"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Etin Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="tinAttachmentId" (change)="postETIn($event)">
+              </div>
+              <div class="mb-3" *ngIf="etinMessage">
+                <span style="color: #0c4128">{{etinMessage}}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Photo Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="photoAttachmentId" (change)="postPhoto($event)" [(ngModel)]="personInformation.photoAttachmentId">
+              </div>
+              <div class="mb-3" *ngIf="photoMessage">
+                <span style="color: #0c4128">{{photoMessage}}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div *ngIf="studentPhotoInformation.file">
+                <img [src]="'data:' + studentPhotoInformation.fileType + ';base64,' + studentPhotoInformation.file" alt="Image Preview" style="width:150px;height:150px;">
+              </div>
+              <div *ngIf="!studentPhotoInformation.file">
+                      <span *ngIf="personInformation.photoAttachment">
+                      <img [src]="'data:' + personInformation.photoAttachment.fileType + ';base64,' + personInformation.photoAttachment.file" alt="Image Preview" style="width:150px;height:150px;">
+                      </span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Signature Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="signatureAttachmentId" (change)="postSignature($event)" [(ngModel)]="personInformation.signatureAttachmentId">
+              </div>
+              <div class="mb-3" *ngIf="signatureMessage">
+                <span style="color: #0c4128">{{signatureMessage}}</span>
+              </div>
+            </div>
+            <div class="col-md-6 pt_10">
+              <div *ngIf="studentSignatureInformation.file">
+                <img [src]="'data:' + studentSignatureInformation.fileType + ';base64,' + studentSignatureInformation.file" alt="Image Preview" style="width:150px;height:150px;">
+              </div>
+              <div *ngIf="!studentSignatureInformation.file">
+                      <span *ngIf="personInformation.signatureAttachment">
+                        <img [src]="'data:' + personInformation.signatureAttachment.fileType + ';base64,' + personInformation.signatureAttachment.file" alt="Image Preview" style="width:150px;height:150px;">
+                      </span>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3 form-check">
+                <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="personInformation.active"> Is Active </label>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-success mr_10" (click)="putPersonInformation()">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelPersonInformation()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

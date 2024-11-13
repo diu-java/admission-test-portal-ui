@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Quota if Applicable</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12" *ngFor="let waiver_type of waiver_types">
+            <div class="mb-3 form-check">
+              <label class="form-label mb_10">
+                <input type="checkbox" class="form-check-input" name="active" id="active" [(ngModel)]="waiver_type.selected" (change)="postAdmissionWaiver(waiver_type)">
+                {{waiver_type.name}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

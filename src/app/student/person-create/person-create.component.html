@@ -1,0 +1,230 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-12">
+        <div class="main-title mb_30">
+          <h3 class="m-0">Employee Profile</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="white_card mb_30">
+          <div class="white_card_header">
+            <div class="bulder_tab_wrapper">
+              <ul class="nav" id="myTab">
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 1" (click)="activateTab(1)">Personal</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 2">Address</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 3">Emergency Contact</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 4">VISA</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 5">Passport</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 6">Bank Info</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 7">Education Info</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 8">Employee Skill</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 9">Job Experience</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 10">Family</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 11">Publication</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 12">Award</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" [class.active]="activeTab === 14">Research</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="activeTab === 1">
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Create Employee</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #personalInformationForm="ngForm">
+              <div class="row" ngModelGroup="personalInformationData" #personalInformationData="ngModelGroup">
+
+                <div class="col-md-4">
+                  <label class="form-label mb_10">Title:</label>
+                  <div class="common_input pt_10">
+                    <select class="form-select" name="title" [(ngModel)]="personInformation.title" #title="ngModel" required>
+                      <option value="Mr.">Mr.</option>
+                    </select>
+                    <div>
+                      <small *ngIf="title.invalid && title.touched">Title is a required field</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label mb_10">First Name</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="firstName" class="form-control" [(ngModel)]="personInformation.firstName" #firstName="ngModel" required/>
+                  </div>
+                  <div>
+                    <small *ngIf="firstName.invalid && firstName.touched">First Name is a required field</small>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label mb_10">Middle Name</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="middleName" class="form-control" [(ngModel)]="personInformation.middleName"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Last Name</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="lastName" class="form-control" [(ngModel)]="personInformation.lastName"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Nick Name</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="nickName" class="form-control" [(ngModel)]="personInformation.nickName"/>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Gender</label>
+                  <div class="common_input mb_20 pt_10">
+                    <ng-select name="genderId" [(ngModel)]="personInformation.genderId" #genderId="ngModel" required>
+                      <ng-option *ngFor="let gender of genders" [value]="gender.id">{{gender.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="genderId.invalid && genderId.touched">Gender is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Blood Group</label>
+                  <div class="common_input mb_20 pt_10">
+                    <ng-select name="bloodGroupId" [(ngModel)]="personInformation.bloodGroupId" #bloodGroupId="ngModel" required>
+                      <ng-option *ngFor="let blood_group of blood_groups" [value]="blood_group.id">{{blood_group.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="bloodGroupId.invalid && bloodGroupId.touched">Blood Group is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Date of Birth</label>
+                  <div class="common_input mb_20">
+                    <input type="date" name="dateOfBirth" class="form-control" [(ngModel)]="personInformation.dateOfBirth" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Place of Birth</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="placeOfBirth" class="form-control"  [(ngModel)]="personInformation.placeOfBirth"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Country of Birth</label>
+                  <div class="common_input pt_10">
+                    <ng-select name="countryOfBirth" [(ngModel)]="personInformation.countryOfBirth">
+                      <ng-option *ngFor="let country of countries" [value]="country.id">{{country.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Nationality (Country)</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="nationality" class="form-control" [(ngModel)]="personInformation.nationality"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Marital Status</label>
+                  <div class="common_input mb_20 pt_10">
+                    <ng-select (change)="selectMaritalStatus();" name="maritalStatusId" [(ngModel)]="personInformation.maritalStatusId">
+                      <ng-option *ngFor="let marital_status of marital_statuses" [value]="marital_status.id">{{marital_status.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-4" *ngIf="isMarried">
+                  <label class="form-label mb_10">Spouse Name</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="spouseCompleteName" class="form-control" [(ngModel)]="personInformation.spouseCompleteName"/>
+                  </div>
+                </div>
+                <div class="col-md-4" *ngIf="isMarried">
+                  <label class="form-label mb_10">Spouse Date of Birth</label>
+                  <div class="common_input mb_20">
+                    <input type="date" name="spouseBirthdate" class="form-control" [(ngModel)]="personInformation.spouseBirthdate"/>
+                  </div>
+                </div>
+                <div class="col-md-4" *ngIf="isMarried">
+                  <label class="form-label mb_10">Number of Children</label>
+                  <div class="common_input mb_20">
+                    <input type="number" name="numberOfChildren" class="form-control"  [(ngModel)]="personInformation.numberOfChildren"/>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label mb_10" for="personalPhone">Alternative Phone</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="personalPhone" id="personalPhone" class="form-control" [(ngModel)]="personInformation.personalPhone"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+
+                  <div class="common_input mb_20">
+                    <label class="form-label mb_10" for="personalEmail">Alternative Email</label>
+                    <input type="email" name="personalEmail" id="personalEmail" class="form-control"  [(ngModel)]="personInformation.personalEmail"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">National ID Number</label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="nationalId" class="form-control"  [(ngModel)]="personInformation.nationalId"/>
+
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Birth Certificate Number </label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="birthCertificateNo" class="form-control"  [(ngModel)]="personInformation.birthCertificateNo"/>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" (click)="postPerson()" [disabled]="personalInformationForm.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Create
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

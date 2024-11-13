@@ -1,0 +1,16 @@
+input[type="number"] {
+  padding: 5px 5px;
+}
+.exceeded-max-message {
+  border-color: red; /* Change border color to red, for example */
+  color: red;
+}
+.highlight-border {
+  border: 1px solid #0ac911; /* Change the border styling as needed */
+}
+.different-color {
+  background-color: lightblue; /* Set your desired color */
+}
+.button-color {
+  background-color: #7061d2; /* Set your desired color */
+}

@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Log Message
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #admissionMessageLogForm="ngForm">
+          <div class="row" ngModelGroup="admissionMessageLogData" #admissionMessageLogData="ngModelGroup" >
+            <div class="col-lg-12">
+              <label class="form-label mb_10"></label>
+              <div class="common_input mb_20">
+                <div name="message" [ngxSummernote]="config" [(ngModel)]="admissionMessageLog.message"></div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionMessageLog()" *ngIf="isSaveButton" [disabled]="admissionMessageLogData.invalid">
+                <i class="fa fa-paper-plane mr_10" aria-hidden="true"></i>Send
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="messages_box_area">
+      <div class="messages_chat mb_30">
+        <div class="white_box">
+          <div class="single_message_chat" *ngFor="let message_log of admissionApplication.admissionMessageLogs;let i=index;">
+            <div class="message_pre_left">
+              <div class="message_preview_thumb">
+                <img src="/src/assets/img/dumm_image.png" alt="">
+              </div>
+              <div class="messges_info">
+                <h4>{{ message_log?.admissionMessageUser?.name }}</h4>
+                <p>
+                  <span *ngIf="message_log.userType === 1">Admission Counselor</span>
+                  <span *ngIf="message_log.userType === 2">Applicant</span>
+                </p>
+                <p>{{ message_log.createdAt | date:'medium'}}</p>
+              </div>
+            </div>
+            <div class="message_content_view">
+              <span [innerHTML]="message_log.message"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

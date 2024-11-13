@@ -1,0 +1,118 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Attendance
+                <!--                <button type="submit" class="btn btn-primary float-end" (click)="admissionMarkDistributionTemplateView()" *ngIf="!isAdmissionExamView">-->
+                <!--                  <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New-->
+                <!--                </button>-->
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <label class="form-label mb_10"> Semester</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="semesterCode">
+                    <ng-option *ngFor="let semester of semesters" [value]="semester.code">{{semester.name}} ({{semester.code}})</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label mb_10">Faculty</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="facultyCode" (change)="getAdmissionExam()">
+                    <ng-option *ngFor="let faculty of faculties" [value]="faculty.code">{{faculty.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label mb_10">Admission Circular</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="admissionExamId">
+                    <ng-option *ngFor="let admission_exam of admission_exams" [value]="admission_exam.id">{{admission_exam.admissionCircular.name}}, {{admission_exam.admissionCircular.code}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-lg-1">
+                <label class="form-label mb_10">&nbsp;</label>
+                <div class="common_input mt_5">
+                  <button class="btn btn-primary" (click)="getAdmissionApplicant()">Search</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">
+                        <input
+                          type="checkbox"
+                          [(ngModel)]="isMasterSel"
+                          (change)="checkUncheckAll()"
+                        />
+                      </th>
+                      <th scope="col">Merit Position</th>
+                      <th scope="col">Choose Program</th>
+                      <th scope="col">Application ID</th>
+                      <th scope="col">Applicant</th>
+                      <th scope="col">Attendance</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let i=index;let admission_applicant of admission_applicants;">
+                      <td>
+                          <input
+                            type="checkbox"
+                            name="users[]"
+                            class="delete_checkbox"
+                            value=""
+                            [(ngModel)]="admission_applicant.isSelected"
+                            (change)="isAllSelected(admission_applicant.admissionApplication.admissionPersons[0]?.id);"
+                          />
+                        </td>
+                      <td (click)="onApplicantClick(admission_applicant.admissionApplication.admissionPersons[0]?.id)">{{admission_applicant.meritNumber}}</td>
+                      <td>
+                        <span *ngFor="let choose_program of admission_applicant.admissionApplication.admissionApplicationProgramChooses">
+                           {{choose_program.admissionCircularProgram.program.code}}(C{{choose_program.serialNumber}}),
+                        </span>
+                      </td>
+                      <td>{{admission_applicant.admissionApplication.code}}</td>
+                      <td>{{admission_applicant.admissionApplication.admissionPersons[0]?.fullName}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="admission_applicant.attendance === 1">P</span>
+                        <span class="badge bg-danger" *ngIf="admission_applicant.attendance === 0">A</span>
+                        <span class="badge bg-warning" *ngIf="admission_applicant.attendance === 2">W</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <!--                  <pagination-controls (pageChange)="pageChangeEvent($event)" class="text-center" style="background: #373063e6 !important;"></pagination-controls>-->
+                </div>
+              </div>
+            </div>
+            <hr>
+            <form  #admissionMarkApplicantFrom="ngForm" *ngIf="isOpenSave">
+              <div class="row" ngModelGroup="admissionMarkApplicantData" #admissionMarkApplicantData="ngModelGroup" >
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary mr_10" (click)="putAdmissionAttendance()" [disabled]="admissionMarkApplicantData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Attendance
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,171 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-4" >
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Create Reference Sub Unit</h4>
+              <h4 *ngIf="isUpdateButton">Update Reference Sub Unit</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #referenceSubUnitForm="ngForm">
+              <div class="row" ngModelGroup="referenceSubUnitData" #referenceSubUnitData="ngModelGroup">
+                <div class="col-md-12">
+                  <label class="form-label mb_10">Reference</label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="referenceId" id="referenceId" (change)="getReferenceUnit()" [(ngModel)]="reference" #referenceId="ngModel" required>
+                      <ng-option *ngFor="let reference of references" [value]="reference.id">{{reference.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="referenceId.invalid && referenceId.touched">Reference is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label mb_10">Reference Unit</label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="referenceUnitId" id="referenceUnitId" [(ngModel)]="referenceSubUnit.referenceUnitId" #referenceUnit="ngModel" required>
+                      <ng-option *ngFor="let reference_unit of reference_units" [value]="reference_unit.id">{{reference_unit.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="referenceUnit.invalid && referenceUnit.touched">Reference Unit is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Code</label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      name="code"
+                      id="code"
+                      class="form-control" [(ngModel)]="referenceSubUnit.code" #code="ngModel" required/>
+                    <div>
+                      <small *ngIf="code.invalid && code.touched">Code is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Name</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="name"
+                      id="name"
+                      type="text"
+                      class="form-control" [(ngModel)]="referenceSubUnit.name" #name="ngModel" required/>
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="isEnableCode" id="isEnableCode"  [(ngModel)]="referenceSubUnit.isEnableCode">
+                    <label class="form-label mb_10"> Is Enable Code</label>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="referenceSubUnit.active">
+                    <label class="form-label mb_10"> Is Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="postReferenceSubUnit()"
+                          [disabled]="referenceSubUnitData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putReferenceSubUnit()"
+                          [disabled]="referenceSubUnitData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" *ngIf="isUpdateButton" (click)="cancelReferenceSubUnit()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Reference Unit List</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-6">
+                <label class="form-label mb_10">Reference</label>
+                <div class="mb_20">
+                  <ng-select name="reference" id="reference" [(ngModel)]="reference" (change)="getReferenceUnit()">
+                    <ng-option *ngFor="let reference of references" [value]="reference.id"> {{reference.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Reference Unit</label>
+                <div class="mb_20">
+                  <ng-select name="referenceUnit" id="referenceUnit" [(ngModel)]="referenceUnitId" (change)="getReferenceSubUnit()">
+                    <ng-option *ngFor="let reference_unit of reference_units" [value]="reference_unit.id">{{reference_unit.name}}</ng-option>
+                  </ng-select>
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col" colspan="2" class="text-center">Action</th>
+                      <th scope="col">SL</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Code Enable</th>
+                      <th scope="col">Active</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let reference_sub_unit of reference_sub_units;let i = index;">
+                      <td>
+                        <button class="btn btn-success btn-sm float-end" (click)="editReferenceSubUnit(reference_sub_unit)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteReferenceSubUnit(reference_sub_unit)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>{{i + 1}}</td>
+                      <td>{{reference_sub_unit.code}}</td>
+                      <td>{{reference_sub_unit.name}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="reference_sub_unit.isEnableCode">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!reference_sub_unit.isEnableCode">No</span>
+                      </td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="reference_sub_unit.active">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!reference_sub_unit.active">No</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

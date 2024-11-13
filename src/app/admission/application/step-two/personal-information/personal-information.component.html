@@ -1,0 +1,12 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <app-admission-stage></app-admission-stage>
+    <app-admission-person-information *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-admission-person-information>
+    <app-admission-address-information *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-admission-address-information>
+    <app-applicant-passport *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-passport>
+    <app-applicant-family *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-family>
+    <app-applicant-local-guardian *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-local-guardian>
+    <app-education-expanse-barrier *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-education-expanse-barrier>
+  </div>
+</div>
+

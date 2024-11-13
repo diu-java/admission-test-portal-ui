@@ -1,0 +1,184 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Create Study Campus</h4>
+              <h4 *ngIf="isUpdateButton">Update Study Campus</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #studyCampusForm="ngForm">
+              <div class="row" ngModelGroup="studyCampusData" #studyCampusData="ngModelGroup">
+
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Code</label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      name="code"
+                      id="code"
+                      class="form-control" [(ngModel)]="admissionStudyCampus.code" #code="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="code.invalid && code.touched">Code is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Name</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="name"
+                      id="name"
+                      type="text"
+                      class="form-control" [(ngModel)]="admissionStudyCampus.name" #name="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Institute</label>
+                  <div class="mb_20">
+                    <ng-select name="institute" [(ngModel)]="admissionStudyCampus.instituteId" #institute="ngModel" required>
+                      <ng-option *ngFor="let institute of institutes" [value]="institute.id">{{institute.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="institute.invalid && institute.touched">Institute is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Location</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="location"
+                      id="location"
+                      type="text"
+                      class="form-control" [(ngModel)]="admissionStudyCampus.location" #location="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="location.invalid && location.touched">Location is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Registration ID Code</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="registrationIdCode"
+                      id="registrationIdCode"
+                      type="text"
+                      class="form-control" [(ngModel)]="admissionStudyCampus.registrationIdCode" #registrationIdCode="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="registrationIdCode.invalid && registrationIdCode.touched">Registration Code is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Student ID Code</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="studentIdCode"
+                      id="studentIdCode"
+                      type="text"
+                      class="form-control" [(ngModel)]="admissionStudyCampus.studentIdCode" #studentIdCode="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="studentIdCode.invalid && studentIdCode.touched">Student Code is a required field</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="admissionStudyCampus.active"> Is Active</label>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="postStudyCampus()"
+                          [disabled]="studyCampusData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putStudyCampus()"
+                          [disabled]="studyCampusData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" *ngIf="isUpdateButton" (click)="cancelStudyCampus()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Study Campus List</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col" colspan="2" class="text-center">Action</th>
+                      <th scope="col">SL</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Institute</th>
+                      <th scope="col">Location</th>
+                      <th scope="col">Registration Code</th>
+                      <th scope="col">Student Code</th>
+                      <th scope="col">Active</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let study_campus of study_campuses;let i = index;">
+                      <td>
+                        <button class="btn btn-success btn-sm float-end" (click)="editStudyCampus(study_campus)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteStudyCampus(study_campus)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>{{i + 1}}</td>
+                      <td>{{study_campus.code}}</td>
+                      <td>{{study_campus.name}}</td>
+                      <td>{{study_campus.institute.name}}</td>
+                      <td>{{study_campus.location}}</td>
+                      <td>{{study_campus.registrationIdCode}}</td>
+                      <td>{{study_campus.studentIdCode}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="study_campus.active">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!study_campus.active">No</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

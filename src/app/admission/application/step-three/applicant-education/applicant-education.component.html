@@ -1,0 +1,441 @@
+
+<div class="row">
+  <div class="col-lg-12 go_to_top">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Education Information
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="educationView()" *ngIf="!isEducationView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #educationalInformationForm="ngForm">
+          <div class="row" ngModelGroup="educationalInformationData" #educationalInformationData="ngModelGroup" *ngIf="isEducationView">
+            <div class="col-md-12">
+              <span style="color: red;">(*) Required Field</span>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Level of Education<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="levelOfEducationId" (change)="getDegree();getEducationInstitute();" [(ngModel)]="applicantEducationalInformation.levelOfEducationId" [disabled]="isUpdateButton">
+                  <ng-option *ngFor="let level_of_education of admissionApplication.admissionCircular.admissionCircularEducationLevels" [value]="level_of_education?.levelOfEducation?.id">
+                    {{level_of_education.levelOfEducation.name}}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Exam/Degree Title <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="degreeId" (change)="getEducationMajor();getEducationBoard()" [(ngModel)]="applicantEducationalInformation.degreeId" #degree="ngModel" required [disabled]="isUpdateButton">
+                  <ng-option *ngFor="let degree of degrees" [value]="degree.id">{{degree.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="degree.invalid && formSubmitted">Degree is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4" *ngIf="isMajor && education_majors.length">
+              <label class="form-label mb_10">Major/Group <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select
+                  [items]="education_majors"
+                  bindLabel="name"
+                  [(ngModel)]="applicantEducationalInformation.majorName"
+                  [ngModelOptions]="{standalone: true}"
+                  [addTag]="isEditable()"
+                  [hideSelected]="true"
+                  [searchable]="true"
+                  #majorName="ngModel"
+                  required
+                  (change)="onMajorChange($event)">
+                </ng-select>
+                <div>
+                  <small *ngIf="majorName.invalid && formSubmitted">Major Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isBoard && education_boards.length">
+              <label class="form-label mb_10">Board <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="boardId"  [(ngModel)]="applicantEducationalInformation.boardId" #boardId="ngModel" required>
+                  <ng-option *ngFor="let board of education_boards" [value]="board.id">{{board.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="boardId.invalid && formSubmitted">Board is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4" *ngIf="isRegistration">
+              <label class="form-label mb_10">Registration Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="text" name="regNumber" class="form-control" [(ngModel)]="applicantEducationalInformation.regNumber" #regNumber="ngModel" required/>
+                <div>
+                  <small *ngIf="regNumber.invalid && formSubmitted">Registration Number is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isRoll">
+              <label class="form-label mb_10">Roll Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="text" name="rollNumber" class="form-control" [(ngModel)]="applicantEducationalInformation.rollNumber" #rollNumber="ngModel" required/>
+                <div>
+                  <small *ngIf="rollNumber.invalid && formSubmitted">Roll Number is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Institute Name <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select
+                  [items]="filteredInstitutes"
+                  bindLabel="name"
+                  [(ngModel)]="applicantEducationalInformation.instituteName"
+                  [ngModelOptions]="{standalone: true}"
+                  [addTag]="isEditable()"
+                  [hideSelected]="true"
+                  [searchable]="true"
+                  (search)="onSearchInstitute($event.term)"
+                  #instituteName="ngModel"
+                  required
+                  (change)="onInstituteChange($event)">
+                </ng-select>
+                <div>
+                  <small *ngIf="instituteName.invalid && formSubmitted">Institute Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Result Type <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="resultTypeId"  (change)="enableResult(applicantEducationalInformation.resultTypeId)" [(ngModel)]="applicantEducationalInformation.resultTypeId" #resultTypeId="ngModel" required>
+                  <ng-option *ngFor="let result_type of result_types" [value]="result_type.id">{{result_type.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="resultTypeId.invalid && formSubmitted">Result Type is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isMark">
+              <label class="form-label mb_10">Mark <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="mark" class="form-control" [min]="1.00" [(ngModel)]="applicantEducationalInformation.mark" #mark="ngModel" (change)="applicantEducationalInformation.mark = formatNumber(applicantEducationalInformation.mark)" required/>
+                <div>
+                  <small *ngIf="mark.invalid && formSubmitted">Mark is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isCgpa">
+              <label class="form-label mb_10">GPA/CGPA <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="cgpa" class="form-control" step="0.01" [min]="1.00"  [(ngModel)]="applicantEducationalInformation.cgpa" #cgpa="ngModel" (change)="applicantEducationalInformation.cgpa = formatNumber(applicantEducationalInformation.cgpa)" required/>
+                <div>
+                  <small *ngIf="cgpa.invalid && formSubmitted">GPA/CGPA is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isCgpa || isMark">
+              <label class="form-label mb_10">Scale(Out of) <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="scale" class="form-control" [min]="1.00" [(ngModel)]="applicantEducationalInformation.scale" #scale="ngModel" (change)="applicantEducationalInformation.scale = formatNumber(applicantEducationalInformation.scale)" required/>
+                <div>
+                  <small *ngIf="scale.invalid && formSubmitted">Scale is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Passing Year <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="passingYear" [(ngModel)]="applicantEducationalInformation.passingYear" #passingYear="ngModel" required>
+                  <ng-option *ngFor="let year of years" [value]="year">{{year}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="passingYear.invalid && formSubmitted">Passing year is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Duration <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="duration" class="form-control" [(ngModel)]="applicantEducationalInformation.duration" #duration="ngModel" required/>
+                <div>
+                  <small *ngIf="duration.invalid && formSubmitted">Duration is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="golden" id="golden"  [(ngModel)]="applicantEducationalInformation.isGolden">
+                <label class="form-label mb_10"> Is Golden</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Transcript </label>
+<!--              <div *ngIf="isOpenAttachment">-->
+<!--                <input type="file"-->
+<!--                       class="form-control"-->
+<!--                       name="transcriptAttachmentId"-->
+<!--                       (change)="postDocument($event)"-->
+<!--                       accept=".pdf, .png, .jpg, .jpeg"-->
+<!--                       required>-->
+<!--                <small class="form-text">File must be jpg/jpeg/png/pdf format. File size not more than 500 KB.</small>-->
+<!--              </div>-->
+              <div class="row align-items-center" *ngIf="isOpenAttachment">
+                <div class="col-md-8">
+                  <input type="file" class="form-control" id="transcriptAttachmentId" name="transcriptAttachmentId"
+                         (change)="postDocument($event)" accept=".pdf, .png, .jpg, .jpeg">
+                </div>
+                <div class="col-md-1 text-center">
+                        <span class="text-highlighted" style="font-weight: bold; color: #007bff; background-color: #e9f5ff; padding: 5px; border-radius: 5px;">
+                          or
+                        </span>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-block" (click)="getDocumentScanDemo(admissionPerson.id, applicantEducationalInformation, 'Transcript', 'Transcript', 'application/pdf')">
+                    <i class="fa fa-laptop mr-2"></i> Scan
+                  </button>
+                </div>
+              </div>
+              <div class="" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+              <br *ngIf="applicantEducationalInformation.transcriptAttachment && !isOpenAttachment"/>
+              <a *ngIf="applicantEducationalInformation.transcriptAttachment && !isOpenAttachment" href="javascript:void(0)" class="mr_10"
+                 (click)="getDocument(applicantEducationalInformation.transcriptAttachment.code, applicantEducationalInformation.transcriptAttachment.name, applicantEducationalInformation.transcriptAttachment.fileExtension)">
+                Attachment <span><i class="fa fa-download"></i></span>
+              </a>
+              <button type="submit" class="btn btn-primary"  *ngIf="applicantEducationalInformation.transcriptAttachment && !isOpenAttachment" (click)="isOpenFile()">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Certificate</label>
+<!--              <div *ngIf="isOpenCertificate">-->
+<!--                <input type="file" class="form-control" name="certificateAttachmentId" (change)="postCertificateDocument($event)" accept=".pdf, .png, .jpg,.jpeg"-->
+<!--                       required>-->
+<!--                <small class="form-text">File must be jpg/jpeg/png/pdf format. File size not more than 500 KB.</small>-->
+<!--              </div>-->
+              <div class="row align-items-center" *ngIf="isOpenCertificate">
+                <div class="col-md-8">
+                  <input type="file" class="form-control" id="certificateAttachmentId" name="certificateAttachmentId"
+                         (change)="postCertificateDocument($event)" accept=".pdf, .png, .jpg, .jpeg">
+                </div>
+                <div class="col-md-1 text-center">
+                        <span class="text-highlighted" style="font-weight: bold; color: #007bff; background-color: #e9f5ff; padding: 5px; border-radius: 5px;">
+                          or
+                        </span>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-block" (click)="getDocumentScanDemo(admissionPerson.id, applicantEducationalInformation, 'Certificate', 'Certificate', 'application/pdf')">
+                    <i class="fa fa-laptop mr-2"></i> Scan
+                  </button>
+                </div>
+              </div>
+              <div class="" *ngIf="certificateMessage">
+                <span style="color: #0c4128">{{certificateMessage}}</span>
+              </div>
+              <br *ngIf="applicantEducationalInformation.certificateAttachment && !isOpenCertificate"/>
+              <a *ngIf="applicantEducationalInformation.certificateAttachment && !isOpenCertificate" href="javascript:void(0)" class="mr_10"
+                 (click)="getDocument(applicantEducationalInformation.certificateAttachment.code, applicantEducationalInformation.certificateAttachment.name, applicantEducationalInformation.certificateAttachment.fileExtension)">
+                Attachment <span><i class="fa fa-download"></i></span>
+              </a>
+              <button type="submit" class="btn btn-primary"  *ngIf="applicantEducationalInformation.certificateAttachment && !isOpenCertificate" (click)="isOpenCertificateFile()">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="col-md-12 mt_10">
+              <button type="submit" class="btn btn-primary btn-sm mr_10" (click)="postEducationalInformation()" *ngIf="isSaveButton">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success btn-sm mr_10" (click)="putEducationalInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger btn-sm mr_10" (click)="cancelEducationalInformation()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div *ngIf="admission_educational_informations.length  === 0" class="col-lg-12 text-center" style="font-size: 18px">
+            <p>No Data found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let educational_information of admission_educational_informations; let i=index;">
+    <div class="white_card card_height_100" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>{{educational_information.levelOfEducation.name}}, {{educational_information.degree?.name}}
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deleteEducationalInformation(educational_information)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editEducationalInformation(educational_information)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Institute Name</th>
+                  <td colspan="3">{{educational_information.instituteName}}</td>
+                </tr>
+                <tr>
+                  <th>Major/Group</th>
+                  <td>{{educational_information.majorName}}</td>
+                  <th>Board</th>
+                  <td><span>{{educational_information.board?.name}}</span></td>
+                </tr>
+                <tr *ngIf="educational_information.regNumber">
+                  <th>Registration Number</th>
+                  <td>{{educational_information.regNumber}}</td>
+                  <th>Roll Number</th>
+                  <td>{{educational_information.rollNumber}}</td>
+                </tr>
+                <tr>
+                  <th>Result Type</th>
+                  <td>{{ educational_information.resultType.name }}</td>
+                  <th *ngIf="educational_information.resultType.isMark">Mark</th>
+                  <td *ngIf="educational_information.resultType.isMark">
+                    {{ educational_information.mark | number: '1.2-2'  }} out of {{ educational_information.scale | number: '1.2-2'  }}
+                  </td>
+                  <th *ngIf="educational_information.resultType.isCgpa">GPA/CGPA</th>
+                  <td *ngIf="educational_information.resultType.isCgpa">
+                    {{ educational_information.cgpa | number: '1.2-2' }} out of {{ educational_information.scale | number: '1.2-2' }}
+                    <span *ngIf="educational_information.isGolden" class="text-success">(Golden)</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Year</th>
+                  <td>{{educational_information.passingYear}}</td>
+                  <th>Duration</th>
+                  <td>{{educational_information.duration}} </td>
+                </tr>
+                <tr>
+                  <th>Transcript</th>
+                  <td>
+                    <button class="btn btn-primary btn-sm mr_10" *ngIf="educational_information.transcriptAttachment" (click)="getDocument(educational_information.transcriptAttachment.code, educational_information.transcriptAttachment.name, educational_information.transcriptAttachment.fileExtension)" title="Preview"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                    <button class="btn btn-success btn-sm" *ngIf="educational_information.transcriptAttachment" (click)="getDocumentDownload(educational_information.transcriptAttachment.code, educational_information.transcriptAttachment.name, educational_information.transcriptAttachment.fileExtension)" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button>
+                  </td>
+                  <th>Certificate</th>
+                  <td>
+                    <button class="btn btn-primary btn-sm mr_10" *ngIf="educational_information.certificateAttachment" (click)="getDocument(educational_information.certificateAttachment.code, educational_information.certificateAttachment.name, educational_information.certificateAttachment.fileExtension)" title="Preview"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                    <button class="btn btn-success btn-sm" *ngIf="educational_information.certificateAttachment" (click)="getDocumentDownload(educational_information.certificateAttachment.code, educational_information.certificateAttachment.name, educational_information.certificateAttachment.fileExtension)" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="educationDetailView && educational_information.id === activeDetail">
+          <hr>
+          <div class="col-md-12 p-3">
+            <div class="white_box_tittle">
+              <h5>Add Subject Detail</h5>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label mb_10">Subject</label>
+            <div class="mb_20 pt_10">
+              <ng-select name="educationSubject" [(ngModel)]="admissionEducationalDetail.educationSubjectId" >
+                <ng-option *ngFor="let education_subject of educational_information?.degree?.educationSubjects" [value]="education_subject.id">{{education_subject.name}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label mb_10">Mark</label>
+            <div class="common_input mb_20">
+              <input type="number" name="mark" class="form-control" [(ngModel)]="admissionEducationalDetail.mark" (change)="admissionEducationalDetail.mark = formatNumber(admissionEducationalDetail.mark)"/>
+
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label mb_10">Grade</label>
+            <div class="mb_20 pt_10">
+              <ng-select name="grade" [(ngModel)]="admissionEducationalDetail.grade" >
+                <ng-option *ngFor="let grade of grades" [value]="grade.code">{{grade.name}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label mb_10">Grade Point </label>
+            <div class="common_input mb_20">
+              <input type="number" name="gradePoint" class="form-control" [(ngModel)]="admissionEducationalDetail.gradePoint" (change)="admissionEducationalDetail.gradePoint = formatNumber(admissionEducationalDetail.gradePoint)"/>
+            </div>
+          </div>
+          <div class="col-md-12 mt_10">
+            <button type="submit" class="btn btn-primary btn-sm mr_10" (click)="postEducationalDetail(educational_information.id)" *ngIf="isSaveButton">
+              <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+            </button>
+            <button type="submit" class="btn btn-danger btn-sm mr_10" (click)="cancelEducationalDetail()">
+              <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+            </button>
+          </div>
+        </div>
+        <div class="row" *ngIf="educational_information?.degree?.educationSubjects?.length > 0">
+          <div class="col-md-12 p-3">
+            <div class="white_box_tittle">
+              <h4>Subject detail of {{educational_information.degree?.name}}
+                <button type="submit" class="btn btn-primary btn-sm float-end" (click)="addEducationalDetail(educational_information.degree?.id, educational_information.id)" *ngIf="!educationDetailView">
+                  <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+                </button>
+              </h4>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Subject Code</th>
+                  <th>Mark</th>
+                  <th>Grade</th>
+                  <th>Grade Point</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let admission_educational_detail of educational_information?.admissionEducationalDetails">
+                  <td>{{admission_educational_detail?.educationSubject?.name}}</td>
+                  <td>{{admission_educational_detail?.educationSubject?.code}}</td>
+                  <td><span *ngIf="admission_educational_detail?.mark">{{admission_educational_detail?.mark.toFixed(2)}}</span></td>
+                  <td>{{admission_educational_detail?.grade}}</td>
+                  <td><span *ngIf="admission_educational_detail?.gradePoint">{{admission_educational_detail?.gradePoint.toFixed(2)}}</span></td>
+                  <td><button class="btn btn-danger btn-sm mr_10" (click)="deleteEducationalDetail(admission_educational_detail, educational_information.id)">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

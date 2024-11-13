@@ -1,0 +1,9 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <app-admission-stage></app-admission-stage>
+    <app-applicant-education *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-education>
+    <app-applicant-skill *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-skill>
+    <app-applicant-award *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-award>
+    <app-applicant-professional-experience *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-professional-experience>
+  </div>
+</div>

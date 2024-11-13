@@ -1,0 +1,232 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Mark Applicants
+                <!--                <button type="submit" class="btn btn-primary float-end" (click)="admissionMarkDistributionTemplateView()" *ngIf="!isAdmissionExamView">-->
+                <!--                  <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New-->
+                <!--                </button>-->
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <label class="form-label mb_10"> Semester</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="semesterCode">
+                    <ng-option *ngFor="let semester of semesters" [value]="semester.code">{{semester.name}} ({{semester.code}})</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label mb_10">Faculty</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="facultyCode" (change)="getAdmissionExam()">
+                    <ng-option *ngFor="let faculty of faculties" [value]="faculty.code">{{faculty.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label mb_10">Admission Circular</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="admissionExamId">
+                    <ng-option *ngFor="let admission_exam of admission_exams" [value]="admission_exam.id">{{admission_exam.admissionCircular.name}}, {{admission_exam.admissionCircular.code}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-lg-1">
+                <label class="form-label mb_10">&nbsp;</label>
+                <div class="common_input mt_5">
+                  <button class="btn btn-primary" (click)="getAdmissionApplicant()">Search</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <th>Code</th>
+                      <td>{{admissionExam.code}}</td>
+                      <th>Semester</th>
+                      <td>{{admissionExam.code}}</td>
+                    </tr>
+                    <tr>
+                      <th>Admission Circular</th>
+                      <td>{{admissionExam.admissionCircular?.code}}</td>
+                      <th>Mark Template</th>
+                      <td>{{admissionExam.admissionMarkTemplate?.name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Total Applicant</th>
+                      <td>{{admissionExam.totalApplicant}}</td>
+                      <th>Total Selected Applicant</th>
+                      <td>{{admissionExam.totalSelectedApplicant}}</td>
+                    </tr>
+                    <tr>
+                      <th>Total Waiting</th>
+                      <td>{{admissionExam.totalWaiting}}</td>
+                      <th>Total Rejected</th>
+                      <td>{{admissionExam.totalRejected}}</td>
+                    </tr>
+                    <tr>
+                      <th>Submitted By</th>
+                      <td colspan="3">
+                        <span *ngFor="let admission_submission of admission_submissions; let i =index;">
+                          {{i+1}}. {{admission_submission.admissionMarkTeacher.employeeInfo.fullName}} | {{admission_submission.admissionMarkTeacher.employeeInfo.employeeId}} | {{admission_submission.submittedDatetime | date:'medium'}}<br>
+                        </span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">SL</th>
+                      <th scope="col">Merit Position</th>
+                      <th scope="col">Choose Program</th>
+                      <th scope="col">Application ID</th>
+                      <th scope="col">Applicant</th>
+                      <th scope="col">Attendance</th>
+                      <th *ngFor="let admission_mark_distribution of admissionExam.admissionMarkTemplate.admissionMarkDistributions;" scope="col" >
+                        {{admission_mark_distribution.admissionMarkHead.code}} ({{ admission_mark_distribution.mark }})
+                        <ng-container *ngFor="let mark_submit of admissionExam.admissionMarkSubmits">
+                          <span *ngIf="mark_submit.admissionMarkDistribution.id === admission_mark_distribution.id && mark_submit.status ===1" class="badge bg-success">
+                            S
+                          </span>
+                        </ng-container>
+                      </th>
+                      <th scope="col">Total Mark</th>
+                      <th scope="col">Program</th>
+                      <th scope="col">Batch</th>
+                      <th scope="col">Deadline</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let i=index;let admission_applicant of admission_applicants;">
+                      <td><input
+                        type="checkbox"
+                        name="users[]"
+                        class="delete_checkbox"
+                        value=""
+                        [(ngModel)]="admission_applicant.isSelected"
+                        (change)="isAllSelected(admission_applicant.admissionApplication.admissionPersons[0]?.id)"
+                      /></td>
+                      <td (click)="onApplicantClick(admission_applicant.admissionApplication.admissionPersons[0]?.id)">{{admission_applicant.meritNumber}}</td>
+                      <td>
+                        <span *ngFor="let choose_program of admission_applicant.admissionApplication.admissionApplicationProgramChooses">
+                           {{choose_program.admissionCircularProgram.program.code}}(C{{choose_program.serialNumber}}),
+                        </span>
+                      </td>
+                      <td>{{admission_applicant.admissionApplication.code}}</td>
+                      <td>{{admission_applicant.admissionApplication.admissionPersons[0]?.fullName}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="admission_applicant.attendance === 1">P</span>
+                        <span class="badge bg-danger" *ngIf="admission_applicant.attendance === 0">A</span>
+                        <span class="badge bg-warning" *ngIf="admission_applicant.attendance === 2">W</span>
+                      </td>
+                      <td *ngFor="let admission_mark of admission_applicant.admissionMarkEntries;">{{admission_mark.mark}}</td>
+                      <td>{{admission_applicant.totalMark}}</td>
+                      <td>{{admission_applicant.program?.code}}</td>
+                      <td>{{admission_applicant.batch?.code}}</td>
+                      <td>{{admission_applicant?.deadline}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+<!--                  <pagination-controls (pageChange)="pageChangeEvent($event)" class="text-center" style="background: #373063e6 !important;"></pagination-controls>-->
+                </div>
+              </div>
+            </div>
+            <hr>
+            <form  #admissionMarkApplicantFrom="ngForm" *ngIf="isOpenSave">
+              <div class="row" ngModelGroup="admissionMarkApplicantData" #admissionMarkApplicantData="ngModelGroup" >
+              <div class="col-md-6">
+                <label class="form-label mb_10">Faculty<span style="color: red;">*</span></label>
+                <div class="mb_20 pt_10">
+                  <ng-select id="faculty" name="faculty" (change)="getProgram(admissionMarkApplicant.facultyId)" [(ngModel)]="admissionMarkApplicant.facultyId" #faculty="ngModel" required>
+                    <ng-option *ngFor="let faculty of faculties" [value]="faculty.id">
+                      {{faculty.name}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="faculty.invalid && faculty.touched">Faculty is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Program<span style="color: red;">*</span></label>
+                <div class="mb_20 pt_10">
+                  <ng-select id="program" name="program" (change)="getBatchSearch(admissionExam.semester?.id, admissionMarkApplicant.programId);" [(ngModel)]="admissionMarkApplicant.programId" #program="ngModel" required>
+                    <ng-option *ngFor="let program of programs" [value]="program.id">
+                      {{program.code}} {{program.name}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="program.invalid && program.touched">Program is a required field</small>
+                  </div>
+                </div>
+              </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Semester</label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      name="semester"
+                      id="semester"
+                      class="form-control" [value]="admissionExam.semester?.name" [disabled]="true"
+                    />
+                  </div>
+                </div>
+              <div class="col-md-4">
+                <label class="form-label mb_10">Batch<span style="color: red;">*</span></label>
+                <div class="mb_20 pt_10">
+                  <ng-select id="batch" name="batch" [(ngModel)]="admissionMarkApplicant.batchId" #batch="ngModel" required>
+                    <ng-option *ngFor="let batch of batches" [value]="batch.id">
+                      {{batch.code}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="batch.invalid && batch.touched">Batch is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label mb_10">Deadline<span style="color: red;">*</span></label>
+                <div class="common_input mb_20">
+                  <input
+                    type="date"
+                    name="deadline"
+                    id="deadline"
+                    class="form-control" [(ngModel)]="admissionMarkApplicant.deadline" #deadline="ngModel" required
+                  />
+                  <div>
+                    <small *ngIf="deadline.invalid && deadline.touched">Deadline is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <button type="submit" class="btn btn-primary mr_10" (click)="putAdmissionMarkApplicant()" [disabled]="admissionMarkApplicantData.invalid">
+                  <i class="fa fa-save mr_10" aria-hidden="true"></i>Enrollment
+                </button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

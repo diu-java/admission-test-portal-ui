@@ -1,0 +1,125 @@
+<div class="row">
+      <div class="col-lg-12" *ngIf="isTestTeacherView">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Add Teacher</h4>
+              <h4 *ngIf="isUpdateButton">Update Teacher</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #form="ngForm">
+              <div class="row" ngModelGroup="formData" #formData="ngModelGroup">
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Teacher</label>
+                  <div class="mb_20">
+                    <ng-select name="employeeInfo" [(ngModel)]="admissionTestTeacher.employeeInfoId" #employeeInfo="ngModel" required [disabled]="isUpdateButton">
+                      <ng-option *ngFor="let employees of employees" [value]="employees.id">{{employees.fullName}}, {{employees.employeeId}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="employeeInfo.invalid && employeeInfo.touched">Employee is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Category</label>
+                  <div class="mb_20">
+                    <ng-select name="admissionTemplateCategory" [(ngModel)]="admissionTestTeacher.admissionTemplateCategoryId" (change)="getAdmissionTemplateCategorySubject(admissionTestTeacher.admissionTemplateCategoryId)">
+                      <ng-option *ngFor="let admission_template_category of admission_template_categories" [value]="admission_template_category.id">{{admission_template_category.admissionTestCategory.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Subject</label>
+                  <div class="mb_20">
+                    <ng-select name="admissionTemplateCategorySubject" [(ngModel)]="admissionTestTeacher.admissionTemplateCategorySubjectId">
+                      <ng-option *ngFor="let admission_template_category_subject of admission_template_category_subjects" [value]="admission_template_category_subject.admissionTestSubject.id">{{admission_template_category_subject.admissionTestSubject.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="admissionTestTeacher.active"> Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary btn-sm mr_10" *ngIf="isSaveButton" (click)="postAdmissionTestTeacher()"
+                          [disabled]="formData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success btn-sm mr_10" *ngIf="isUpdateButton" (click)="putAdmissionTestTeacher()"
+                          [disabled]="formData.invalid">
+                    <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger btn-sm" (click)="cancelAdmissionTestTeacher()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Teacher List
+                <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionTestTeacherView()" *ngIf="!isTestTeacherView">
+                  <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+                </button>
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">SL</th>
+                        <th scope="col">Employee</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let admission_test_teacher of admission_test_teachers;let i=index;">
+                      <td>{{i+1}}</td>
+                      <td>{{admission_test_teacher.employeeInfo.fullName}}</td>
+                      <td>{{admission_test_teacher.admissionTemplateCategory.id}}</td>
+                      <td>{{admission_test_teacher.admissionTemplateCategorySubject.id}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="admission_test_teacher.status === 1">Submit</span>
+                        <span class="badge bg-danger" *ngIf="admission_test_teacher.status === 2">Not Submit</span>
+                      </td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="admission_test_teacher.active">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!admission_test_teacher.active">No</span>
+                      </td>
+                      <td>
+                        <button class="btn btn-success btn-sm mr_10" (click)="editAdmissionTestTeacher(admission_test_teacher)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm mr_10" (click)="deleteAdmissionTestTeacher(admission_test_teacher)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+

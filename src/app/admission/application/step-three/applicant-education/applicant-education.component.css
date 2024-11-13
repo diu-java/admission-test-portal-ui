@@ -1,0 +1,21 @@
+.my-custom-popup {
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  overflow: hidden; /* Prevent overflow */
+  display: flex; /* Use flexbox to center content */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+}
+
+.my-custom-popup iframe {
+  height: calc(100vh - 100px); /* Adjust height for iframe, subtracting for title and buttons */
+  width: 100%; /* Full width for iframe */
+  border: none; /* Remove default border */
+}
+
+.my-custom-popup img {
+  max-height: calc(100vh - 100px); /* Adjust height for images */
+  width: auto; /* Auto width for images */
+}

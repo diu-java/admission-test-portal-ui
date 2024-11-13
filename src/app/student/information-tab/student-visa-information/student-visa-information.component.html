@@ -1,0 +1,139 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div>
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>VISA Information
+              <button type="submit" class="btn btn-primary float-end" (click)="studentVisaInfoView()">
+                <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+              </button>
+            </h4>
+          </div>
+        </div>
+<!--        <div class="white_card_body">-->
+<!--          <div class="row">-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+    <div *ngFor="let visa_information of visa_informations; let i=index;">
+      <div class="white_card card_height_100 mb_20" >
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>VISA {{visa_information.visaNumber}}
+              <button class="btn btn-danger float-end mr_10" (click)="deleteVisaInformation(visa_information)">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+              <button class="btn btn-success float-end mr_10" (click)="editVisaInformation(visa_information)">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th>Visa Number</th>
+                    <td colspan="3">{{visa_information.visaNumber}}</td>
+
+                  </tr>
+                  <tr>
+                    <th>Work Permit Number</th>
+                    <td colspan="3">{{visa_information.workPermitNumber}}</td>
+                  </tr>
+                  <tr>
+                    <th>Issue Date</th>
+                    <td colspan="3">{{visa_information.issueDate}}</td>
+                  </tr>
+                  <tr>
+                    <th>Expired Date</th>
+                    <td colspan="3">{{visa_information.expiredDate}}</td>
+                  </tr>
+                  <tr *ngIf="visa_information.attachment">
+                    <th>Attachment</th>
+                    <td colspan="3"><button class="btn btn-primary" *ngIf="visa_information.attachment" (click)="getDocument(visa_information.attachment.code, visa_information.attachment.name, visa_information.attachment.fileExtension)">Download</button></td>
+                  </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isVisaInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>New VISA Info</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #visaInformationForm="ngForm">
+          <div class="row" ngModelGroup="visaInformationData" #visaInformationData="ngModelGroup">
+            <div class="col-md-6">
+              <label class="form-label mb_10">Visa Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="visaNumber" id="visaNumber" class="form-control" [(ngModel)]="visaInformation.visaNumber" #visaNumber="ngModel" required/>
+                <div>
+                  <small *ngIf="visaNumber.invalid && visaNumber.touched">Visa Number is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Work Permit Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="workPermitNumber" id="workPermitNumber" class="form-control" [(ngModel)]="visaInformation.workPermitNumber"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Issue Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="issueDate" id="issueDate" class="form-control" [(ngModel)]="visaInformation.issueDate" #issueDate="ngModel" required/>
+                <div>
+                  <small *ngIf="issueDate.invalid && issueDate.touched">Issue Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Expired Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="expiredDate" id="expiredDate" class="form-control" [(ngModel)]="visaInformation.expiredDate" #expiredDate="ngModel" required/>
+                <div>
+                  <small *ngIf="expiredDate.invalid && expiredDate.touched">Expire Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="attachmentId" (change)="postDocument($event)">
+              </div>
+              <div class="mb-3" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary" (click)="postVisaInformation()" *ngIf="isSaveButton" [disabled]="visaInformationData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putVisaInformation()" *ngIf="isUpdateButton" [disabled]="visaInformationData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelVisaInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

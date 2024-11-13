@@ -1,0 +1,125 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_30">
+          <div class="white_card_header pb-0">
+            <div class="box_header m-0">
+              <h4>Student Look Up</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row mt_20">
+              <div class="col-lg-10 mb_20">
+                <div class="form-outline">
+                  <input
+                    type="search"
+                    id="searchStudent"
+                    class="form-control"
+                    placeholder="Search By Student ID or UGC ID"
+                    [(ngModel)]="studentId" (keydown)="onKeydownStudentInformation($event)"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="getStudentInformation()">
+                  Search
+                </button>
+              </div>
+            </div>
+            <div class="d-flex mb_30 border_bottom_1px pb-3 pt_25" *ngIf="studentInformation.studentPerson">
+              <div class="flex-shrink-0" *ngIf="studentInformation.studentPerson.photoAttachment">
+                <!--                <img class="me-3 rounded-circle me-0 me-sm-3" src="assets/img/profile.jpg" alt="" width="100" height="100">-->
+                <img class="me-3 rounded me-0 me-sm-3" [src]="'data:' + studentInformation.studentPerson.photoAttachment.fileType + ';base64,' + studentInformation.studentPerson.photoAttachment.file" alt="{{studentInformation.studentPerson.fullName}}" style="width:100px;height:100px;">
+              </div>
+              <div class="flex-shrink-0" *ngIf="!studentInformation.studentPerson.photoAttachment">
+                <!--                <img class="me-3 rounded-circle me-0 me-sm-3" src="assets/img/profile.jpg" alt="" width="100" height="100">-->
+                <img class="me-3 rounded me-0 me-sm-3" src="/assets/img/profile.jpg" alt="{{studentInformation.studentPerson.fullName}}" style="width:100px;height:100px;">
+              </div>
+              <div class="flex-grow-1">
+                <h4 class="mb-2" *ngIf="studentInformation.studentPerson">{{studentInformation.studentPerson.fullName}}</h4>
+                                <p class="mb-1" *ngIf="studentInformation.studentPerson"> <span><i class="fa fa-phone me-2 text-primary"></i></span> {{studentInformation.studentPerson.personalPhone}} </p>
+                <p class="mb-1" *ngIf="studentInformation.studentPerson"> <span><i class="fa fa-envelope me-2 text-primary"></i></span>
+                  <b>{{studentInformation.studentPerson.email}}</b>
+                </p>
+                <p class="mb-1" *ngIf="studentInformation.studentPerson.gender">
+                  <span *ngIf="studentInformation.studentPerson.gender.name==='Male'"><i class="fa fa-male me-2 text-primary"></i></span>
+                  <span *ngIf="studentInformation.studentPerson.gender.name==='Female'"><i class="fa fa-female me-2 text-primary"></i></span>
+                  <b>{{studentInformation.studentPerson.gender.name}}</b>
+                </p>
+                <p class="mb-1" *ngIf="studentInformation.studentPerson.bloodGroup">
+                  <span><i class="fa fa-tint me-2 text-primary"></i></span>
+                  <b>{{studentInformation.studentPerson.bloodGroup.name}}</b>
+                </p>
+                <div *ngIf="studentInformation.studentPerson">
+                  <button class="btn btn-primary float-end" (click)="editStudentInformation(studentInformation)"><i class="fa fa-eye mr_10"></i>More Detail</button>
+                </div>
+              </div>
+            </div>
+            <ul class="card-profile__info" *ngIf="studentInformation.studentId">
+              <li *ngIf="studentInformation.studentId">
+                <h5 class="me-4">Regisration ID</h5>
+                <span>{{studentInformation.studentId}}</span>
+              </li>
+              <li *ngIf="studentInformation.ugcId" class="mb-1">
+                <h5 class="me-4">Student ID:</h5>
+                <span>{{studentInformation.ugcId}}</span>
+              </li>
+              <li class="mb-1">
+                <h5 class="me-4">Issue Date:</h5>
+                <span>{{studentInformation.issueDate}}</span>
+              </li>
+              <li class="mb-1">
+                <h5 class="me-4">Expire Date:</h5>
+                <span>{{studentInformation.expireDate}}</span>
+              </li>
+
+
+              <li *ngIf="studentInformation.campus">
+                <h5 class="me-4">Campus</h5>
+                <span >{{studentInformation.campus.name}}</span>
+              </li>
+              <li *ngIf="studentInformation.faculty">
+                <h5 class="me-4">Faculty</h5>
+                <span >{{studentInformation.faculty.name}}</span>
+              </li>
+              <li  *ngIf="studentInformation.department">
+                <h5 class="me-4">Department</h5>
+                <span>{{studentInformation.department.name}}, {{studentInformation.department.code}}</span>
+              </li>
+              <li *ngIf="studentInformation.program">
+                <h5 class="me-4">Program</h5>
+                <span>{{studentInformation.program.name}} ({{studentInformation.program.code}})</span>
+              </li>
+              <li *ngIf="studentInformation.batch">
+                <h5 class="me-4">Batch</h5>
+                <span>{{studentInformation.batch.code}}</span>
+              </li>
+              <li *ngIf="studentInformation.semester">
+                <h5 class="me-4">Admission Semester</h5>
+                <span>{{studentInformation.semester.name}}</span>
+              </li>
+              <li *ngIf="studentInformation.active">
+                <h5 class="me-4">Active Status</h5>
+                <span class="badge bg-success" *ngIf="studentInformation.active">True</span>
+                <span class="badge bg-danger" *ngIf="!studentInformation.active">False</span>
+              </li>
+
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,15 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <app-admission-stage></app-admission-stage>
+    <app-applicant-credit-transfer *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-credit-transfer>
+    <app-applicant-reference *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-reference>
+    <app-applicant-special-quota *ngIf="admissionApplication.id" [admissionApplication]="admissionApplication"></app-applicant-special-quota>
+    <div class="row">
+      <div class="loader-overlay" *ngIf="loading">
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

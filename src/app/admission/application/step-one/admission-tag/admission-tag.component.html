@@ -1,0 +1,101 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Tag
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionTagView()" *ngIf="!isAdmissionTagView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #admissionTagForm="ngForm">
+          <div class="row" ngModelGroup="admissionTagData" #admissionTagData="ngModelGroup" *ngIf="isAdmissionTagView">
+            <div class="col-md-6">
+              <label class="form-label mb_10">Tag Type<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="tagType" name="tagType"
+                           [(ngModel)]="admissionTag.admissionTagTypeId" #tagType="ngModel" required>
+                  <ng-option *ngFor="let tag_type of tag_types" [value]="tag_type.id">{{ tag_type.name }}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="tagType.invalid && formSubmitted">Tag Type is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10"> Note </label>
+              <div class="common_input mb_20">
+                <textarea type="text" name="note" id="note" class="form-control"
+                          [(ngModel)]="admissionTag.note"></textarea>
+              </div>
+            </div>
+
+
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionTag()" *ngIf="isSaveButton">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putAdmissionTag()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelAdmissionTag()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Tag Type</th>
+                  <th scope="col">Note</th>
+                  <th scope="col">Active</th>
+                  <th scope="col" colSpan="2" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let admission_tag of admissionApplication.admissionTags;let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{admission_tag.admissionTagType?.name}}</td>
+                  <td>{{admission_tag.note}}</td>
+
+                  <td>
+                    <span class="badge bg-danger" *ngIf="!admission_tag.active">No</span>
+                    <span class="badge bg-success" *ngIf="admission_tag.active">Yes</span>
+                  </td>
+                  <td>
+                    <button class="btn btn-success btn-sm float-end" (click)="editAdmissionTag(admission_tag)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="deleteAdmissionTag(admission_tag)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="admissionApplication.admissionTags.length === 0">
+                  <td colspan="6" class="text-center"><p>No Data Found</p></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

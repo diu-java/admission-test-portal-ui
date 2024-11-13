@@ -1,0 +1,127 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Emergency Contact
+            <button type="submit" class="btn btn-primary float-end" (click)="emergencyContactInfoView()">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Contact Name</th>
+                  <th scope="col">Relation</th>
+                  <th scope="col">Phone Number</th>
+                  <th scope="col">Mobile Number</th>
+                  <th scope="col">E-mail</th>
+                  <th scope="col" colspan="2">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let emergency_contact of emergency_contacts;let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{emergency_contact.contactName}}</td>
+                  <td>{{emergency_contact.relation.name}}</td>
+                  <td>{{emergency_contact.phoneNumber}}</td>
+                  <td>{{emergency_contact.mobileNumber}}</td>
+                  <td>{{emergency_contact.email}}</td>
+                  <td>
+                    <button class="btn btn-success mr_10" (click)="editEmergencyContact(emergency_contact)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger ml_5" (click)="deleteEmergencyContact(emergency_contact)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isEmergencyContactInfoVIew">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">New Contact</h4>
+          <h4 *ngIf="isUpdateButton">Update Contact</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #emergencyContactForm="ngForm">
+          <div class="row" ngModelGroup="emergencyContactData" #emergencyContactData="ngModelGroup">
+            <div class="col-md-12">
+              <label class="form-label mb_10">Contact Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="contactName" id="contactName" class="form-control" [(ngModel)]="emergencyContact.contactName" #contactName="ngModel" required/>
+                <div>
+                  <small *ngIf="contactName.invalid && contactName.touched">Contact is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label mb_10">Relation:</label>
+              <div class="mb_20">
+                <ng-select name="relationId" id="relationId" [(ngModel)]="emergencyContact.relationId" #relationId="ngModel" required>
+                  <ng-option *ngFor="let relation of relations" [value]="relation.id">{{relation.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="relationId.invalid && relationId.touched">Relation is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Phone Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" [(ngModel)]="emergencyContact.phoneNumber"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Mobile Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="mobileNumber" id="mobileNumber" class="form-control" [(ngModel)]="emergencyContact.mobileNumber" #mobileNumber="ngModel" required/>
+                <div>
+                  <small *ngIf="mobileNumber.invalid && mobileNumber.touched">Mobile Number is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label mb_10">Email Address</label>
+              <div class="common_input mb_20">
+                <input type="email" name="email" id="email" class="form-control" [(ngModel)]="emergencyContact.email"/>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary" (click)="postEmergencyContact()" *ngIf="isSaveButton" [disabled]="emergencyContactData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putEmergencyContact()" *ngIf="isUpdateButton" [disabled]="emergencyContactData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelEmergencyContact()" *ngIf="isUpdateButton">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

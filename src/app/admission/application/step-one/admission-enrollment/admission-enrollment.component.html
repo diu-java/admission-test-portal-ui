@@ -1,0 +1,415 @@
+<div class="row">
+  <div class="col-lg-12" *ngIf="enableAdmissionPayment">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Fee Payment
+            <button type="submit" class="btn btn-danger float-end" (click)="cancelAdmissionApplicationPayment()">
+              <i class="fa fa-arrow-circle-left mr_10" aria-hidden="true"></i>Back
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td colspan="3">{{ admissionPerson.fullName }}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td>{{ admissionPerson.personalEmail }}</td>
+                  <th>Mobile Number</th>
+                  <td>{{ admissionPerson.personalPhone }}</td>
+                </tr>
+                <tr>
+                  <th>Admission Fees</th>
+                  <td>{{ admissionFeePayment.admissionFee }}</td>
+                  <th>Payment Status</th>
+                  <td>
+                    <span *ngIf="admissionFeePayment.paymentStatus === 2">Unpaid</span>
+                    <span *ngIf="admissionFeePayment.paymentStatus === 1">Paid</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Payable Amount</th>
+                  <td>{{ admissionFeePayment?.payableAmount }}</td>
+                  <th>Payment Type</th>
+                  <td>Cash</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <form #admissionFeePaymentForm="ngForm">
+          <div class="row" ngModelGroup="admissionFeePaymentData" #admissionFeePaymentData="ngModelGroup">
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payable Amount <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="number"
+                  name="amount"
+                  id="amount"
+                  class="form-control" [(ngModel)]="admissionFeePayment.amount" #amount="ngModel" required
+                />
+                <div>
+                  <small *ngIf="amount.invalid && amount.touched">Amount is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payment Slip Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="transactionNumber"
+                  id="transactionNumber"
+                  class="form-control" [(ngModel)]="admissionFeePayment.transactionNo" #transactionNumber="ngModel"
+                  required
+                />
+                <div>
+                  <small *ngIf="transactionNumber.invalid && transactionNumber.touched">Transaction Number is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payment Date <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="datetime-local"
+                  name="paymentDate"
+                  id="paymentDate"
+                  class="form-control" [(ngModel)]="admissionFeePayment.paymentDate" #paymentDate="ngModel" required
+                />
+                <div>
+                  <small *ngIf="paymentDate.invalid && transactionNumber.touched">Payment Date is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionFeePayment()"
+                      [disabled]="admissionFeePaymentData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Payment
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionApplicationPayment()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="!admissionApplication.isAdmission && isEnrollmentView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Enrollment
+<!--            <button type="submit" class="btn btn-danger btn-sm float-end" (click)="cancelAdmissionEnrollment()">-->
+<!--              <i class="fa fa-arrow-circle-left mr_10" aria-hidden="true"></i>Back-->
+<!--            </button>-->
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td>{{ admissionApplication.admissionPersons[0].fullName }}</td>
+                  <th>Email</th>
+                  <td>{{ admissionApplication.admissionPersons[0].personalEmail }}</td>
+                </tr>
+                <tr>
+                  <th>Faculty</th>
+                  <td colspan="3">{{ admissionApplication.admissionCircular.faculty.name }}</td>
+                </tr>
+                <tr>
+                  <th>Program Choice List</th>
+                  <td colspan="3">
+                    <li
+                      *ngFor="let application_program of admissionApplication.admissionApplicationProgramChooses;let i = index;">
+                      Choice-{{ i + 1 }}: {{ application_program.admissionCircularProgram.program.name }}
+                    </li>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <form #admissionDirectFrom="ngForm">
+          <div class="row" ngModelGroup="admissionDirectData" #admissionDirectData="ngModelGroup">
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Study Campus <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="studyCampus" name="studyCampus" [(ngModel)]="admissionEnrollment.studyCampusId">
+                  <ng-option *ngFor="let study_campus of study_campuses"
+                             [value]="study_campus.id">{{ study_campus.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Semester <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="semester" name="semester"
+                           (change)="getBatchSearch(admissionEnrollment.semesterId, admissionEnrollment.programId); getAdmissionFee(this.admissionEnrollment.semesterId, this.admissionEnrollment.semesterTypeId, admissionEnrollment.programId)"
+                           [(ngModel)]="admissionEnrollment.semesterId" #semester="ngModel">
+                  <ng-option *ngFor="let semester of semesters" [value]="semester.id">
+                    {{ semester.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="semester.invalid && semester.touched">Semester is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Semester Type <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="semesterType" name="semesterType" [(ngModel)]="admissionEnrollment.semesterTypeId"
+                           #semesterType="ngModel" [disabled]="true">
+                  <ng-option *ngFor="let semester_type of semester_types" [value]="semester_type.id">
+                    {{ semester_type.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="semesterType.invalid && semesterType.touched">Semester Type is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Faculty<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="faculty" name="faculty" (change)="getProgram(admissionEnrollment.facultyId)"
+                           [(ngModel)]="admissionEnrollment.facultyId" #faculty="ngModel" required>
+                  <ng-option *ngFor="let faculty of faculties" [value]="faculty.id">
+                    {{ faculty.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="faculty.invalid && faculty.touched">Faculty is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Program<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="program" name="program"
+                           (change)="getBatchSearch(admissionEnrollment.semesterId, admissionEnrollment.programId); getAdmissionFee(this.admissionEnrollment.semesterId, this.admissionEnrollment.semesterTypeId, admissionEnrollment.programId)"
+                           [(ngModel)]="admissionEnrollment.programId" #program="ngModel" required>
+                  <ng-option *ngFor="let program of programs" [value]="program.id">
+                    {{ program.code }} {{ program.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="program.invalid && program.touched">Program is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Admission Fee Amount<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="admissionFee"
+                  id="admissionFee"
+                  class="form-control" [(ngModel)]="admissionEnrollment.admissionFee" [disabled]="true"
+                  #admissionFee="ngModel" required
+                />
+                <div>
+                  <small *ngIf="admissionFee.invalid && admissionFee.touched">Admission Fee is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Batch<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="batch" name="batch" [(ngModel)]="admissionEnrollment.batchId" #batch="ngModel" required>
+                  <ng-option *ngFor="let batch of batches" [value]="batch.id">
+                    {{ batch.code }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="batch.invalid && batch.touched">Batch is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payable Amount<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="payableAmount"
+                  id="payableAmount"
+                  class="form-control" [(ngModel)]="admissionEnrollment.payableAmount" #payableAmount="ngModel" required
+                />
+                <div>
+                  <small *ngIf="payableAmount.invalid && payableAmount.touched">Batch is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Deadline<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="date"
+                  name="deadline"
+                  id="deadline"
+                  class="form-control" [(ngModel)]="admissionEnrollment.deadline" #deadline="ngModel" required
+                />
+                <div>
+                  <small *ngIf="deadline.invalid && deadline.touched">Deadline is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionEnrollment()"
+                      [disabled]="admissionDirectData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Enroll
+              </button>
+<!--              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionEnrollment()">-->
+<!--                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel-->
+<!--              </button>-->
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <span *ngFor="let admission_enrollment of admissionApplication.admissionEnrollments">
+    <div class="col-lg-12">
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>
+              <span *ngIf="admission_enrollment?.status === 0 || admission_enrollment?.status === 1" class="mr_10">Admission Enrollment</span>
+              <span *ngIf="admission_enrollment?.status === 2">Previous Enrollment</span>
+
+              <span class="badge bg-warning" *ngIf="admission_enrollment?.status === 0">Waiting</span>
+              <span class="badge bg-success" *ngIf="admission_enrollment?.status === 1">Confirm</span>
+              <span class="badge bg-danger" *ngIf="admission_enrollment?.status === 2">Withdraw</span>
+
+              <button class="btn btn-danger btn-sm float-end mr_10" *ngIf="admission_enrollment?.status !==2"
+                      (click)="cancelEnrollment(admission_enrollment)">
+                Withdraw
+              </button>
+              <button class="btn btn-outline-success btn-sm float-end mr_10" *ngIf="admission_enrollment?.status !==2"
+                      (click)="sendAdmissionEnrollment(admission_enrollment.id)">
+                <i class="fa fa-envelope mr_10" aria-hidden="true"></i>Send Email
+              </button>
+              <button class="btn btn-outline-warning btn-sm float-end mr_10" *ngIf="admission_enrollment?.status === 0"
+                      (click)="updateAdmissionPayment(admission_enrollment)">
+                <i class="fa fa-money-check mr_10" aria-hidden="true"></i>Payment Update
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <tbody>
+                  <tr>
+                    <th>Student ID</th>
+                    <td>{{ admission_enrollment?.studentId }}</td>
+                    <th>Registration ID</th>
+                    <td>{{ admission_enrollment?.registrationId }}</td>
+                  </tr>
+                  <tr>
+                    <th>Enrollment Type</th>
+                    <td><span
+                      *ngIf="admission_enrollment.admissionEnrollmentType">{{ admission_enrollment.admissionEnrollmentType.name }}</span></td>
+                    <th>Student Email</th>
+                    <td><span *ngIf="admission_enrollment.status !== 2">{{ admissionPerson.email }}</span></td>
+                  </tr>
+                  <tr>
+                    <th>Semester</th>
+                    <td>{{ admission_enrollment.semester.name }}</td>
+                    <th>Semester Type</th>
+                    <td>{{ admission_enrollment.semesterType.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Faculty</th>
+                    <td>{{ admission_enrollment.faculty.name }}</td>
+                    <th>Program</th>
+                    <td>{{ admission_enrollment.program.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Study Campus</th>
+                    <td colspan="3">{{ admission_enrollment?.studyCampus.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Student Issue Date</th>
+                    <td>{{ admission_enrollment.studentIssueDate | date }}</td>
+                    <th>Student Expire Date</th>
+                    <td>{{ admission_enrollment.studentExpireDate | date }}</td>
+                  </tr>
+                  <tr>
+                    <th>Batch</th>
+                    <td>{{ admission_enrollment.batch.code }}</td>
+                    <th>Deadline</th>
+                    <td>{{ admission_enrollment.deadline | date}}</td>
+                  </tr>
+                  <tr>
+                    <th>Admission Fee</th>
+                    <td>{{ admission_enrollment.admissionFee }}</td>
+                    <th>Payable Amount</th>
+                    <td>{{ admission_enrollment.payableAmount }}</td>
+                  </tr>
+                  <tr>
+                    <th>Paid Amount</th>
+                    <td colspan="3">
+                      <span *ngIf="admission_enrollment.paymentStatus === 2">{{ admission_enrollment.paymentAmount }}
+                        (Unpaid)</span>
+                      <span *ngIf="admission_enrollment.paymentStatus === 1">
+                        {{ admission_enrollment?.paymentAmount }} (Paid), {{ admissionApplication?.admissionFeePayments[0]?.paymentType?.name }}, Transaction Number: {{ admissionApplication?.admissionFeePayments[0]?.transactionNo }}
+                        , Payment Date: {{ admissionApplication?.admissionFeePayments[0]?.paymentDate | date }}
+                        ({{ admissionApplication?.admissionFeePayments[0]?.user }})</span>
+
+                    </td>
+<!--                    <td>-->
+<!--                      <button class="btn btn-warning float-end" (click)="makeAdmissionFee(admission_enrollment)"-->
+<!--                              *ngIf="admission_enrollment.paymentStatus === 2 && admission_enrollment.status !==2">-->
+<!--                        <i class="fa fa-money-bill mr_10" aria-hidden="true"></i>Make Payment-->
+<!--                      </button>-->
+<!--                    </td>-->
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </span>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

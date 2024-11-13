@@ -1,0 +1,159 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Test</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <label class="form-label mb_10">Search</label>
+                <div class="mb_20 pt_10">
+                  <ng-select name="program" [(ngModel)]="admissionTeacherId" (change)="getApplicant(admissionTeacherId)">
+                    <ng-option *ngFor="let admission_test_teacher of admission_test_teachers" [value]="admission_test_teacher.id">
+                      {{ admission_test_teacher.admissionTest.name }}, Category:
+                      <span *ngIf="admission_test_teacher.admissionTemplateCategory">{{admission_test_teacher.admissionTemplateCategory.id}},</span>
+                      <span *ngIf="!admission_test_teacher.admissionTemplateCategory">All,</span>
+                      Subject:
+                      <span *ngIf="admission_test_teacher.admissionTemplateCategorySubject">{{admission_test_teacher.admissionTemplateCategorySubject.id}}</span>
+                      <span *ngIf="!admission_test_teacher.admissionTemplateCategorySubject">All</span>
+
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Mark Entry</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Code </th>
+                  <td>{{ admissionTestTeacher.admissionTest?.code }}</td>
+                  <th>Name </th>
+                  <td>{{ admissionTestTeacher.admissionTest?.name }}</td>
+                </tr>
+                <tr>
+                  <th>Semester</th>
+                  <td colspan="3">{{admissionTestTeacher.admissionTest?.semester?.name}}</td>
+                </tr>
+                <tr>
+                  <th>Admission Circular </th>
+                  <td>{{admissionTestTeacher.admissionTest?.admissionCircular?.code}}</td>
+                  <th>Intake </th>
+                  <td>{{admissionTestTeacher.admissionTest?.admissionIntake?.name}}</td>
+                </tr>
+                <tr>
+                  <th>Test Template</th>
+                  <td>{{admissionTestTeacher.admissionTest?.admissionTestTemplate?.name}}</td>
+                  <th>Test Committee </th>
+                  <td>{{admissionTestTeacher.admissionTest?.admissionIntake?.name}}</td>
+                </tr>
+
+
+<!--                <tr *ngIf="!admissionTestSubmit.status">-->
+<!--                  <th >Admission Marks Submission</th>-->
+<!--                  <td colspan="3">-->
+<!--                    <button class="btn btn-primary" (click)="postAdmissionTestSubmit()">Marks Submission</button>-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                <tr *ngIf="admissionTestSubmit.status">-->
+<!--                  <th>Submitted By</th>-->
+<!--                  <td>{{admissionTestSubmit.admissionTestTeacher.employeeInfo.fullName}}, {{admissionTestSubmit.admissionTestTeacher.employeeInfo.employeeId}}</td>-->
+<!--                  <th>Submitted At</th>-->
+<!--                  <td>{{admissionTestSubmit.submittedDatetime | date:'medium'}}</td>-->
+<!--                </tr>-->
+<!--                <tr *ngIf="admissionTestSubmit.status">-->
+<!--                  <th>Submitted Topic</th>-->
+<!--                  <td colspan="3">{{admissionTestSubmit.admissionMarkDistribution.admissionMarkHead.name}}</td>-->
+<!--                </tr>-->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Mark Entry</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">Application ID</th>
+                  <th scope="col">Applicant</th>
+                  <th scope="col">{{ admissionTestTeacher.admissionMarkDistribution.admissionMarkHead.name }} ({{ admissionTestTeacher.admissionMarkDistribution.mark }})</th>
+                  <th scope="col" *ngIf="!admissionTestSubmit.status">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let admission_applicant of admissionTestTeacher.admissionTest.applicants;let i=index;" [ngClass]="{'different-color': admission_applicant.selected}" (click)="changeMode(admission_applicant)">
+                  <td style="font-size: 12px;">{{admission_applicant.admissionApplication.code}}</td>
+                  <td style="font-size: 12px;">{{admission_applicant.admissionApplication.admissionPersons[0]?.fullName}}</td>
+                  <td>
+                      <span *ngIf="!admission_applicant.admissionMarkEntries.length && !admissionTestSubmit.status">
+                        <input
+                          type="number"
+                          class="form-control"
+                          [(ngModel)]="admission_applicant.mark"
+                          [min]="0"
+                          [max]="admissionTestTeacher.admissionMarkDistribution.mark"
+                          #adMark="ngModel"
+                          [ngClass]="{'highlight-border': adMark.touched && adMark.dirty}"
+                        />
+                      </span>
+                    <span *ngIf="admission_applicant.admissionMarkEntries.length && !admissionTestSubmit.status">
+                        <input
+                          type="number"
+                          class="form-control"
+                          [(ngModel)]="admission_applicant.mark"
+                          [min]="0"
+                          [max]="admissionTestTeacher.admissionMarkDistribution.mark"
+                          #adMark="ngModel"
+                          [ngClass]="{'highlight-border': adMark.touched && adMark.dirty}"
+                        />
+                        </span>
+                    <span *ngIf="admission_applicant.mark > admissionTestTeacher.admissionMarkDistribution.mark" class="exceeded-max-message">
+                          Maximum Mark: {{ admissionTestTeacher.admissionMarkDistribution.mark }}
+                        </span>
+                    <span *ngIf="admissionTestSubmit.status">{{admission_applicant.mark}}</span>
+                  </td>
+                  <td *ngIf="!admissionTestSubmit.status" style="font-size: 12px;">
+                    <button class="btn btn-primary mt_10" (click)="postAdmissionMarkEntry(admission_applicant)" [ngClass]="{'button-color': admission_applicant.selected}">Save</button>
+                    <!--                      <button class="btn btn-success mt_10" *ngIf="admission_applicant.mark" (click)="putAdmissionMarkEntry(admission_applicant)">Update</button>-->
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

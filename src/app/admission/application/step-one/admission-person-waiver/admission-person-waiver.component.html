@@ -1,0 +1,137 @@
+<div class="row">
+
+  <div class="col-lg-12">
+    <div class="white_card card_height_100">
+      <div class="white_card_header" *ngIf="admission_person_waivers.length === 0">
+        <div class="white_box_tittle">
+          <h4>Admission Waiver
+            <button (click)="admissionPersonWaiverView()" *ngIf="!isPersonWaiverView" class="btn btn-primary btn-sm float-end"
+                    type="submit">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #admissionPersonWaiverForm="ngForm">
+          <div class="row" ngModelGroup="admissionPersonWaiverData" #admissionPersonWaiverData="ngModelGroup" *ngIf="isPersonWaiverView">
+            <div class="col-md-12">
+              <span style="color: red;">(*) Required Field</span>
+            </div>
+
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Waiver Category <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="waiverCategory" id="waiverCategory" [(ngModel)]="admissionPersonWaiver.waiverCategoryId"
+                           #waiverCategory="ngModel" required>
+                    <ng-option *ngFor="let waiver_category of waiver_categories" [value]="waiver_category.id">{{ waiver_category.name }}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="waiverCategory.invalid && formSubmitted">Waiver Category is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">SGPA to be maintained <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="sgpa" id="sgpa" class="form-control"
+                       [(ngModel)]="admissionPersonWaiver.sgpa" #sgpa="ngModel" required/>
+                <div>
+                  <small *ngIf="sgpa.invalid && formSubmitted">SGPA is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Minimum Credit to be taken <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="credit" id="credit" class="form-control"
+                       [(ngModel)]="admissionPersonWaiver.credit" #credit="ngModel" required/>
+                <div>
+                  <small *ngIf="credit.invalid && formSubmitted">Credit is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Waiver Rate <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="number" name="waiverRate" id="waiverRate" class="form-control"
+                       [(ngModel)]="admissionPersonWaiver.waiverRate" #waiverRate="ngModel" required/>
+                <div>
+                  <small *ngIf="waiverRate.invalid && formSubmitted">Waiver Rate is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionPersonWaiver()" *ngIf="isSaveButton">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>save
+              </button>
+
+              <button type="submit" class="btn btn-success mr_10" (click)="putAdmissionPersonWaiver()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelAdmissionPersonWaiver()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div *ngIf="admission_person_waivers.length  === 0" class="col-lg-12 text-center" style="font-size: 18px">
+            <p>No Data found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let admission_person_waiver of admission_person_waivers; let i=index;">
+    <div class="white_card card_height_100" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Waiver Information
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deleteAdmissionPersonWaiver(admission_person_waiver)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editAdmissionPersonWaiver(admission_person_waiver)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Waiver Category</th>
+                  <td>{{admission_person_waiver.waiverCategory?.name}}</td>
+                </tr>
+                <tr>
+                  <th>SGPA to be maintained</th>
+                  <td>{{admission_person_waiver.sgpa.toFixed(2)}}</td>
+                </tr>
+                <tr>
+                  <th>Minimum Credit to be taken</th>
+                  <td>{{admission_person_waiver.credit}}</td>
+                </tr>
+                <tr>
+                  <th>Waiver Rate</th>
+                  <td>{{admission_person_waiver.waiverRate}} %</td>
+                </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

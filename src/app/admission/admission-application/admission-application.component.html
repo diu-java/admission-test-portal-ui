@@ -1,0 +1,169 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Application List </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row mb_10">
+              <div class="col-lg-3">
+                <label class="form-label mb_10"> Semester</label>
+                <div class="mb_20">
+                  <ng-select name="semesterId" [(ngModel)]="semesterCode">
+                    <ng-option *ngFor="let semester of semesters" [value]="semester.code">{{semester.name}} <span *ngIf="semester.code !== ''">({{semester.code}})</span></ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Program</label>
+                <div class="mb_20">
+                  <ng-select name="programCode" [(ngModel)]="programCode">
+                    <ng-option *ngFor="let program of programs" [value]="program.code">{{program.code}} {{program.name}} </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Intake</label>
+                <div class="mb_20">
+                  <ng-select name="intakeCode" [(ngModel)]="intakeCode">
+                    <ng-option *ngFor="let admission_intake of admission_intakes" [value]="admission_intake.code">{{admission_intake.name}} </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10"> Status</label>
+                <div class="mb_20">
+                  <ng-select name="semesterId" [(ngModel)]="status" (keydown)="onKeydownAdmissionApplicationPaginationSearch($event)">
+                    <ng-option [value]="1">All</ng-option>
+                    <ng-option [value]="2">Not Submitted</ng-option>
+                    <ng-option [value]="3">Submitted</ng-option>
+                    <ng-option [value]="4">Form Fee Not Paid</ng-option>
+                    <ng-option [value]="5">Form Fee Paid</ng-option>
+                    <ng-option [value]="6">Admit Card</ng-option>
+                    <ng-option [value]="7">Admission Offered</ng-option>
+                    <ng-option [value]="8">Enrollment and Paid</ng-option>
+                    <ng-option [value]="9">Enrollment and Not Paid</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Application ID </label>
+                <div class="mb_20">
+                  <input
+                    type="search"
+                    id="form1"
+                    class="form-control"
+                    placeholder="Applicant ID" [(ngModel)]="applicationCode" (keydown)="onKeydownAdmissionApplicationPaginationSearch($event)"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Name, Mobile, Email or Registration ID</label>
+                <div class="mb_20">
+                  <input
+                    type="search"
+                    id="form2"
+                    class="form-control"
+                    placeholder="Name, Mobile or Phone" [(ngModel)]="search" (keydown)="onKeydownAdmissionApplicationPaginationSearch($event)"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-12">
+<!--                <label class="form-label mb_10">&nbsp;</label>-->
+                <div class="common_input mt_5">
+                  <button class="btn btn-primary" (click)="getAdmissionApplicationPaginationSearch()">Search</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Action</th>
+                        <th scope="col">SL</th>
+                        <th scope="col">Application ID</th>
+                        <th scope="col">Applicant Name</th>
+                        <th scope="col">Semester</th>
+                        <th scope="col">Circular Program</th>
+
+                        <th scope="col">Form Fee</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Submit Date</th>
+                        <th scope="col">Registration ID</th>
+                        <th scope="col">Application Type</th>
+                        <th scope="col">Applied From</th>
+
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile Number</th>
+<!--                        <th scope="col">Faculty</th>-->
+<!--                        <th scope="col">Program Type</th>-->
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let i = index; let admission_application of admission_applications | paginate: { itemsPerPage: size, currentPage: p+1, totalItems: total };">
+                        <td><button type="button" class="btn btn-primary btn-sm" (click)="viewApplication(admission_application)">View</button></td>
+                        <td>{{(i+1)+(p*size)}}</td>
+                        <td>{{admission_application.code}}</td>
+                        <td>{{admission_application.admissionPersons[0]?.fullName}}</td>
+                        <td>{{admission_application.semester.name}}</td>
+
+                        <td>
+                           <span *ngFor="let program of admission_application.admissionCircular.admissionCircularPrograms">
+                            {{program.program.shortName}} ({{program.program.code}})<br>
+                          </span>
+                        </td>
+
+                        <td>{{admission_application.paymentAmount}}
+                          <span *ngIf="admission_application.paymentStatus === 2">(Unpaid)</span>
+                          <span *ngIf="admission_application.paymentStatus === 1">(Paid)</span>
+                        </td>
+                        <td>
+                          <span class="badge bg-success" *ngIf="admission_application.status === 1">Submitted</span>
+                          <span class="badge bg-danger" *ngIf="admission_application.status !==1">Not Submitted</span>
+                          <span class="badge bg-primary" *ngIf="admission_application.isAdmission">Enrolled</span>
+                          <span class="badge bg-secondary" *ngIf="admission_application.isOffer">Admission Offer</span>
+                          <span class="badge bg-warning" *ngIf="admission_application.isAdmitCard">Admit Card</span>
+                          <span *ngFor="let tag of admission_application.admissionTags" class="badge bg-info">
+                            {{tag.admissionTagType.name}}
+                          </span>
+                        </td>
+                        <td>{{admission_application?.submitDate | date}}</td>
+                        <td>{{admission_application?.admissionEnrollments[0]?.registrationId}}</td>
+                        <td>{{admission_application?.admissionApplicationType?.name}}</td>
+                        <td>{{admission_application?.admissionApplyType?.name}}</td>
+
+                        <td>{{admission_application.admissionPersons[0]?.personalEmail}}</td>
+                        <td>{{admission_application.admissionPersons[0]?.personalPhone}}</td>
+
+<!--                        <td>{{admission_application.admissionCircular.faculty.name}}</td>-->
+<!--                        <td>{{admission_application.programType.name}}</td>-->
+
+                      </tr>
+                      <tr *ngIf="admission_applications.length === 0">
+                        <td colspan="14" class="text-center"><p>No Data Found</p></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls (pageChange)="pageChangeEvent($event)" class="text-center" style="background: #373063e6 !important;"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

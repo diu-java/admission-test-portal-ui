@@ -1,0 +1,18 @@
+<div *ngIf="isLoggedIn$ | async">
+  <app-nav></app-nav>
+  <section class="main_content dashboard_part large_header_bg">
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+  </section>
+  <div id="back-top" style="display: none" (click)="goToTop()" >
+    <a title="Go to Top" href="#">
+      <!-- <i class="ti-angle-up"></i> -->
+      <img src="/assets/img/menu-icon/back_to_top.png" alt="" />
+    </a>
+  </div>
+</div>
+<div>
+  <router-outlet></router-outlet>
+</div>
+

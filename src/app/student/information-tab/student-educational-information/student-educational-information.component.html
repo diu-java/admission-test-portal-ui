@@ -1,0 +1,244 @@
+<div class="row">
+
+  <div class="col-lg-6">
+    <div>
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Educational Information
+              <button type="submit" class="btn btn-primary float-end" (click)="educationalInfoView()">
+                <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+              </button>
+            </h4>
+          </div>
+        </div>
+<!--        <div class="white_card_body">-->
+<!--          <div class="row">-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+
+    <div *ngFor="let educational_information of educational_informations; let i=index;">
+      <div class="white_card card_height_100 mb_20" >
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>{{educational_information.levelOfEducation.name}}
+              <button class="btn btn-danger float-end mr_10" (click)="deleteEducationalInformation(educational_information)">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+              <button class="btn btn-success float-end mr_10" (click)="editEducationalInformation(educational_information)">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th>Exam/Degree Title</th>
+                    <td colspan="3">{{educational_information.degree.name}}</td>
+                  </tr>
+                  <tr *ngIf="educational_information.majorName">
+                    <th>Major/Group</th>
+                    <td colspan="3">{{educational_information.majorName}}</td>
+                  </tr>
+                  <tr *ngIf="educational_information.board">
+                    <th>Board</th>
+                    <td colspan="3"><span *ngIf="educational_information.board">{{educational_information.board.name}}</span></td>
+                  </tr>
+                  <tr>
+                    <th>Institute Name</th>
+                    <td colspan="3">{{educational_information.instituteName}}</td>
+                  </tr>
+                  <tr *ngIf="educational_information.regNumber">
+                    <th>Registration Number</th>
+                    <td>{{educational_information.regNumber}}</td>
+                    <th>Roll Number</th>
+                    <td>{{educational_information.rollNumber}}</td>
+                  </tr>
+                  <tr>
+                    <th>Result Type</th>
+                    <td colspan="3">{{educational_information.resultType.name}}</td>
+
+                  </tr>
+                  <tr>
+                    <th *ngIf="educational_information.mark">Mark</th>
+                    <td *ngIf="educational_information.mark">{{educational_information.mark}}</td>
+                    <th *ngIf="educational_information.cgpa">CGPA</th>
+                    <td *ngIf="educational_information.cgpa">{{educational_information.cgpa}}</td>
+                    <th *ngIf="educational_information.cgpa || educational_information.mark">Scale</th>
+                    <td *ngIf="educational_information.cgpa || educational_information.mark">{{educational_information.scale}}</td>
+                  </tr>
+                  <tr>
+                    <th>Year</th>
+                    <td>{{educational_information.passingYear}}</td>
+                    <th>Duration</th>
+                    <td>{{educational_information.duration}}</td>
+                  </tr>
+                  <tr *ngIf="educational_information.attachment">
+                    <th>Attachment</th>
+                    <td colspan="3"><button class="btn btn-primary" *ngIf="educational_information.attachment" (click)="getDocument(educational_information.attachment.code, educational_information.attachment.name, educational_information.attachment.fileExtension)">Download</button></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isEducationalInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">New Educational Info</h4>
+          <h4 *ngIf="isUpdateButton">Update Educational Info</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #educationalInformationForm="ngForm">
+          <div class="row" ngModelGroup="educationalInformationData" #educationalInformationData="ngModelGroup">
+            <div class="col-md-6">
+              <label class="form-label mb_10">Level of Education</label>
+              <div class="mb_20">
+                <ng-select name="levelOfEducationId" (change)="getDegree(educationalInformation.levelOfEducationId)" [(ngModel)]="educationalInformation.levelOfEducationId" #levelOfEducationId="ngModel" required>
+                  <ng-option *ngFor="let level_of_education of level_of_educations" [value]="level_of_education.id">{{level_of_education.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="levelOfEducationId.invalid && levelOfEducationId.touched">Level of Education is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Exam/Degree Title</label>
+              <div class="mb_20">
+                <ng-select name="degreeId" [(ngModel)]="educationalInformation.degreeId" #degreeId="ngModel" required>
+                  <ng-option *ngFor="let degree of degrees" [value]="degree.id">{{degree.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="degreeId.invalid && degreeId.touched">Degree is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isMajor">
+              <label class="form-label mb_10">Major/Group</label>
+              <div class="common_input mb_20">
+                <input type="text" name="majorName" class="form-control" [(ngModel)]="educationalInformation.majorName" #majorName="ngModel" required/>
+                <div>
+                  <small *ngIf="majorName.invalid && majorName.touched">Major Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isBoard">
+              <label class="form-label mb_10">Board</label>
+              <div class="mb_20 pt_10">
+                <ng-select name="boardId"  [(ngModel)]="educationalInformation.boardId" #boardId="ngModel" required>
+                  <ng-option *ngFor="let board of boards" [value]="board.id">{{board.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="boardId.invalid && boardId.touched">Board is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isRegistration">
+              <label class="form-label mb_10">Registration Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="regNumber" class="form-control" [(ngModel)]="educationalInformation.regNumber" />
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isRoll">
+              <label class="form-label mb_10">Roll Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="rollNumber" class="form-control" [(ngModel)]="educationalInformation.rollNumber" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label mb_10">Institute Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="instituteName" class="form-control" [(ngModel)]="educationalInformation.instituteName" #instituteName="ngModel" required/>
+                <div>
+                  <small *ngIf="instituteName.invalid && instituteName.touched">Institute Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Result Type</label>
+              <div class="mb_20 pt_10">
+                <ng-select name="resultTypeId"  (change)="enableResult(educationalInformation.resultTypeId)" [(ngModel)]="educationalInformation.resultTypeId" #resultTypeId="ngModel" required>
+                  <ng-option *ngFor="let result_type of result_types" [value]="result_type.id">{{result_type.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="resultTypeId.invalid && resultTypeId.touched">Result Type is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isMark">
+              <label class="form-label mb_10">Mark</label>
+              <div class="common_input mb_20">
+                <input type="number" name="mark" class="form-control" [(ngModel)]="educationalInformation.mark"/>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isCgpa">
+              <label class="form-label mb_10">CGPA</label>
+              <div class="common_input mb_20">
+                <input type="number" name="cgpa" class="form-control" [(ngModel)]="educationalInformation.cgpa"/>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="isCgpa || isMark">
+              <label class="form-label mb_10">Scale(Out of)</label>
+              <div class="common_input mb_20">
+                <input type="number" name="scale" class="form-control" [(ngModel)]="educationalInformation.scale" />
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label mb_10">Passing Year</label>
+              <div class="mb_20 pt_10">
+                <ng-select name="passingYear" [(ngModel)]="educationalInformation.passingYear" #passingYear="ngModel" required>
+                  <ng-option *ngFor="let year of years" [value]="year">{{year}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="passingYear.invalid && passingYear.touched">Passing year is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Duration</label>
+              <div class="common_input mb_20">
+                <input type="number" name="duration" class="form-control" [(ngModel)]="educationalInformation.duration"/>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="attachmentId" (change)="postDocument($event)">
+              </div>
+              <div class="mb-3" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary" (click)="postEducationalInformation()" *ngIf="isSaveButton" [disabled]="educationalInformationData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putEducationalInformation()" *ngIf="isUpdateButton" [disabled]="educationalInformationData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelEducationalInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

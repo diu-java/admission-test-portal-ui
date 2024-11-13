@@ -1,0 +1,197 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div>
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Job Experience
+              <button type="submit" class="btn btn-primary float-end" (click)="jobExperienceInfoView()">
+                <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+              </button>
+            </h4>
+          </div>
+        </div>
+<!--        <div class="white_card_body">-->
+<!--          <div class="row">-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+
+    <div *ngFor="let job_experience of job_experiences; let i=index;">
+      <div class="white_card card_height_100 mb_20" >
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Job Expericne {{i+1}}
+              <button class="btn btn-danger float-end mr_10" (click)="deleteJobExperience(job_experience)">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+              <button class="btn btn-success float-end mr_10" (click)="editJobExperience(job_experience)">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th>Company Name</th>
+                    <td colspan="3">{{job_experience.companyName}}</td>
+                  </tr>
+                  <tr>
+                    <th>Designation</th>
+                    <td colspan="3">{{job_experience.designation}}</td>
+                  </tr>
+                  <tr>
+                    <th>Department</th>
+                    <td colspan="3">{{job_experience.department}}</td>
+                  </tr>
+                  <tr>
+                    <th>Start Date</th>
+                    <td>{{job_experience.startDate}}</td>
+                    <th>End Date</th>
+                    <td>{{job_experience.endDate}}</td>
+                  </tr>
+                  <tr>
+                    <th>IS Running</th>
+                    <td colspan="3">
+                      <span class="badge bg-success" *ngIf="job_experience.isRunning">Yes</span>
+                      <span class="badge bg-danger" *ngIf="!job_experience.isRunning">No</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Responsibilities</th>
+                    <td colspan="3">{{job_experience.responsibilities}}</td>
+                  </tr>
+                  <tr>
+                    <th>Company Location</th>
+                    <td colspan="3">{{job_experience.companyLocation}}</td>
+                  </tr>
+                  <tr>
+                    <th>Country</th>
+                    <td colspan="3">{{job_experience.country.name}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isJobExperienceInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">New Job Experience</h4>
+          <h4 *ngIf="isUpdateButton">Update Job Experience</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #jobExperienceForm="ngForm">
+          <div class="row" ngModelGroup="jobExperienceData" #jobExperienceData="ngModelGroup">
+            <div class="col-md-12">
+              <label class="form-label mb_10">Company Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="companyName" class="form-control" [(ngModel)]="jobExperience.companyName" #companyName="ngModel" required/>
+                <div>
+                  <small *ngIf="companyName.invalid && companyName.touched">Company Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Designation</label>
+              <div class="common_input mb_20">
+                <input type="text" name="designation" class="form-control" [(ngModel)]="jobExperience.designation" #designation="ngModel" required/>
+                <div>
+                  <small *ngIf="designation.invalid && designation.touched">Designation is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Department</label>
+              <div class="common_input mb_20">
+                <input type="text" name="department" class="form-control" [(ngModel)]="jobExperience.department" #department="ngModel" required/>
+                <div>
+                  <small *ngIf="department.invalid && department.touched">Department is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Start Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="startDate" class="form-control" [(ngModel)]="jobExperience.startDate" #startDate="ngModel" required/>
+                <div>
+                  <small *ngIf="startDate.invalid && startDate.touched">Start Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">End Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="endDate" class="form-control" [(ngModel)]="jobExperience.endDate"/>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Is Running</label>
+              <div class="common_input mb_20">
+                <select name="isRunning" class="form-select" [(ngModel)]="jobExperience.isRunning" #isRunning="ngModel" required>
+                  <option [value]="true">Yes</option>
+                  <option [value]="false">No</option>
+                </select>
+                <div>
+                  <small *ngIf="isRunning.invalid && isRunning.touched">Is Running is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Responsibilities</label>
+              <div class="common_input mb_20">
+                <textarea name="responsibilities" class="form-control" [(ngModel)]="jobExperience.responsibilities" #responsibilities="ngModel" required></textarea>
+                <div>
+                  <small *ngIf="responsibilities.invalid && responsibilities.touched">Responsibilities is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Company Location </label>
+              <div class="common_input mb_20">
+                <input type="text" name="companyLocation" class="form-control" [(ngModel)]="jobExperience.companyLocation" #companyLocation="ngModel" required/>
+                <div>
+                  <small *ngIf="companyLocation.invalid && companyLocation.touched">Company Location is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Country</label>
+              <div class="mb_20">
+                <ng-select name="countryId" [(ngModel)]="jobExperience.countryId" #countryId="ngModel" required>
+                  <ng-option *ngFor="let country of countries" [value]="country.id">{{country.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="countryId.invalid && countryId.touched">Country is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary" (click)="postJobExperience()" *ngIf="isSaveButton" [disabled]="jobExperienceData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putJobExperience()" *ngIf="isUpdateButton" [disabled]="jobExperienceData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelJobExperience()" *ngIf="isUpdateButton">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,112 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Available Program For Admission</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Search Code</label>
+                <div class="common_input mb_20">
+                  <input
+                    id="form1"
+                    type="text"
+                    class="form-control" placeholder="Search Code" [(ngModel)]="searchCode"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Search Semester</label>
+                <div class="mb_20 pt_10">
+                  <ng-select name="semester" [(ngModel)]="searchSemester">
+                    <ng-option *ngFor="let semester of semesters" [value]="semester">{{semester.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label mb_10">Search Program</label>
+                <div class="mb_20 pt_10">
+                  <ng-select name="program" [(ngModel)]="searchProgram">
+                    <ng-option *ngFor="let program of programs" [value]="program">{{program.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngFor="let program_type of program_types">
+              <div class="white_box_tittle mb_20">
+                <h4 *ngIf="program_type.code === '1'">Bachelor Program</h4>
+                <h4 *ngIf="program_type.code === '2'">Masters Program</h4>
+              </div>
+              <hr>
+              <p *ngIf="(getProgramTypeAdmissionCircular(admission_circulars, program_type.code) | filterBy:{semester:searchSemester, code:searchCode}
+              | customProgramFilter: searchProgram).length  === 0" class="text-center" style="font-size: 18px">
+                No records found.
+                <br>
+                <br>
+              </p>
+              <ng-container *ngFor="let faculty of faculties">
+                <div class="col-lg-12" *ngIf="getFacultyAdmissionCircular(admission_circulars, faculty.code, program_type.code).length && (getFacultyAdmissionCircular(admission_circulars, faculty.code, program_type.code)
+              | filterBy:{semester:searchSemester, code:searchCode}
+              | customProgramFilter: searchProgram).length > 0">
+                  <div class="white_box_tittle">
+                    <h5> {{faculty.name}}</h5>
+                  </div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">Apply</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Academic Session</th>
+                      <th scope="col">Program Type</th>
+                      <th scope="col">Faculty</th>
+                      <th scope="col">Program</th>
+                      <th scope="col">Remarks</th>
+                      <th scope="col">Expire Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let admission_circular of getFacultyAdmissionCircular(admission_circulars, faculty.code, program_type.code) | filterBy:{semester:searchSemester, code:searchCode} | customProgramFilter: searchProgram ;let i=index;">
+                      <td>
+                        <button class="btn btn-primary btn-sm" (click)="createAdmissionApplication(admission_circular)">
+                          Proceed to Apply
+                        </button>
+                      </td>
+                      <td>{{admission_circular.code}}</td>
+                      <td>{{admission_circular.semester.name}}</td>
+                      <td>{{admission_circular.programType.name}}</td>
+                      <td>{{admission_circular.faculty.name}}</td>
+                      <td>
+                            <span *ngFor="let program of admission_circular.admissionCircularPrograms">
+                              {{program.program.name}}<br>
+                            </span>
+                      </td>
+                      <td>{{admission_circular.name}}</td>
+                      <td>
+                        <span *ngFor="let intake of admission_circular.admissionCircularIntakes; let isLast = last">
+                          <ng-container *ngIf="isLast">
+                          {{ intake.endDate | date:'dd MMMM yyyy'}}
+                        </ng-container>
+                        </span>
+
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

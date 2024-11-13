@@ -1,0 +1,165 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Passport Information (If Any)
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="passportView()" *ngIf="!isPassportView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #passportInformationForm="ngForm">
+          <div class="row" ngModelGroup="passportInformationData" #passportInformationData="ngModelGroup" *ngIf="isPassportView">
+            <div class="col-md-4">
+              <label class="form-label mb_10">Passport Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="text" name="passportNo" id="passportNo" class="form-control" [(ngModel)]="personInformation.passportNo" #passportNo="ngModel" required/>
+                <div>
+                  <small *ngIf="passportNo.invalid && formSubmitted">Passport No is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Issue Place <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="text" name="issuePlace" id="issuePlace" class="form-control" [(ngModel)]="personInformation.issuePlace" #issuePlace="ngModel" required/>
+                <div>
+                  <small *ngIf="issuePlace.invalid && formSubmitted">Issue Place is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Issue Country <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select name="issueCountryId" [(ngModel)]="personInformation.issueCountryId" #issueCountryId="ngModel" required>
+                  <ng-option *ngFor="let country of countries" [value]="country.id">{{country.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="issueCountryId.invalid && formSubmitted">Issue Country is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Issue Date <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="date" name="issueDate" class="form-control" [(ngModel)]="personInformation.issueDate" #issueDate="ngModel" required/>
+                <div>
+                  <small *ngIf="issueDate.invalid && formSubmitted">Issue Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Expired Date <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input type="date" name="expiredDate" class="form-control" [(ngModel)]="personInformation.expiredDate" #expiredDate="ngModel" required/>
+                <div>
+                  <small *ngIf="expiredDate.invalid && formSubmitted">Expire Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Attachment</label>
+              <div *ngIf="isOpenAttachment">
+                <input type="file" class="form-control" name="attachmentId" (change)="postDocument($event)" accept=".pdf, .png, .jpg,.jpeg">
+                <small class="form-text">File must be jpg/jpeg/png/pdf format. File size not more than 500 KB.</small>
+              </div>
+              <div class="" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+
+              <a *ngIf="personInformation.attachment && !isOpenAttachment" href="javascript:void(0)" class="mr_10"
+                 (click)="getDocument(personInformation.attachment.code, personInformation.attachment.name, personInformation.attachment.fileExtension)">
+                Attachment <span><i class="fa fa-download"></i></span>
+              </a>
+              <button type="submit" class="btn btn-primary"  *ngIf="personInformation.attachment && !isOpenAttachment" (click)="isOpenFile()">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postPassportInformation()" *ngIf="isSaveButton" >
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>save
+              </button>
+
+              <button type="submit" class="btn btn-success mr_10" (click)="putPassportInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelPassportInformation()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div *ngIf="passport_informations.length  === 0" class="col-lg-12 text-center" style="font-size: 18px">
+            <p>No Data found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let passport_information of passport_informations; let i=index;">
+    <div class="white_card card_height_100" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Passport {{passport_information.passportNo}}
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deletePassportInformation(passport_information)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editPassportInformation(passport_information)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Passport Number</th>
+                  <td colspan="3">{{passport_information.passportNo}}</td>
+
+                </tr>
+                <tr>
+                  <th>Issue Place</th>
+                  <td colspan="3">{{passport_information.issuePlace}}</td>
+                </tr>
+                <tr>
+                  <th>Issue Country</th>
+                  <td colspan="3"><span *ngIf="passport_information.issueCountry">{{passport_information.issueCountry.name}}</span></td>
+                </tr>
+                <tr>
+                  <th>Issue Date</th>
+                  <td colspan="3">{{passport_information.issueDate}}</td>
+                </tr>
+                <tr>
+                  <th>Expired Date</th>
+                  <td colspan="3">{{passport_information.expiredDate}}</td>
+                </tr>
+                <tr *ngIf="passport_information.attachment">
+                  <th>Attachment</th>
+                  <td colspan="3">
+                    <button class="btn btn-primary btn-sm mr_10" *ngIf="passport_information.attachment" (click)="getDocument(passport_information.attachment.code, passport_information.attachment.name, passport_information.attachment.fileExtension)" title="Preview"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                    <button class="btn btn-success btn-sm" *ngIf="passport_information.attachment" (click)="getDocumentPreview(passport_information.attachment.code, passport_information.attachment.name, passport_information.attachment.fileExtension)" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

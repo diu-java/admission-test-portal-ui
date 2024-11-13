@@ -1,0 +1,99 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Faq (If Any)
+                <button type="submit" class="btn btn-primary float-end" (click)="faqView()" *ngIf="!isFaqView">
+                  <span> <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New</span>
+                </button>
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #faqForm="ngForm">
+              <div class="row" ngModelGroup="awardData" #faqData="ngModelGroup" *ngIf="isFaqView">
+                <div class="col-md-12">
+                  <label class="form-label mb_10">Question <span style="color: red;">*</span></label>
+                  <div class="common_input mb_20">
+                    <input type="text" name="question" class="form-control" [(ngModel)]="admissionFaq.question" #question="ngModel" required/>
+                    <div>
+                      <small *ngIf="question.invalid && question.touched">Question is a required field</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <label class="form-label mb_10">Answer</label>
+                  <div class="common_input mb_20">
+                    <ckeditor name="answer" id="answer" [(ngModel)]="admissionFaq.answer" [editor]="faqAnswer" #answer="ngModel" required></ckeditor>
+                    <div>
+                      <small *ngIf="answer.invalid && answer.touched">Answer is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="isOpen" id="isOpen" [(ngModel)]="admissionFaq.isOpen">Enable Open</label>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active" [(ngModel)]="admissionFaq.active">Enable Active</label>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary mr_10" (click)="postFaq()" *ngIf="isSaveButton" [disabled]="faqData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" (click)="putFaq()" *ngIf="isUpdateButton" [disabled]="faqData.invalid">
+                    <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger mr_10" (click)="cancelFaq()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">SL</th>
+                      <th scope="col">Question</th>
+                      <th scope="col">Answer</th>
+                      <th scope="col" colspan="2" class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let faq of faqs;let i=index;">
+                      <td>{{i+1}}</td>
+                      <td>{{faq.question}}</td>
+                      <td [innerHTML]="faq.answer"></td>
+                      <td>
+                        <button class="btn btn-success btn-sm float-end" (click)="editFaq(faq)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteFaq(faq)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,329 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Report - Semester Wise</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row mb_10">
+              <div class="col-lg-2">
+                <label class="form-label mb_10"> Semester</label>
+                <div class="mb_20">
+                  <ng-select name="semesterId" [(ngModel)]="semesterCode">
+                    <ng-option *ngFor="let semester of semesters" [value]="semester.code">{{semester.name}} <span *ngIf="semester.code !== ''">({{semester.code}})</span></ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <label class="form-label mb_10">Program</label>
+                <div class="mb_20">
+                  <ng-select name="programCode" [(ngModel)]="programCode">
+                    <ng-option *ngFor="let program of programs" [value]="program.code">{{program.code}} {{program.name}} </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <label class="form-label mb_10">Intake</label>
+                <div class="mb_20">
+                  <ng-select name="intakeCode" [(ngModel)]="intakeCode">
+                    <ng-option *ngFor="let admission_intake of admission_intakes" [value]="admission_intake.code">{{admission_intake.name}} </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <label class="form-label mb_10">Enrollment Type</label>
+                <div class="mb_20">
+                  <ng-select name="enrollmentTypeCode" [(ngModel)]="enrollmentTypeCode">
+                    <ng-option *ngFor="let enrollment_type of enrollment_types" [value]="enrollment_type.code">{{enrollment_type.name}} </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+<!--              <div class="col-lg-2">-->
+<!--                <label class="form-label mb_10">Payment Status (Form Fee)</label>-->
+<!--                <div class="mb_20">-->
+<!--                  <ng-select name="semesterId" [(ngModel)]="paymentStatus" >-->
+<!--                    <ng-option [value]="1">All</ng-option>-->
+<!--                    <ng-option [value]="2">Paid</ng-option>-->
+<!--                    <ng-option [value]="3">Unpaid</ng-option>-->
+<!--                  </ng-select>-->
+<!--                </div>-->
+<!--              </div>-->
+
+              <div class="col-lg-1">
+                <label class="form-label mb_10">&nbsp;</label>
+                <div class="common_input mt_5">
+                  <button class="btn btn-primary" (click)="getAdmissionReport()">Search</button>
+                </div>
+              </div>
+              <div class="col-lg-12 mt_20" *ngIf="admission_reports.length">
+                <button class="btn btn-primary"  (click)="exportToExcel()"><i class="fa fa-download mr_10"></i>Excel</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table" id="excel-table">
+                    <thead>
+                    <tr>
+                      <th scope="col">SL</th>
+                      <th scope="col">Program</th>
+                      <th scope="col">Registration ID</th>
+                      <th scope="col">Student ID</th>
+                      <th scope="col">Student Name</th>
+                      <th scope="col">Gender</th>
+                      <th scope="col">SSC</th>
+                      <th scope="col">HSC / Diploma</th>
+                      <th scope="col">Bachelor</th>
+                      <th scope="col">Application Serial</th>
+                      <th scope="col">Contact Number</th>
+                      <th scope="col">DIU Email</th>
+                      <th scope="col">Personal Email</th>
+                      <th scope="col">Admission Date</th>
+                      <th scope="col">Apply Type</th>
+                      <th scope="col">Enrollment Type</th>
+                      <th scope="col">Admission Type</th>
+                      <th scope="col">Waiver Category</th>
+                      <th scope="col">Waiver SGPA</th>
+                      <th scope="col">Waiver Credit</th>
+                      <th scope="col">Waiver Rate</th>
+                      <th scope="col">Tag</th>
+                      <th scope="col">Admission Fee</th>
+                      <th scope="col">Counselor</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let admission_report of admission_reports;let i=index;">
+                        <td>{{i+1}}</td>
+                        <td>{{admission_report.admissionEnrollments[0].program.code}} {{admission_report.admissionEnrollments[0].program.name}}</td>
+                        <td>{{admission_report.admissionEnrollments[0].registrationId}}</td>
+                        <td>{{admission_report.admissionEnrollments[0].studentId}}</td>
+                        <td>{{admission_report.admissionPersons[0].fullName}}</td>
+                        <td>{{admission_report.admissionPersons[0].gender.name}}</td>
+
+                        <td>
+                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">
+                            <span *ngIf="education.levelOfEducation.code === 'SSC'">
+                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>
+                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>
+                            </span>
+                          </ng-container>
+                        </td>
+                        <td>
+                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">
+                            <span *ngIf="education.levelOfEducation.code === 'HSC'">
+                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>
+                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>
+                            </span>
+                          </ng-container>
+                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">
+                            <span *ngIf="education.levelOfEducation.code === 'Diploma'">
+                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>
+                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>
+                            </span>
+                          </ng-container>
+                        </td>
+                        <td>
+                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">
+                            <span *ngIf="education.levelOfEducation.code === 'Bachelor'">
+                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>
+                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>
+                            </span>
+                          </ng-container>
+                        </td>
+                        <td>{{admission_report.code }}</td>
+                        <td>{{admission_report.admissionPersons[0].personalPhone}}</td>
+                        <td>{{admission_report.admissionPersons[0].email}}</td>
+                        <td>{{admission_report.admissionPersons[0].personalEmail}}</td>
+                        <td>{{admission_report.admissionEnrollments[0].admissionDate | date}}</td>
+                        <td>{{admission_report.admissionApplyType.name }}</td>
+                        <td>{{admission_report.admissionEnrollments[0].admissionEnrollmentType.name }}</td>
+                        <td>{{admission_report.admissionApplyType.name }}</td>
+                        <td>
+                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">
+                              {{waiver.waiverCategory.name}}
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">
+                              {{waiver.sgpa.toFixed(2)}}
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">
+                              {{waiver.credit}}
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">
+                              {{waiver.waiverRate}}
+                            </span>
+                        </td>
+                        <td>
+                        <span *ngFor="let tag of admission_report.admissionTags">
+                              {{tag?.admissionTagType?.name}},
+                            </span>
+                        </td>
+                        <td>
+                          <span *ngIf="admission_report.admissionFeePayments.length">Paid</span>
+                          <span *ngIf="admission_report.admissionFeePayments.length === 0">Unpaid</span>
+                        </td>
+                        <td>{{admission_report.admissionEnrollments[0].employeeName }}, {{admission_report.admissionEnrollments[0].employeeId }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+
+<!--                  <table class="table" id="excel-table">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                      <th scope="col">SL</th>-->
+<!--                      <th scope="col">Faculty</th>-->
+<!--                      <th scope="col">Program</th>-->
+<!--                      <th scope="col">Semester</th>-->
+<!--                      <th scope="col">Semester Year</th>-->
+<!--                      <th scope="col">Registration ID</th>-->
+<!--                      <th scope="col">Student ID</th>-->
+<!--                      <th scope="col">Student Name</th>-->
+<!--                      <th scope="col">Gender</th>-->
+<!--                      <th scope="col">Batch</th>-->
+<!--                      <th scope="col">SSC</th>-->
+<!--                      <th scope="col">isGolden</th>-->
+<!--                      <th scope="col">Board</th>-->
+<!--                      <th scope="col">HSC / Diploma</th>-->
+<!--                      <th scope="col">isGolden</th>-->
+<!--                      <th scope="col">Board</th>-->
+<!--                      <th scope="col">Bachelor</th>-->
+<!--                      <th scope="col">MS Institute</th>-->
+<!--                      <th scope="col">Waiver Category</th>-->
+<!--                      <th scope="col">Waiver Category ID</th>-->
+<!--                      <th scope="col">Maintain SGPA</th>-->
+<!--                      <th scope="col">Waiver Rate</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <ng-container *ngFor="let admission_report of admission_reports;let i=index;">-->
+<!--                      <tr *ngIf="admission_report.admissionPersons[0].admissionPersonWaivers.length">-->
+<!--                        <td>{{i+1}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0].faculty.code}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0].program.code}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0].semester.code}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0].semester.year}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0].registrationId}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0].studentId}}</td>-->
+<!--                        <td>{{admission_report.admissionPersons[0].fullName}}</td>-->
+<!--                        <td>{{admission_report.admissionPersons[0].gender.name}}</td>-->
+<!--                        <td>{{admission_report.admissionEnrollments[0]?.batch?.name }}</td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'SSC'">-->
+<!--                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>-->
+<!--                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'SSC'">-->
+<!--                              {{education.isGolden}}-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'SSC'">-->
+<!--                              {{education?.board?.name}}-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'HSC'">-->
+<!--                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>-->
+<!--                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'Diploma'">-->
+<!--                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>-->
+<!--                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'HSC'">-->
+<!--                              {{education.isGolden}}-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'HSC'">-->
+<!--                              {{education?.board?.name}}-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'Bachelor'">-->
+<!--                              <span *ngIf="education.resultType.isCgpa">{{education.cgpa.toFixed(2)}}</span>-->
+<!--                              <span *ngIf="education.resultType.isMark">{{education.resultType.name}}</span>-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                          <ng-container *ngFor="let education of admission_report.admissionPersons[0]?.admissionEducationalInformations">-->
+<!--                            <span *ngIf="education.levelOfEducation.code === 'Masters'">-->
+<!--                              {{education?.instituteName}}-->
+<!--                            </span>-->
+<!--                          </ng-container>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">-->
+<!--                              {{waiver.waiverCategory.name}}-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">-->
+<!--                              {{waiver.waiverCategory.id}}-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">-->
+<!--                              {{waiver.sgpa.toFixed(2)}}-->
+<!--                            </span>-->
+<!--                        </td>-->
+
+<!--                        <td>-->
+<!--                            <span *ngFor="let waiver of admission_report.admissionPersons[0].admissionPersonWaivers">-->
+<!--                              {{waiver.waiverRate}}-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                      </tr>-->
+<!--                    </ng-container>-->
+
+<!--                    </tbody>-->
+<!--                  </table>-->
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+
+

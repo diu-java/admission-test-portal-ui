@@ -1,0 +1,123 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-6" >
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Create Choose Option</h4>
+              <h4 *ngIf="isUpdateButton">Update Choose Option</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #chooseOptionForm="ngForm">
+              <div class="row" ngModelGroup="chooseOptionData" #chooseOptionData="ngModelGroup">
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Application Type</label>
+                  <div class="mb_20">
+                    <ng-select name="admissionApplicationType" [(ngModel)]="admissionChooseOption.admissionApplicationTypeId" #admissionApplicationType="ngModel" required>
+                      <ng-option *ngFor="let application_type of application_types" [value]="application_type.id">{{application_type.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="admissionApplicationType.invalid && admissionApplicationType.touched">Application Type is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Program Type</label>
+                  <div class="mb_20">
+                    <ng-select name="programType" [(ngModel)]="admissionChooseOption.programTypeId" #programType="ngModel" required>
+                      <ng-option *ngFor="let program_type of program_types" [value]="program_type.id">{{program_type.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="programType.invalid && programType.touched">Program Type is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="isChoose" id="isChoose"  [(ngModel)]="admissionChooseOption.isChoose">
+                    <label class="form-label mb_10"> Enable Choose</label>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="admissionChooseOption.active"> Is Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="postAdmissionChooseOption()"
+                          [disabled]="chooseOptionData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionChooseOption()"
+                          [disabled]="chooseOptionData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" *ngIf="isUpdateButton" (click)="cancelAdmissionChooseOption()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Choose Option List</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">Action</th>
+                      <th scope="col">SL</th>
+                      <th scope="col">Application Type</th>
+                      <th scope="col">Program Type</th>
+                      <th scope="col">Choose Enable</th>
+                      <th scope="col">Active</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let choose_option of choose_options;let i = index;">
+                      <td>
+                        <button class="btn btn-success mr_10" (click)="editAdmissionChooseOption(choose_option)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-danger ml_5" (click)="deleteAdmissionChooseOption(choose_option)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>{{i + 1}}</td>
+                      <td>{{choose_option.admissionApplicationType.name}}</td>
+                      <td>{{choose_option.programType.name}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="choose_option.isChoose">True</span>
+                        <span class="badge bg-danger" *ngIf="!choose_option.isChoose">False</span>
+                      </td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="choose_option.active">True</span>
+                        <span class="badge bg-danger" *ngIf="!choose_option.active">False</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

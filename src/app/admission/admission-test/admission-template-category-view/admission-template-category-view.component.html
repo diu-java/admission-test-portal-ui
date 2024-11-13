@@ -1,0 +1,61 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="dashboard_breadcam mb_30">
+          <p><a (click)="getBack()">Test Template </a> <i class="fas fa-caret-right"></i> Category </p>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Category
+                <!--                <button class="btn btn-danger float-end mr_10" (click)="deleteAdmissionCircular(admissionCircular)">-->
+                <!--                  <i class="fa fa-trash" aria-hidden="true"></i>-->
+                <!--                </button>-->
+                <!--                <button class="btn btn-success float-end mr_10" (click)="editAdmissionCircular(admissionCircular)">-->
+                <!--                  <i class="fa fa-edit" aria-hidden="true"></i>-->
+                <!--                </button>-->
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Category </th>
+                  <td>{{ admissionTemplateCategory.admissionTestCategory.name }}</td>
+                  <th>Test Template </th>
+                  <td>{{admissionTemplateCategory.admissionTestTemplate.name}}</td>
+                </tr>
+                <tr>
+                  <th>Mark</th>
+                  <td>{{ admissionTemplateCategory.mark }}</td>
+                  <th>Pass Mark</th>
+                  <td>{{admissionTemplateCategory.passMark}}</td>
+                </tr>
+                <tr>
+                  <th>Is Pass Mark</th>
+                  <td colspan="3">
+                    <span class="badge bg-success" *ngIf="admissionTemplateCategory.isPassMark">Yes</span>
+                    <span class="badge bg-danger" *ngIf="!admissionTemplateCategory.isPassMark">No</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-admission-template-category-subject *ngIf="admissionTemplateCategory.id" [admissionTemplateCategory]="admissionTemplateCategory"></app-admission-template-category-subject>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

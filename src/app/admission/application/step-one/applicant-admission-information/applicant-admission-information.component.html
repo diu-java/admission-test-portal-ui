@@ -1,0 +1,1262 @@
+<div class="row">
+  <div class="col-lg-12 p-3" *ngIf="enableAdmission">
+    <!--    <button class="btn btn-primary btn-sm mr_10 mt_10" (click)="openAdmitCard()"-->
+    <!--            *ngIf="!admissionApplication.isAdmitCard">Admit Card Generate-->
+    <!--    </button>-->
+    <!--    <button class="btn btn-primary btn-sm mr_10 mt_10" (click)="openDirectAdmission()"-->
+    <!--            *ngIf="!admissionApplication.isAdmission">Enrollment-->
+    <!--    </button>-->
+    <button class="btn btn-primary btn-sm mr_10 mt_10" [routerLink]="'/admission-application-form-step-five/'+this.admissionApplication.id">Review
+    </button>
+    <button class="btn btn-warning btn-sm mr_10 mt_10" (click)="editPayment()"
+            *ngIf="admissionApplication.paymentStatus === 2">
+      <i class="fa fa-money-bill mr_10" aria-hidden="true"></i>Form Fee
+    </button>
+
+    <button class="btn btn-success btn-sm mr_10 mt_10" (click)="submitApplication(1)"
+            *ngIf="admissionApplication.status === 0">Submit
+    </button>
+    <button class="btn btn-danger btn-sm mr_10 mt_10" (click)="submitApplication(0)"
+            *ngIf="admissionApplication.status !== 0">Withdraw
+    </button>
+    <button class="btn btn-primary btn-sm mr_10 mt_10" (click)="getAdmissionFullForm()"><i
+      class="fa fa-eye mr_10" aria-hidden="true"></i>Full Form
+    </button>
+    <button class="btn btn-primary btn-sm mr_10 mt_10" (click)="getAdmissionShortForm()"><i
+      class="fa fa-eye mr_10" aria-hidden="true"></i>Short Form
+    </button>
+
+  </div>
+  <div class="col-lg-12" *ngIf="enableAdmission">
+    <div class="white_card card_height_100 mb_20 pt_25">
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <h4 class="mb-3">Application Form Serial: {{admissionApplication.code}}
+              <span class="badge bg-danger mr_10 float-end" *ngIf="admissionApplication.paymentStatus === 2">Form Fee Unpaid</span>
+              <span class="badge bg-success mr_10 float-end" *ngIf="admissionApplication.paymentStatus === 1">Form Fee Paid</span>
+              <span class="badge bg-danger mr_10 float-end" *ngIf="admissionApplication.status === 0">Not Submitted</span>
+              <span class="badge bg-success mr_10 float-end" *ngIf="admissionApplication.status === 1">Submitted</span>
+            </h4>
+          </div>
+          <div class="col-lg-12" *ngFor="let person of admissionApplication.admissionPersons">
+
+            <div class="d-flex mb_15 border_bottom_1px pb-3">
+              <div class="flex-shrink-0" *ngIf="person.photoAttachment">
+                <img class="me-3 rounded me-0 me-sm-3"
+                     [src]="'data:' + person.photoAttachment.fileType + ';base64,' + person.photoAttachment.file"
+                     alt="{{person.fullName}}" style="width:100px;height:100px;">
+              </div>
+              <div class="flex-shrink-0" *ngIf="!person.photoAttachment">
+                <img class="me-3 rounded me-0 me-sm-3" src="/assets/img/profile.jpg" alt="{{person.fullName}}"
+                     style="width:100px;height:100px;">
+              </div>
+              <div class="flex-grow-1">
+                <h4 class="mb-2">{{ person.fullName }}</h4>
+                <p class="mb-1"><span><i class="fa fa-phone me-2 text-primary"></i></span> {{ person?.personalPhone }}
+                </p>
+                <p class="mb-1"><span><i class="fa fa-envelope me-2 text-primary"></i></span>
+                  <b>{{ person.personalEmail }}</b>
+                </p>
+                <p class="mb-1" *ngIf="person.gender">
+                  <span *ngIf="person.gender.name==='Male'" class="mr_10"><i
+                    class="fa fa-male me-2 text-primary"></i><b>{{ person.gender.name }}</b></span>
+                  <span *ngIf="person.gender.name==='Female'" class="mr_10"><i
+                    class="fa fa-female me-2 text-primary"></i><b>{{ person.gender.name }}</b></span>
+                  <span><i class="fa fa-tint me-2 text-primary"></i><b>{{ person?.bloodGroup?.name }}</b></span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="status-menu">
+              <h4>Application Status </h4>
+              <div class="progress-bar mb_15">
+                <div class="progress" [style.width.%]="getProgressPercentage()"></div>
+              </div>
+              <ul *ngFor="let person of admissionApplication.admissionPersons" class="border_right">
+                <li class="menu-item" [ngClass]="{'active': activeTab === 1}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.status === 1"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                     *ngIf="admissionApplication.status !== 1"></i>
+                  <a (click)="activateTab(1)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Admission Information</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 1"></i> <!-- Align icon at the end -->
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 2}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.admissionEnrollments.length"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true" *ngIf="!admissionApplication.admissionEnrollments.length"></i>
+                  <a (click)="activateTab(2)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Admission Enrollment </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 2"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 22}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.admissionTags.length"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true" *ngIf="!admissionApplication.admissionTags.length"></i>
+                  <a (click)="activateTab(22)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Admission Tag </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 22"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 20}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.admissionOffers.length"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true" *ngIf="!admissionApplication.admissionOffers.length"></i>
+                  <a (click)="activateTab(20)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Admission Offer </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 20"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 16}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.admissionAdmitCards.length"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true" *ngIf="!admissionApplication.admissionAdmitCards.length"></i>
+                  <a (click)="activateTab(16)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Admission Admit Card </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 16"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 17}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.admissionApplicationDocumentVerifies.length"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true" *ngIf="!admissionApplication.admissionApplicationDocumentVerifies.length"></i>
+                  <a (click)="activateTab(17)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Review Document</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 17"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 21}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionPersonWaivers.length"></i>
+                  <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true" *ngIf="!person.admissionPersonWaivers.length"></i>
+                  <a (click)="activateTab(21)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Admission Waiver</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 21"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 3}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.photoAttachment"></i>
+                  <i class="fa fa-times-circle fa-2x red_text" aria-hidden="true" *ngIf="!person.photoAttachment"></i>
+                  <a (click)="activateTab(3)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Personal Information </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 3"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 4}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.addressInformations.length"></i>
+                  <i class="fa fa-times-circle fa-2x red_text" aria-hidden="true" *ngIf="person.addressInformations.length === 0"></i>
+                  <a (click)="activateTab(4)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Address Information </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 4"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 5}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionFamilies.length"></i>
+                  <i class="fa fa-times-circle fa-2x red_text" aria-hidden="true" *ngIf="person.admissionFamilies.length === 0"></i>
+                  <a (click)="activateTab(5)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Parents' Information  </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 5"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 6}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionEmergencyContacts.length"></i>
+                  <i class="fa fa-times-circle fa-2x red_text" aria-hidden="true" *ngIf="person.admissionEmergencyContacts.length === 0"></i>
+                  <a (click)="activateTab(6)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Local Guardian </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 6"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 7}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionGroupInsurances.length"></i>
+                  <i class="fa fa-times-circle fa-2x red_text" aria-hidden="true" *ngIf="person.admissionGroupInsurances.length === 0"></i>
+                  <a (click)="activateTab(7)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Expense Bearer</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 7"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 8}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionEducationalInformations.length"></i>
+                  <i class="fa fa-times-circle fa-2x red_text" aria-hidden="true" *ngIf="person.admissionEducationalInformations.length === 0"></i>
+                  <a (click)="activateTab(8)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Educational Information</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 8"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 9}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionPassportInformations.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionPassportInformations.length === 0"></i>
+                  <a (click)="activateTab(9)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Passport Information</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 9"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 10}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionCreditTransfers.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionCreditTransfers.length === 0"></i>
+                  <a (click)="activateTab(10)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Credit Transfer</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 10"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 11}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionAwards.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionAwards.length === 0"></i>
+                  <a (click)="activateTab(11)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Achievements or Award</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 11"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 12}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionJobExperiences.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionJobExperiences.length === 0"></i>
+                  <a (click)="activateTab(12)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Professional Experience </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 12"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 15}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionSkills.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionSkills.length === 0"></i>
+                  <a (click)="activateTab(15)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Skill </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 15"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 18}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionMemberships.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionMemberships.length === 0"></i>
+                  <a (click)="activateTab(18)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Membership</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 18"></i> <!-- Align icon at the end -->
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 13}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionReferences.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionReferences.length === 0"></i>
+                  <a (click)="activateTab(13)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Reference </span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 13"></i>
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 14}">
+                  <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                     *ngIf="person.admissionWaivers.length"></i>
+                  <i class="fa fa-times-circle fa-2x text-muted" aria-hidden="true" *ngIf="person.admissionWaivers.length === 0"></i>
+                  <a (click)="activateTab(14)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Special Quota</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 14"></i> <!-- Align icon at the end -->
+                  </a>
+                </li>
+                <li class="menu-item" [ngClass]="{'active': activeTab === 19}">
+                  <i class="fa fa-history fa-2x text-success" aria-hidden="true"
+                     *ngIf="admissionApplication.admissionMessageLogs.length"></i>
+                  <i class="fa fa-history fa-2x text-muted" aria-hidden="true" *ngIf="admissionApplication.admissionMessageLogs.length === 0"></i>
+                  <a (click)="activateTab(19)" class="menu-link d-flex justify-content-between align-items-center">
+                    <span>Log Note</span>
+                    <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 19"></i> <!-- Align icon at the end -->
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-9">
+            <div class="row" *ngIf="activeTab === 1">
+              <div class="white_card card_height_100 mb_20">
+                <div class="white_card_header">
+                  <div class="white_box_tittle mb_20">
+                    <h4>Admission Information</h4>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-bordered">
+                      <tbody>
+                      <tr>
+                        <th>Application Form Serial</th>
+                        <td>{{ admissionApplication.code }}</td>
+                        <th>Semester</th>
+                        <td>{{ admissionApplication.semester.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Application Type</th>
+                        <td>{{ admissionApplication.admissionApplicationType?.name }}</td>
+                        <th>Program Type</th>
+                        <td>{{ admissionApplication.programType.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Circular Code</th>
+                        <td colspan="2">{{ admissionApplication.admissionCircular.code }}</td>
+                        <td>
+                          <button class="btn btn-success btn-sm float-end" (click)="changeAdmissionCircular(admissionApplication)">
+                            <i class="fa fa-edit mr_10" aria-hidden="true"></i> Change Circular
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Applied From</th>
+                        <td>{{ admissionApplication?.admissionApplyType?.name }}</td>
+                        <th>Intake</th>
+                        <td>{{ admissionApplication?.admissionIntake?.name }}</td>
+                      </tr>
+                      <tr *ngIf="admissionApplication.submitDate">
+                        <th>Submission Date</th>
+                        <td colspan="3">{{ admissionApplication.submitDate | date: 'medium' }}</td>
+                      </tr>
+                      <tr>
+                        <th>Admission Form Fee</th>
+                        <td colspan="3">
+                    <span *ngIf="admissionApplication.paymentStatus === 2">{{ admissionApplication.paymentAmount }}
+                      (Unpaid)</span>
+                          <span
+                            *ngIf="admissionApplication.paymentStatus === 1">{{ admissionApplication.admissionApplicationPayments[0]?.amount }}
+                            (Paid) {{ admissionApplication.admissionApplicationPayments[0].paymentType.code }}, Transaction Number: {{ admissionApplication.admissionApplicationPayments[0]?.transactionNo }}
+                            , Payment Date: {{ admissionApplication.admissionApplicationPayments[0]?.paymentDate | date }}
+                            ({{ admissionApplication.admissionApplicationPayments[0]?.user }})</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Faculty</th>
+                        <td colspan="3">{{ admissionApplication.admissionCircular.faculty.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Program Choice List</th>
+                        <td colspan="2">
+                          <li
+                            *ngFor="let application_program of admissionApplication.admissionApplicationProgramChooses;let i = index;">
+                            Choice-{{ i + 1 }}: {{ application_program.admissionCircularProgram.program.name }}
+                          </li>
+                        </td>
+                        <td>
+                          <button class="btn btn-primary btn-sm float-end" (click)="editProgramChoose()">
+                            <i class="fa fa-plus-square mr_10" aria-hidden="true"></i> Program Choice
+                          </button>
+                        </td>
+                      </tr>
+                      <!--                <tr>-->
+                      <!--                  <th>Daffodil Family Employee or Existing Student?</th>-->
+                      <!--                  <td colspan="2"><span-->
+                      <!--                    *ngIf="membership.length">{{ membership[0]?.admissionMembershipOrganization.name + ', ' + (membership[0]?.admissionMembershipUserType.name + ':' + membership[0]?.code) }}</span>-->
+
+                      <!--                  </td>-->
+                      <!--                  <td>-->
+                      <!--                    <button class="btn btn-success btn-sm float-end" (click)="editMembership()">-->
+                      <!--                      <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update-->
+                      <!--                    </button>-->
+                      <!--                  </td>-->
+                      <!--                </tr>-->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <form #membershipInformationForm="ngForm" *ngIf="activeTab === 1">
+              <div class="row" ngModelGroup="membershipInformationData" #membershipInformationData="ngModelGroup"
+                   *ngIf="enableMembership">
+                <!--                <div class="col-lg-12">-->
+                <!--                  <div class="mb-3 form-check">-->
+                <!--                    <label class="form-label mb_10">-->
+                <!--                      <input type="checkbox" class="form-check-input" name="isDIU" id="isDIU" [(ngModel)]="isDIU">Are You-->
+                <!--                      Daffodil Family Employee or Existing Student?-->
+                <!--                    </label>-->
+                <!--                  </div>-->
+                <!--                </div>-->
+                <div class="col-lg-4" *ngIf="isDIU">
+                  <label class="form-label mb_10">Daffodil Family Concern <span style="color: red;">*</span></label>
+                  <div class="mb_20 pt_10">
+                    <ng-select id="admissionMembershipOrganization" name="admissionMembershipOrganization"
+                               [(ngModel)]="applicantMembership.admissionMembershipOrganizationId"
+                               #admissionMembershipOrganization="ngModel" required>
+                      <ng-option *ngFor="let admission_membership_organization of admission_membership_organizations"
+                                 [value]="admission_membership_organization.id">
+                        {{ admission_membership_organization.name }}
+                      </ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="admissionMembershipOrganization.invalid && admissionMembershipOrganization.touched">Membership
+                        Organization is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4" *ngIf="isDIU">
+                  <label class="form-label mb_10">User Type <span style="color: red;">*</span></label>
+                  <div class="mb_20 pt_10">
+                    <ng-select id="membershipUserType" name="membershipUserType"
+                               [(ngModel)]="applicantMembership.admissionMembershipUserTypeId" #membershipUserType="ngModel"
+                               required>
+                      <ng-option *ngFor="let membership_type of membership_types" [value]="membership_type.id">
+                        {{ membership_type.name }}
+                      </ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="membershipUserType.invalid && membershipUserType.touched">Membership Type is a required
+                        field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4" *ngIf="isDIU">
+                  <label class="form-label mb_10">Employee ID / Student ID<span style="color: red;">*</span></label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      name="code"
+                      id="code"
+                      class="form-control" [(ngModel)]="applicantMembership.code" #code="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="code.invalid && code.touched">ID is a required field</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12" *ngIf="isDIU">
+                  <button type="submit" class="btn btn-success btn-sm mr_10" *ngIf="isSaveButton" (click)="postApplicantMembership()"
+                          [disabled]="membershipInformationData.invalid">
+                    <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-success btn-sm mr_10" *ngIf="isUpdateButton"
+                          (click)="putApplicantMembership(applicantMembership.id)"
+                          [disabled]="membershipInformationData.invalid">
+                    <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button class="btn btn-danger btn-sm" (click)="cancelMembership()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+            <app-admission-enrollment *ngIf="admissionApplication.id && activeTab === 2" [admissionApplication]="admissionApplication" (notifyParent)="updateApplicationView()"></app-admission-enrollment>
+            <app-admission-tag *ngIf="admissionApplication.id && activeTab === 22" [admissionApplication]="admissionApplication"></app-admission-tag>
+            <app-admission-admit-card *ngIf="admissionApplication.id && activeTab === 16" [admissionApplication]="admissionApplication" ></app-admission-admit-card>
+            <app-admission-review-document *ngIf="admissionApplication.id && activeTab === 17" [admissionApplication]="admissionApplication" ></app-admission-review-document>
+            <app-admission-person-waiver *ngIf="admissionApplication.id && activeTab === 21" [admissionApplication]="admissionApplication" ></app-admission-person-waiver>
+            <app-admission-person-information *ngIf="admissionApplication.id && activeTab === 3" [admissionApplication]="admissionApplication" ></app-admission-person-information>
+            <app-admission-address-information *ngIf="admissionApplication.id && activeTab === 4" [admissionApplication]="admissionApplication" ></app-admission-address-information>
+            <app-applicant-family *ngIf="admissionApplication.id && activeTab === 5" [admissionApplication]="admissionApplication"></app-applicant-family>
+            <app-applicant-local-guardian *ngIf="admissionApplication.id && activeTab === 6" [admissionApplication]="admissionApplication"></app-applicant-local-guardian>
+            <app-education-expanse-barrier *ngIf="admissionApplication.id && activeTab === 7" [admissionApplication]="admissionApplication"></app-education-expanse-barrier>
+            <app-applicant-education *ngIf="admissionApplication.id && activeTab === 8" [admissionApplication]="admissionApplication"></app-applicant-education>
+            <app-applicant-passport *ngIf="admissionApplication.id && activeTab === 9" [admissionApplication]="admissionApplication"></app-applicant-passport>
+            <app-applicant-credit-transfer *ngIf="admissionApplication.id && activeTab === 10" [admissionApplication]="admissionApplication"></app-applicant-credit-transfer>
+            <app-applicant-award *ngIf="admissionApplication.id && activeTab === 11" [admissionApplication]="admissionApplication"></app-applicant-award>
+            <app-applicant-professional-experience *ngIf="admissionApplication.id && activeTab === 12" [admissionApplication]="admissionApplication"></app-applicant-professional-experience>
+            <app-applicant-reference *ngIf="admissionApplication.id && activeTab === 13" [admissionApplication]="admissionApplication"></app-applicant-reference>
+            <app-applicant-special-quota *ngIf="admissionApplication.id && activeTab === 14" [admissionApplication]="admissionApplication"></app-applicant-special-quota>
+            <app-applicant-skill *ngIf="admissionApplication.id && activeTab === 15" [admissionApplication]="admissionApplication"></app-applicant-skill>
+            <app-membership *ngIf="admissionApplication.id && activeTab === 18" [admissionApplication]="admissionApplication"></app-membership>
+            <app-admission-log *ngIf="admissionApplication.id && activeTab === 19" [admissionApplication]="admissionApplication"></app-admission-log>
+            <app-admission-offer *ngIf="admissionApplication.id && activeTab === 20" [admissionApplication]="admissionApplication"></app-admission-offer>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <span *ngFor="let admit_card of admissionApplication.admissionAdmitCards">
+    <div class="col-lg-12" *ngIf="enableAdmission && notEligible">
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Admit Card
+              <button class="btn btn-outline-success btn-sm float-end" (click)="sendAdmitCard(admit_card.id)">
+                <i class="fa fa-envelope mr_10" aria-hidden="true"></i>Send Email
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th>Admit Card Number</th>
+                    <td colspan="3">{{ admit_card.code }}</td>
+                  </tr>
+                  <tr>
+                    <th>Test Venue</th>
+                    <td colspan="3">{{ admit_card.admissionTestVenue.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Test Schedule</th>
+                    <td
+                      colspan="3">{{ admit_card.admissionCircularTestSchedule.testDate | date }} {{ admit_card.admissionCircularTestSchedule.testTime }}</td>
+                  </tr>
+                  <tr>
+                    <th>Admit Card</th>
+                    <td colspan="3">
+                      <button class="btn btn-primary btn-sm" (click)="getAdmitCard(admit_card)"><i
+                        class="fa fa-download mr_10" aria-hidden="true"></i>Download</button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </span>
+
+  <span *ngFor="let admission_enrollment of admissionApplication.admissionEnrollments">
+    <div class="col-lg-12" *ngIf="enableAdmission && notEligible">
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Admission Enrollment
+              <span class="badge bg-warning" *ngIf="admission_enrollment?.status === 0">Waiting</span>
+              <span class="badge bg-success" *ngIf="admission_enrollment?.status === 1">Confirm</span>
+              <span class="badge bg-danger" *ngIf="admission_enrollment?.status === 2">Withdraw</span>
+
+              <button class="btn btn-danger float-end mr_10" *ngIf="admission_enrollment?.status !==2"
+                      (click)="cancelEnrollment(admission_enrollment)">
+                Withdraw
+              </button>
+              <button class="btn btn-outline-success float-end mr_10" *ngIf="admission_enrollment?.status !==2"
+                      (click)="sendAdmissionEnrollment(admission_enrollment.id)">
+                <i class="fa fa-envelope mr_10" aria-hidden="true"></i>Send Email
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th>Student ID</th>
+                    <td>{{ admission_enrollment?.studentId }}</td>
+                    <th>Registration ID</th>
+                    <td>{{ admission_enrollment?.registrationId }}</td>
+                  </tr>
+                  <tr>
+                    <th>Enrollment Type</th>
+                    <td colspan="3"><span
+                      *ngIf="admission_enrollment.admissionEnrollmentType">{{ admission_enrollment.admissionEnrollmentType.name }}</span></td>
+                  </tr>
+                  <tr>
+                    <th>Semester</th>
+                    <td>{{ admission_enrollment.semester.name }}</td>
+                    <th>Semester Type</th>
+                    <td>{{ admission_enrollment.semesterType.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Faculty</th>
+                    <td>{{ admission_enrollment.faculty.name }}</td>
+                    <th>Program</th>
+                    <td>{{ admission_enrollment.program.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Study Campus</th>
+                    <td colspan="3">{{ admission_enrollment?.studyCampus.name }}</td>
+                  </tr>
+                  <tr>
+                    <th>Batch</th>
+                    <td>{{ admission_enrollment.batch.code }}</td>
+                    <th>Deadline</th>
+                    <td>{{ admission_enrollment.deadline }}</td>
+                  </tr>
+                  <tr>
+                    <th>Admission Fee</th>
+                    <td>{{ admission_enrollment.admissionFee }}</td>
+                    <th>Payable Amount</th>
+                    <td>{{ admission_enrollment.payableAmount }}</td>
+                  </tr>
+                  <tr>
+                    <th>Paid Amount</th>
+                    <td colspan="2">
+                      <span *ngIf="admission_enrollment.paymentStatus === 2">{{ admission_enrollment.paymentAmount }}
+                        (Unpaid)</span>
+                      <span *ngIf="admission_enrollment.paymentStatus === 1">
+                        {{ admission_enrollment?.paymentAmount }} (Paid) {{ admission_fee_payment?.paymentType?.code }}, Transaction Number: {{ admission_fee_payment?.transactionNo }}
+                        , Payment Date: {{ admission_fee_payment?.paymentDate | date }}
+                        ({{ admission_fee_payment?.user }})</span>
+
+                    </td>
+                    <td>
+                      <button class="btn btn-warning float-end" (click)="makeAdmissionFee(admission_enrollment)"
+                              *ngIf="admission_enrollment.paymentStatus === 2 && admission_enrollment.status !==2">
+                        <i class="fa fa-money-bill mr_10" aria-hidden="true"></i>Make Payment
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </span>
+  <div class="col-lg-12" *ngIf="enableChooseProgram">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Choose Program</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-6">
+            <label class="form-label mb_10">Faculty</label>
+
+            <div class="common_input mb_20">
+              <input type="text" class="form-control" name="faculty"
+                     [value]="admissionApplication.admissionCircular.faculty.name" [disabled]="true"/>
+            </div>
+          </div>
+          <div class="col-lg-6"></div>
+          <div class="col-lg-6"
+               *ngIf="admissionApplication.admissionApplicationProgramChooses.length < admissionApplication.admissionCircular.chooseNumber">
+            <label class="form-label mb_10">Choose Program </label>
+            <div>
+            </div>
+            <div class="mb_20">
+              <ng-select id="chooseProgram" name="chooseProgram" [(ngModel)]="admissionApplicationChooseOptionId">
+                <ng-option
+                  *ngFor="let admission_circular_program of admissionApplication.admissionCircular.admissionCircularPrograms"
+                  [value]="admission_circular_program.id">
+                  {{ admission_circular_program.program.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-lg-1 pt_30"
+               *ngIf="admissionApplication.admissionApplicationProgramChooses.length < admissionApplication.admissionCircular.chooseNumber">
+            <button type="submit" class="btn btn-primary" (click)="addAdmissionChooseOption()">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+            </button>
+          </div>
+          <div class="col-lg-12">
+            <h4>Program Choice List</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">Choice No</th>
+                  <th scope="col">Program</th>
+                  <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr
+                  *ngFor="let admission_application_choose_option of admissionApplication.admissionApplicationProgramChooses;let i = index;">
+                  <td>Choice-{{ i + 1 }}</td>
+                  <td>{{ admission_application_choose_option.admissionCircularProgram.program.name }}</td>
+                  <td>
+                    <button class="btn btn-danger btn-sm"
+                            (click)="deleteAdmissionChooseOption(admission_application_choose_option)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary mr_10" (click)="postApplicationProgramChoose()">
+                <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelApplicationProgramChoose()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="isAdmissionCircularView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Change Admission Circular</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+
+          <div class="col-lg-6">
+            <label class="form-label mb_10">Admission Circular</label>
+            <div>
+            </div>
+            <div class="mb_20">
+              <ng-select id="admissionCircular" name="admissionCircular" [(ngModel)]="admissionApplication.admissionCircularId">
+                <ng-option
+                  *ngFor="let admission_circular of admission_circulars"
+                  [value]="admission_circular.id">
+                  {{ admission_circular.admissionCircularPrograms[0]?.program.code }} {{ admission_circular.admissionCircularPrograms[0]?.program.name }} , {{ admission_circular.code }}
+                </ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-lg-4 pt_30">
+            <button type="submit" class="btn btn-success mr_10" (click)="changeAdmissionCircularSave()">
+              <i class="fa fa-edit mr_10" aria-hidden="true"></i>Save
+            </button>
+            <button type="submit" class="btn btn-danger mr_10" (click)="cancelChangeAdmissionCircularSave()">
+              <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  *ngIf="enablePayment"-->
+  <div class="col-lg-12" *ngIf="enablePayment">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Form Fee</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td colspan="3">{{ admissionPerson.fullName }}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td>{{ admissionPerson.personalEmail }}</td>
+                  <th>Mobile Number</th>
+                  <td>{{ admissionPerson.personalPhone }}</td>
+                </tr>
+                <tr>
+                  <th>Admission Form Fees</th>
+                  <td>{{ admissionApplication.paymentAmount }}</td>
+                  <th>Payment Status</th>
+                  <td>
+                    <span class="badge bg-danger" *ngIf="admissionApplication.paymentStatus === 2">Unpaid</span>
+                    <span class="badge bg-success" *ngIf="admissionApplication.paymentStatus === 1">Paid</span>
+                    <!--                    <span class="badge bg-success" *ngIf="admissionApplication.paymentStatus === 1">{{payment.amount}} (Paid) {{payment.paymentType.code}}, Transaction Number: {{payment.transactionNo}}, Payment Date: {{payment.paymentDate | date}}</span>-->
+                  </td>
+                </tr>
+                <tr>
+                  <th>Payment Type</th>
+                  <td colspan="3">Cash</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <form #admissionPaymentForm="ngForm">
+          <div class="row" ngModelGroup="admissionPaymentData" #admissionPaymentData="ngModelGroup">
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payment Slip Number </label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="transactionNo"
+                  id="transactionNo"
+                  class="form-control" [(ngModel)]="admissionApplicationPayment.transactionNo"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payment Date <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="datetime-local"
+                  name="payment"
+                  id="payment"
+                  class="form-control" [(ngModel)]="admissionApplicationPayment.paymentDate" #paymentDate="ngModel"
+                  required
+                />
+                <div>
+                  <small *ngIf="paymentDate.invalid && paymentDate.touched">Payment Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12" *ngIf="admissionApplication.paymentStatus !== 1">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionApplicationPayment()"
+                      [disabled]="admissionPaymentData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Payment
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionApplicationPayment()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="enableAdmissionPayment">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Fee Payment
+            <button type="submit" class="btn btn-danger float-end" (click)="cancelAdmissionApplicationPayment()">
+              <i class="fa fa-arrow-circle-left mr_10" aria-hidden="true"></i>Back
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td colspan="3">{{ admissionPerson.fullName }}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td>{{ admissionPerson.personalEmail }}</td>
+                  <th>Mobile Number</th>
+                  <td>{{ admissionPerson.personalPhone }}</td>
+                </tr>
+                <tr>
+                  <th>Admission Fees</th>
+                  <td>{{ admissionFeePayment.admissionFee }}</td>
+                  <th>Payment Status</th>
+                  <td>
+                    <span *ngIf="admissionFeePayment.paymentStatus === 2">Unpaid</span>
+                    <span *ngIf="admissionFeePayment.paymentStatus === 1">Paid</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Payable Amount</th>
+                  <td>{{ admissionFeePayment?.payableAmount }}</td>
+                  <th>Payment Type</th>
+                  <td>Cash</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <form #admissionFeePaymentForm="ngForm">
+          <div class="row" ngModelGroup="admissionFeePaymentData" #admissionFeePaymentData="ngModelGroup">
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payable Amount <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="number"
+                  name="amount"
+                  id="amount"
+                  class="form-control" [(ngModel)]="admissionFeePayment.amount" #amount="ngModel" required
+                />
+                <div>
+                  <small *ngIf="amount.invalid && amount.touched">Amount is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payment Slip Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="transactionNumber"
+                  id="transactionNumber"
+                  class="form-control" [(ngModel)]="admissionFeePayment.transactionNo" #transactionNumber="ngModel"
+                  required
+                />
+                <div>
+                  <small *ngIf="transactionNumber.invalid && transactionNumber.touched">Transaction Number is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payment Date <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="datetime-local"
+                  name="paymentDate"
+                  id="paymentDate"
+                  class="form-control" [(ngModel)]="admissionFeePayment.paymentDate" #paymentDate="ngModel" required
+                />
+                <div>
+                  <small *ngIf="paymentDate.invalid && transactionNumber.touched">Payment Date is a required
+                    field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionFeePayment()"
+                      [disabled]="admissionFeePaymentData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Payment
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionApplicationPayment()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="enableAdmitCard && notEligible">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admit Card
+            <button type="submit" class="btn btn-danger float-end" (click)="cancelAdmissionAdmitCard()">
+              <i class="fa fa-arrow-circle-left mr_10" aria-hidden="true"></i>Back
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td>{{ admissionPerson.fullName }}</td>
+                  <th>Email</th>
+                  <td>{{ admissionPerson.email }}</td>
+                </tr>
+                <tr>
+                  <th>Admission Form Fees</th>
+                  <td>{{ admissionApplication.paymentAmount }}</td>
+                  <th>Payment Status</th>
+                  <td>
+                    <span *ngIf="admissionApplication.paymentStatus === 2">{{ admissionApplication.paymentAmount }}
+                      (Unpaid)</span>
+
+                    <span
+                      *ngIf="admissionApplication.paymentStatus === 1">{{ admissionApplication.admissionApplicationPayments[0]?.amount }}
+                      (Paid) {{ admissionApplication.admissionApplicationPayments[0].paymentType.code }}, Transaction Number: {{ admissionApplication.admissionApplicationPayments[0]?.transactionNo }}
+                      , Payment Date: {{ admissionApplication.admissionApplicationPayments[0]?.paymentDate | date }}
+                      ({{ admissionApplication.admissionApplicationPayments[0]?.user }})</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <form #admissionAdmitCardForm="ngForm">
+          <div class="row" ngModelGroup="admissionAdmitCardData" #admissionAdmitCardData="ngModelGroup">
+            <div class="col-md-4">
+              <label class="form-label mb_10">Test Venue <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="testVenue" name="testVenue" [(ngModel)]="admissionAdmitCard.admissionTestVenueId"
+                           #testVenue="ngModel" required>
+                  <ng-option *ngFor="let test_venue of test_venues" [value]="test_venue.id">
+                    {{ test_venue.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="testVenue.invalid && testVenue.touched">Admission Test Venue is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Schedule <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="schedule" name="schedule"
+                           [(ngModel)]="admissionAdmitCard.admissionCircularTestScheduleId" #schedule="ngModel"
+                           required>
+                  <ng-option
+                    *ngFor="let test_schedule of admissionApplication.admissionCircular.admissionCircularTestSchedules"
+                    [value]="test_schedule.id">
+                    {{ test_schedule.testDate }}, {{ test_schedule.testTime }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="schedule.invalid && schedule.touched">Admission Schedule is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionAdmitCard()"
+                      [disabled]="admissionAdmitCardData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionAdmitCard()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="enableDirectAdmission">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Enrollment
+            <button type="submit" class="btn btn-danger btn-sm float-end" (click)="cancelAdmissionEnrollment()">
+              <i class="fa fa-arrow-circle-left mr_10" aria-hidden="true"></i>Back
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td>{{ admissionApplication.admissionPersons[0].fullName }}</td>
+                  <th>Email</th>
+                  <td>{{ admissionApplication.admissionPersons[0].personalEmail }}</td>
+                </tr>
+                <tr>
+                  <th>Faculty</th>
+                  <td colspan="3">{{ admissionApplication.admissionCircular.faculty.name }}</td>
+                </tr>
+                <tr>
+                  <th>Program Choice List</th>
+                  <td colspan="3">
+                    <li
+                      *ngFor="let application_program of admissionApplication.admissionApplicationProgramChooses;let i = index;">
+                      Choice-{{ i + 1 }}: {{ application_program.admissionCircularProgram.program.name }}
+                    </li>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <form #admissionDirectFrom="ngForm">
+          <div class="row" ngModelGroup="admissionDirectData" #admissionDirectData="ngModelGroup">
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Study Campus <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="studyCampus" name="studyCampus" [(ngModel)]="admissionEnrollment.studyCampusId">
+                  <ng-option *ngFor="let study_campus of study_campuses"
+                             [value]="study_campus.id">{{ study_campus.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Semester <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="semester" name="semester"
+                           (change)="getBatchSearch(admissionEnrollment.semesterId, admissionEnrollment.programId); getAdmissionFee(this.admissionEnrollment.semesterId, this.admissionEnrollment.semesterTypeId, admissionEnrollment.programId)"
+                           [(ngModel)]="admissionEnrollment.semesterId" #semester="ngModel">
+                  <ng-option *ngFor="let semester of semesters" [value]="semester.id">
+                    {{ semester.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="semester.invalid && semester.touched">Semester is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Semester Type <span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="semesterType" name="semesterType" [(ngModel)]="admissionEnrollment.semesterTypeId"
+                           #semesterType="ngModel" [disabled]="true">
+                  <ng-option *ngFor="let semester_type of semester_types" [value]="semester_type.id">
+                    {{ semester_type.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="semesterType.invalid && semesterType.touched">Semester Type is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Faculty<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="faculty" name="faculty" (change)="getProgram(admissionEnrollment.facultyId)"
+                           [(ngModel)]="admissionEnrollment.facultyId" #faculty="ngModel" required>
+                  <ng-option *ngFor="let faculty of faculties" [value]="faculty.id">
+                    {{ faculty.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="faculty.invalid && faculty.touched">Faculty is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Program<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="program" name="program"
+                           (change)="getBatchSearch(admissionEnrollment.semesterId, admissionEnrollment.programId); getAdmissionFee(this.admissionEnrollment.semesterId, this.admissionEnrollment.semesterTypeId, admissionEnrollment.programId)"
+                           [(ngModel)]="admissionEnrollment.programId" #program="ngModel" required>
+                  <ng-option *ngFor="let program of programs" [value]="program.id">
+                    {{ program.code }} {{ program.name }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="program.invalid && program.touched">Program is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Admission Fee Amount<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="admissionFee"
+                  id="admissionFee"
+                  class="form-control" [(ngModel)]="admissionEnrollment.admissionFee" [disabled]="true"
+                  #admissionFee="ngModel" required
+                />
+                <div>
+                  <small *ngIf="admissionFee.invalid && admissionFee.touched">Admission Fee is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Batch<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="batch" name="batch" [(ngModel)]="admissionEnrollment.batchId" #batch="ngModel" required>
+                  <ng-option *ngFor="let batch of batches" [value]="batch.id">
+                    {{ batch.code }}
+                  </ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="batch.invalid && batch.touched">Batch is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Payable Amount<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="payableAmount"
+                  id="payableAmount"
+                  class="form-control" [(ngModel)]="admissionEnrollment.payableAmount" #payableAmount="ngModel" required
+                />
+                <div>
+                  <small *ngIf="payableAmount.invalid && payableAmount.touched">Batch is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Deadline<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="date"
+                  name="deadline"
+                  id="deadline"
+                  class="form-control" [(ngModel)]="admissionEnrollment.deadline" #deadline="ngModel" required
+                />
+                <div>
+                  <small *ngIf="deadline.invalid && deadline.touched">Deadline is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionEnrollment()"
+                      [disabled]="admissionDirectData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionEnrollment()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngIf="enableReviewDocument">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Review Document
+            <button type="submit" class="btn btn-danger btn-sm float-end" (click)="cancelDocumentReview()">
+              <i class="fa fa-arrow-circle-left mr_10" aria-hidden="true"></i>Back
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Application Form Serial</th>
+                  <td colspan="3">{{ admissionApplication.code }}</td>
+                </tr>
+                <tr>
+                  <th>Name (As in Certificate)</th>
+                  <td>{{ admissionApplication.admissionPersons[0]?.fullName }}</td>
+                  <th>Email</th>
+                  <td>{{ admissionApplication.admissionPersons[0]?.personalEmail }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12" *ngFor="let application_document_verify_type of application_document_verify_types">
+            <div class="mb-3 form-check">
+              <label class="form-label mb_10">
+                <input type="checkbox" class="form-check-input" name="active" id="active"
+                       [(ngModel)]="application_document_verify_type.selected"
+                       (change)="postAdmissionApplicationDocumentVerify(application_document_verify_type)">
+                {{ application_document_verify_type.name }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

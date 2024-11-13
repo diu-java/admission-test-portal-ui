@@ -1,0 +1,160 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Apply Admission Application</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #admissionPersonForm="ngForm">
+              <div class="row" ngModelGroup="admissionPersonData" #admissionPersonData="ngModelGroup">
+                <div class="col-lg-12">
+                  <span style="color: red;">(*) Required Field</span>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Circular Code </label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      class="form-control" name="applicationType" [value]="admissionCircular.code" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Faculty </label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      class="form-control" name="faculty" [value]="admissionCircular.faculty.name" [disabled]="true"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Semester </label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      class="form-control" name="semester" [value]="admissionCircular.semester.name" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Program Type </label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      class="form-control" name="programType" [value]="admissionCircular.programType.name" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <h4>Available Program</h4>
+                  <li *ngFor="let program of admissionCircular.admissionCircularPrograms;let i=index;">{{i+1}}. {{program.program.name}} ({{program.program.code}})</li>
+                  <br>
+                </div>
+
+                <hr>
+
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Application Type <span style="color: red;">*</span></label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="applicationType" id="applicationType" [(ngModel)]="admissionApplication.admissionApplicationTypeId" #applicationType="ngModel" required>
+                      <ng-option *ngFor="let application_type of application_types" [value]="application_type.id">{{application_type.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="applicationType.invalid && applicationType.touched">Application Type is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Applicant Name <span style="color: red;">*</span></label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="name"
+                      id="name"
+                      type="text"
+                      class="form-control" (input)="admissionApplication.name = formatName(admissionApplication.name)" [(ngModel)]="admissionApplication.name" #name="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Personal Email <span style="color: red;">*</span></label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="email"
+                      id="email"
+                      type="email"
+                      class="form-control" [(ngModel)]="admissionApplication.email" #email="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="email.invalid && email.touched">Email is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Personal Mobile Number <span style="color: red;">*</span></label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="mobileNo"
+                      id="mobileNo"
+                      type="text"
+                      class="form-control" [(ngModel)]="admissionApplication.mobile" #mobileNo="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="mobileNo.invalid && mobileNo.touched">Mobile is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Gender <span style="color: red;">*</span></label>
+                  <div class="mb_20">
+                    <ng-select name="gender" [(ngModel)]="admissionApplication.genderId" #gender="ngModel" required>
+                      <ng-option *ngFor="let gender of genders" [value]="gender.id">{{gender.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="gender.invalid && gender.touched">Gender Type is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Blood Group <span style="color: red;">*</span></label>
+                  <div class="mb_20">
+                    <ng-select id="bloodGroup" name="bloodGroup" [(ngModel)]="admissionApplication.bloodGroupId"
+                               #bloodGroup="ngModel" required>
+                      <ng-option *ngFor="let blood_group of blood_groups"
+                                 [value]="blood_group.id">{{ blood_group.name }}
+                      </ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="bloodGroup.invalid && bloodGroup.touched">Blood Group is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="postAdmissionPerson()"
+                          [disabled]="admissionPersonData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

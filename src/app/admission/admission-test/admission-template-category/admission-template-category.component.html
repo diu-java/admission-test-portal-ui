@@ -1,0 +1,137 @@
+
+<div class="row">
+      <div class="col-lg-12" *ngIf="isTemplateCategoryView">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Add Category</h4>
+              <h4 *ngIf="isUpdateButton">Update Category</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #form="ngForm">
+              <div class="row" ngModelGroup="formData" #formData="ngModelGroup">
+
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Admission Test Category</label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="admissionTestCategory" [(ngModel)]="admissionTemplateCategory.admissionTestCategoryId" #admissionTestCategory="ngModel" [disabled]="isUpdateButton">
+                      <ng-option *ngFor="let admission_test_category of admission_test_categories" [value]="admission_test_category.id">{{admission_test_category.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="admissionTestCategory.invalid && admissionTestCategory.touched">Admission Test Category is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Mark</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="mark"
+                      id="mark"
+                      type="number"
+                      class="form-control" [(ngModel)]="admissionTemplateCategory.mark" #mark="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="mark.invalid && mark.touched">Mark is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Pass Mark</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="passMark"
+                      id="passMark"
+                      type="number"
+                      class="form-control" [(ngModel)]="admissionTemplateCategory.passMark"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="isPassMark" id="isPassMark"  [(ngModel)]="admissionTemplateCategory.isPassMark"> Is Pass Mark</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary btn-sm mr_10" *ngIf="isSaveButton" (click)="postAdmissionTemplateCategory()"
+                          [disabled]="formData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success btn-sm mr_10" *ngIf="isUpdateButton" (click)="putAdmissionTemplateCategory()"
+                          [disabled]="formData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger btn-sm" (click)="cancelAdmissionTemplateCategory()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Category List
+                <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionTemplateCategoryView()" *ngIf="!isTemplateCategoryView">
+                  <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+                </button>
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">SL</th>
+                      <th scope="col">Test Template</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Mark</th>
+                      <th scope="col">Pass Mark</th>
+                      <th scope="col">Is Pass Mark</th>
+                      <th scope="col" colspan="2" class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let admission_template_category of admission_template_categories;let i=index;">
+                      <td>{{i+1}}</td>
+                      <td>{{admission_template_category.admissionTestTemplate.name}}</td>
+                      <td>{{admission_template_category.admissionTestCategory.name}}</td>
+                      <td>{{admission_template_category.mark}}</td>
+                      <td>{{admission_template_category.passMark}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="admission_template_category.isPassMark">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!admission_template_category.isPassMark">No</span>
+                      </td>
+                      <td>
+<!--                        <button class="btn btn-success btn-sm float-end" (click)="editAdmissionTemplateCategory(admission_template_category)">-->
+<!--                          <i class="fa fa-edit" aria-hidden="true"></i>-->
+<!--                        </button>-->
+                        <button class="btn btn-primary btn-sm float-end" (click)="viewAdmissionTemplateCategory(admission_template_category)">
+                          <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteAdmissionTemplateCategory(admission_template_category)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+

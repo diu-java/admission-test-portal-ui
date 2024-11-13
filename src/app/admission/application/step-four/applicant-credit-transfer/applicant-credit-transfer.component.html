@@ -1,0 +1,233 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Credit Transfer Info
+            <button (click)="creditTransferView()" *ngIf="credit_transfers.length ===0" class="btn btn-primary btn-sm float-end"
+                    type="submit">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #creditTransferForm="ngForm">
+          <div class="row" ngModelGroup="creditTransferData" #creditTransferData="ngModelGroup" *ngIf="isCreditTransferView">
+            <div class="col-md-12">
+              <span style="color: red;">(*) Required Field</span>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Institute Name <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="instituteName"
+                  id="instituteName"
+                  class="form-control" [(ngModel)]="applicantCreditTransfer.instituteName" #instituteName="ngModel" required
+                />
+                <div>
+                  <small *ngIf="instituteName.invalid && formSubmitted">Institute is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6" >
+              <label class="form-label mb_10">Program Name <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="programName"
+                  id="programName"
+                  class="form-control" [(ngModel)]="applicantCreditTransfer.programName" #programName="ngModel" required
+                />
+                <div>
+                  <small *ngIf="programName.invalid && formSubmitted">Program Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Course Completed <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="number"
+                  name="courseCompletedNumber"
+                  id="courseCompletedNumber"
+                  class="form-control" [(ngModel)]="applicantCreditTransfer.courseCompletedNumber" #courseCompletedNumber="ngModel" required
+                />
+                <div>
+                  <small *ngIf="courseCompletedNumber.invalid && formSubmitted">Course Completed Number is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">CGPA <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="number"
+                  name="cgpa"
+                  id="CGPA"
+                  class="form-control" [(ngModel)]="applicantCreditTransfer.cgpa" #cgpa="ngModel" required
+                />
+                <div>
+                  <small *ngIf="cgpa.invalid && formSubmitted">CGPA is a required field</small>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label mb_20">Transcript Upload <span style="color: red;">*</span></label>
+<!--              <div *ngIf="isOpenAttachment">-->
+<!--                <input type="file" class="form-control" name="transcriptAttachmentId" (change)="postTranscriptDocument($event)" accept=".pdf, .png, .jpg,.jpeg">-->
+<!--                <small class="form-text">File must be jpg/jpeg/png/pdf format. File size not more than 500-->
+<!--                  KB.</small>-->
+<!--              </div>-->
+              <div class="row align-items-center" *ngIf="isOpenAttachment">
+                <div class="col-md-8">
+                  <input type="file" class="form-control" id="transcriptAttachmentId" name="transcriptAttachmentId"
+                         (change)="postTranscriptDocument($event)">
+                </div>
+                <div class="col-md-1 text-center">
+                        <span class="text-highlighted" style="font-weight: bold; color: #007bff; background-color: #e9f5ff; padding: 5px; border-radius: 5px;">
+                          or
+                        </span>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-block" (click)="getDocumentScanDemo(admissionPerson.id, applicantCreditTransfer, 'Transcript', 'Transcript', 'application/pdf')">
+                    <i class="fa fa-laptop mr-2"></i> Scan
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="tMessage">
+                <span style="color: #0c4128">{{tMessage}}</span>
+              </div>
+              <div>
+                <a *ngIf="applicantCreditTransfer.transcriptAttachment && !isOpenAttachment" href="javascript:void(0)"
+                   (click)="getDocument(applicantCreditTransfer.transcriptAttachment.code, applicantCreditTransfer.transcriptAttachment.name, applicantCreditTransfer.transcriptAttachment.fileExtension)">
+                  Attachment <span><i class="fa fa-download mr_10"></i></span>
+                </a>
+                <button type="submit" class="btn btn-primary"  *ngIf="applicantCreditTransfer.transcriptAttachment && !isOpenAttachment" (click)="isOpenFile()">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+              </div>
+
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Syllabus Upload <span style="color: red;">*</span></label>
+<!--              <div *ngIf="isOpenSyllabusAttachment">-->
+<!--                <input type="file" class="form-control" name="syllabusAttachmentId" (change)="postSyllabusDocument($event)" accept=".pdf, .png, .jpg,.jpeg">-->
+<!--                <small class="form-text">File must be jpg/jpeg/png/pdf format. File size not more than 500-->
+<!--                  KB.</small>-->
+<!--              </div>-->
+              <div class="row align-items-center" *ngIf="isOpenSyllabusAttachment">
+                <div class="col-md-8">
+                  <input type="file" class="form-control" id="syllabusAttachmentId" name="syllabusAttachmentId"
+                         (change)="postSyllabusDocument($event)">
+                </div>
+                <div class="col-md-1 text-center">
+                        <span class="text-highlighted" style="font-weight: bold; color: #007bff; background-color: #e9f5ff; padding: 5px; border-radius: 5px;">
+                          or
+                        </span>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-block" (click)="getDocumentScanDemo(admissionPerson.id, applicantCreditTransfer, 'Syllabus', 'Syllabus', 'application/pdf')">
+                    <i class="fa fa-laptop mr-2"></i> Scan
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+              <div>
+                <a *ngIf="applicantCreditTransfer.syllabusAttachment && !isOpenSyllabusAttachment" href="javascript:void(0)"
+                   (click)="getDocument(applicantCreditTransfer.syllabusAttachment.code, applicantCreditTransfer.syllabusAttachment.name, applicantCreditTransfer.syllabusAttachment.fileExtension)">
+                  Attachment <span><i class="fa fa-download mr_10"></i></span>
+                </a>
+                <button type="submit" class="btn btn-primary"  *ngIf="applicantCreditTransfer.syllabusAttachment && !isOpenSyllabusAttachment" (click)="isOpenSyllabus()">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+              </div>
+
+            </div>
+
+            <div class="col-md-12 mt_20">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postCreditTransfer()" *ngIf="isSaveButton" >
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>save
+              </button>
+
+              <button type="submit" class="btn btn-success mr_10" (click)="putCreditTransfer()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelCreditTransfer()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">SL</th>
+                    <th scope="col">Institute Name</th>
+                    <th scope="col">Program Name</th>
+                    <th scope="col">Number of Course Completed</th>
+                    <th scope="col">CGPA </th>
+                    <th scope="col">Transcript</th>
+                    <th scope="col">Syllabus</th>
+                    <th scope="col" colspan="2" class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let credit_transfer of credit_transfers; let i=index;">
+                    <td>{{i+1}}</td>
+                    <td>{{credit_transfer.instituteName}}</td>
+                    <td>{{credit_transfer.programName}}</td>
+                    <td>{{credit_transfer.courseCompletedNumber}}</td>
+                    <td>{{credit_transfer.cgpa}}</td>
+                    <td>
+                      <button class="btn btn-primary btn-sm mr_10" *ngIf="credit_transfer.transcriptAttachment" title="Preview"
+                              (click)="getDocumentPreview(credit_transfer.transcriptAttachment.code, credit_transfer.transcriptAttachment.name, credit_transfer.transcriptAttachment.fileExtension)">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                      </button>
+                      <button class="btn btn-success btn-sm" *ngIf="credit_transfer.transcriptAttachment" title="Download"
+                              (click)="getDocument(credit_transfer.transcriptAttachment.code, credit_transfer.transcriptAttachment.name, credit_transfer.transcriptAttachment.fileExtension)">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary btn-sm mr_10" *ngIf="credit_transfer.syllabusAttachment"  title="Preview"
+                              (click)="getDocumentPreview(credit_transfer.syllabusAttachment.code, credit_transfer.syllabusAttachment.name, credit_transfer.syllabusAttachment.fileExtension)">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                      </button>
+                      <button class="btn btn-success btn-sm" *ngIf="credit_transfer.syllabusAttachment"  title="Download"
+                              (click)="getDocument(credit_transfer.syllabusAttachment.code, credit_transfer.syllabusAttachment.name, credit_transfer.syllabusAttachment.fileExtension)">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                      </button>
+                    </td>
+
+                    <td>
+                      <button class="btn btn-success btn-sm float-end" (click)="editCreditTransfer(credit_transfer)">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                    <td>
+                      <button class="btn btn-danger btn-sm" (click)="deleteCreditTransfer(credit_transfer)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="credit_transfers.length === 0">
+                    <td colspan="8" class="text-center"><p>No Data Found</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

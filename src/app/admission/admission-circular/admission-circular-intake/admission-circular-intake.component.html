@@ -1,0 +1,126 @@
+<div class="row">
+  <div class="col-lg-12" *ngIf="isAdmissionCircularIntakeView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">Add Intake</h4>
+          <h4 *ngIf="isUpdateButton">Update Intake</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #admissionCircularIntakeForm="ngForm">
+          <div class="row" ngModelGroup="admissionCircularIntakeData" #admissionCircularIntakeData="ngModelGroup">
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Intake</label>
+              <div class="mb_20 pt_10">
+                <ng-select name="applicationType" [(ngModel)]="admissionCircularIntake.admissionIntakeId">
+                  <ng-option *ngFor="let admission_intake of admission_intakes" [value]="admission_intake.id">{{admission_intake.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Start Date</label>
+              <div class="common_input mb_20">
+                <input
+                  name="startDate"
+                  id="startDate"
+                  type="date"
+                  class="form-control" [(ngModel)]="admissionCircularIntake.startDate"
+                />
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">End Date</label>
+              <div class="common_input mb_20">
+                <input
+                  name="endDate"
+                  id="endDate"
+                  type="date"
+                  class="form-control" [(ngModel)]="admissionCircularIntake.endDate"
+                />
+              </div>
+            </div>
+
+
+            <div class="col-lg-12" *ngIf="isUpdateButton">
+              <div class="mb-3 form-check">
+                <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active"  [(ngModel)]="admissionCircularIntake.active"> Is Active</label>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postAdmissionCircularIntake()"
+                      [disabled]="admissionCircularIntakeData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionCircularIntake()"
+                      [disabled]="admissionCircularIntakeData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionCircularIntake()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Intake
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionCircularIntakeView()" *ngIf="!isAdmissionCircularIntakeView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Code</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col" colspan="2" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let admission_circular_intake of admission_circular_intakes;let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{admission_circular_intake.admissionIntake.name}}</td>
+                  <td>{{admission_circular_intake.admissionIntake.code}}</td>
+                  <td>{{admission_circular_intake.startDate | date:'dd MMMM yyyy'}}</td>
+                  <td>{{admission_circular_intake.endDate | date:'dd MMMM yyyy'}}</td>
+                  <td>
+                    <button class="btn btn-success btn-sm float-end" (click)="editAdmissionCircularIntake(admission_circular_intake)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="deleteAdmissionCircularIntake(admission_circular_intake)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

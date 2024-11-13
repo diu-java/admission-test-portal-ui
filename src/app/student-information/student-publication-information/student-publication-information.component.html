@@ -1,0 +1,162 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4> <span *ngIf="publications.length  === 0">Publication</span>
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="publicationInfoView()" *ngIf="!isPublicationInfoView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #publicationForm="ngForm">
+          <div class="row" ngModelGroup="publicationData" #publicationData="ngModelGroup" *ngIf="isPublicationInfoView">
+            <div class="col-md-12">
+              <label class="form-label mb_10">Paper Title</label>
+              <div class="common_input mb_20">
+                <input type="text" name="paperTitle" class="form-control" [(ngModel)]="publication.paperTitle" #paperTitle="ngModel" required/>
+                <div>
+                  <small *ngIf="paperTitle.invalid && paperTitle.touched">Paper Title is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Authors Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="authorsName" class="form-control" [(ngModel)]="publication.authorsName" #authorsName="ngModel" required/>
+                <div>
+                  <small *ngIf="authorsName.invalid && authorsName.touched">Authors Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Journal/Conference Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="journalName" class="form-control" [(ngModel)]="publication.journalName" #journalName="ngModel" required/>
+                <div>
+                  <small *ngIf="journalName.invalid && journalName.touched">Journal Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Journal/Conference Url</label>
+              <div class="common_input mb_20">
+                <input type="text" name="journalUrl" class="form-control" [(ngModel)]="publication.journalUrl" #journalUrl="ngModel" required/>
+                <div>
+                  <small *ngIf="journalUrl.invalid && journalUrl.touched">Journal Url is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Abastract </label>
+              <div class="common_input mb_20">
+                <textarea class="form-control" name="detail" [(ngModel)]="publication.detail" #detail="ngModel" required></textarea>
+                <div>
+                  <small *ngIf="detail.invalid && detail.touched">Abstract Url is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Keyword</label>
+              <div class="common_input mb_20">
+                <input type="text" name="keyword" class="form-control" [(ngModel)]="publication.keyword" #keyword="ngModel" required/>
+                <div>
+                  <small *ngIf="keyword.invalid && keyword.touched">Keyword is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Publication Year</label>
+              <div class="mb_20 pt_10">
+                <ng-select name="publicationYear" [(ngModel)]="publication.publicationYear" #publicationYear="ngModel" required>
+                  <ng-option *ngFor="let year of years" [value]="year">{{year}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="publicationYear.invalid && publicationYear.touched">Publication Year is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Indexed By</label>
+              <div class="common_input mb_20">
+                <input type="text" name="indexedBy" class="form-control" [(ngModel)]="publication.indexedBy" #indexedBy="ngModel" required/>
+                <div>
+                  <small *ngIf="indexedBy.invalid && indexedBy.touched">Indexed By is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postPublication()" *ngIf="isSaveButton" [disabled]="publicationData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putPublication()" *ngIf="isUpdateButton" [disabled]="publicationData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelPublication()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let publication of publications; let i=index;">
+    <div class="white_card card_height_100 mb_20" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Publication {{i+1}}
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deletePublication(publication)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editPublication(publication)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Paper Title</th>
+                  <td colspan="3">{{publication.paperTitle}}</td>
+                </tr>
+                <tr>
+                  <th>Authors Name</th>
+                  <td colspan="3">{{publication.authorsName}}</td>
+                </tr>
+                <tr>
+                  <th>Journal/Conference</th>
+                  <td colspan="3"><a href="{{publication.journalUrl}}" target="_blank">{{publication.journalName}}</a></td>
+                </tr>
+                <tr>
+                  <th>Abstract</th>
+                  <td colspan="3">{{publication.detail}}</td>
+                </tr>
+                <tr>
+                  <th>Keyword</th>
+                  <td colspan="3">{{publication.keyword}}</td>
+                </tr>
+                <tr>
+                  <th>Publication Year</th>
+                  <td>{{publication.publicationYear}}</td>
+                  <th>Indexed by</th>
+                  <td>{{publication.indexedBy}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

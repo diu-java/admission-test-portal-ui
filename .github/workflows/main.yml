@@ -1,0 +1,36 @@
+name: Build and Deploy Angular Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # Specify the Node.js version your project requires
+
+    - name: Install Angular CLI
+      run: npm install -g @angular/cli
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Angular project
+      run: ng build
+
+    - name: Copy build to Nginx directory
+      run: |
+        rm -r /opt/application_ui_live/admission-portal-ui
+        cp -r dist/* /opt/application_ui_live/
+
+    - name: Restart Nginx
+      run: echo ${{ secrets.PC }} sudo -S systemctl restart nginx

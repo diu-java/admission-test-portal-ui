@@ -1,0 +1,516 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-12" *ngIf="isAdmissionCircularProgram">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Add Program</h4>
+              <h4 *ngIf="isUpdateButton">Update Program</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #admissionCircularProgramForm="ngForm">
+              <div class="row" ngModelGroup="admissionCircularProgramData" #admissionCircularProgramData="ngModelGroup">
+
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Admission Circular</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="admission_circular"
+                      id="admission_circular"
+                      type="text"
+                      class="form-control" [value]="admissionCircular.code" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Faculty</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="faculty"
+                      id="faculty"
+                      type="text"
+                      class="form-control" [value]="admissionCircular.faculty?.name" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Program</label>
+                  <div class="mb_20">
+                    <ng-select name="program" [(ngModel)]="admissionCircularProgram.programId" #program="ngModel" required>
+                      <ng-option *ngFor="let program of programs" [value]="program.id">{{program.code}} {{program.name}} </ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="program.invalid && program.touched">Program is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10">
+                      <input type="checkbox" class="form-check-input" name="enableAgreement" id="enableAgreement"  [(ngModel)]="admissionCircularProgram.enableAgreement">Enable Agreement Detail</label>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="admissionCircularProgram.enableAgreement">
+                  <label class="form-label mb_10">Agreement Detail</label>
+                  <div class="common_input mb_20">
+                    <ckeditor name="agreementDetail" id="agreementDetail" [(ngModel)]="admissionCircularProgram.agreementDetail" [editor]="Editor"></ckeditor>
+                  </div>
+                </div>
+
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="admissionCircular.active"> Is Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postAdmissionCircularProgram()"
+                          [disabled]="admissionCircularProgramData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionCircularProgram()"
+                          [disabled]="admissionCircularProgramData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" (click)="cancelAdmissionCircularProgram()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 test" *ngIf="isAdmissionCircularTestSchedule">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Add Test Schedule</h4>
+              <h4 *ngIf="isUpdateButton">Update Test Schedule</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #admissionCircularTestScheduleForm="ngForm">
+              <div class="row" ngModelGroup="admissionCircularTestScheduleData" #admissionCircularTestScheduleData="ngModelGroup">
+
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Admission Circular</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="admission_circular"
+                      type="text"
+                      class="form-control" [value]="admissionCircular.code" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Faculty</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="faculty"
+                      type="text"
+                      class="form-control" [value]="admissionCircular.faculty?.name" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Test Date</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="testDate"
+                      id="testDate"
+                      type="date"
+                      class="form-control" [(ngModel)]="admissionAdnCircularTestSchedule.testDate"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Test Time</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="testTime"
+                      id="testTime"
+                      type="time"
+                      class="form-control" [(ngModel)]="admissionAdnCircularTestSchedule.testTime"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active"  [(ngModel)]="admissionAdnCircularTestSchedule.active"> Is Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postAdmissionCircularTestSchedule()"
+                          [disabled]="admissionCircularTestScheduleData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionCircularTestSchedule()"
+                          [disabled]="admissionCircularTestScheduleData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" (click)="cancelAdmissionCircularTestSchedule()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12" *ngIf="isAdmissionCircularEducationLevel">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Add Education Level</h4>
+              <h4 *ngIf="isUpdateButton">Update Education Level</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #admissionCircularEducationLevelForm="ngForm">
+              <div class="row" ngModelGroup="admissionCircularEducationLevelData" #admissionCircularEducationLevelData="ngModelGroup">
+
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Admission Circular</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="admission_circular"
+                      type="text"
+                      class="form-control" [value]="admissionCircular.code" [disabled]="true"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Level of Education</label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="levelOfEducation" [(ngModel)]="admissionCircularEducationLevel.levelOfEducationId" #levelOfEducation="ngModel" required>
+                      <ng-option *ngFor="let level_of_education of level_of_educations" [value]="level_of_education.id">{{level_of_education.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="levelOfEducation.invalid && levelOfEducation.touched">Level of Education is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="mandatory"  [(ngModel)]="admissionCircularEducationLevel.isMandatory"> Is Mandatory</label>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active"  [(ngModel)]="admissionCircularEducationLevel.active"> Is Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postAdmissionCircularEducationLevel()"
+                          [disabled]="admissionCircularEducationLevelData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionCircularEducationLevel()"
+                          [disabled]="admissionCircularEducationLevelData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" (click)="cancelAdmissionCircularEducationLevel()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12" *ngIf="isAdmissionCircularView">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Create Admission Circular</h4>
+              <h4 *ngIf="isUpdateButton">Update Admission Circular</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #admissionCircularForm="ngForm">
+              <div class="row" ngModelGroup="admissionCircularData" #admissionCircularData="ngModelGroup">
+
+
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Semester</label>
+                  <div class="mb_20">
+                    <ng-select name="semester" [(ngModel)]="admissionCircular.semesterId" #semester="ngModel" required>
+                      <ng-option *ngFor="let semester of semesters" [value]="semester.id">{{semester.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="semester.invalid && semester.touched">Semester is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Semester Type</label>
+                  <div class="mb_20">
+                    <ng-select name="semesterType" [(ngModel)]="admissionCircular.semesterTypeId" #semesterType="ngModel" required>
+                      <ng-option *ngFor="let semester_type of semester_types" [value]="semester_type.id">{{semester_type.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="semesterType.invalid && semesterType.touched">Semester Type is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Program Type</label>
+                  <div class="mb_20">
+                    <ng-select name="programType" [(ngModel)]="admissionCircular.programTypeId" #programType="ngModel" required>
+                      <ng-option *ngFor="let program_type of program_types" [value]="program_type.id">{{program_type.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="programType.invalid && programType.touched">Program Type is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Faculty</label>
+                  <div class="mb_20">
+                    <ng-select name="faculty" [(ngModel)]="admissionCircular.facultyId" #faculty="ngModel" required>
+                      <ng-option *ngFor="let faculty of faculties" [value]="faculty.id">{{faculty.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="faculty.invalid && faculty.touched">Faculty is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-label mb_10">Application Type</label>
+                  <div class="mb_20">
+                    <ng-select name="applicationType" [(ngModel)]="admissionCircular.admissionApplicationTypeId">
+                      <ng-option *ngFor="let application_type of application_types" [value]="application_type.id">{{application_type.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Start Date</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="issueDate"
+                      id="issueDate"
+                      type="date"
+                      class="form-control" [(ngModel)]="admissionCircular.issueDate" #issueDate="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="issueDate.invalid && issueDate.touched">Issue Date is a required field</small>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Expire Date</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="expireDate"
+                      id="expireDate"
+                      type="date"
+                      class="form-control" [(ngModel)]="admissionCircular.expireDate" #expireDate="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="expireDate.invalid && expireDate.touched">Expire Date is a required field</small>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Admission Form Fee</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="amount"
+                      id="amount"
+                      type="number"
+                      class="form-control" [(ngModel)]="admissionCircular.amount" #amount="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="amount.invalid && amount.touched">Amount is a required field</small>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Remarks</label>
+                  <div class="common_input mb_20">
+                    <textarea
+                      name="name"
+                      id="name"
+                      class="form-control" [(ngModel)]="admissionCircular.name"></textarea>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Maximum Number of Choose Program</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="chooseNumber"
+                      id="chooseNumber"
+                      type="number"
+                      class="form-control" [(ngModel)]="admissionCircular.chooseNumber" #chooseNumber="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="chooseNumber.invalid && chooseNumber.touched">Choose Number is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10">
+                      <input type="checkbox" class="form-check-input" name="isAffiliateOrganization" id="isAffiliateOrganization"  [(ngModel)]="admissionCircular.isCreditTransfer">Enable Credit Transfer</label>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10">
+                      <input type="checkbox" class="form-check-input" name="enableAgreement" id="enableAgreement"  [(ngModel)]="admissionCircular.enableAgreement">Enable Agreement Detail</label>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="admissionCircular.enableAgreement">
+                  <label class="form-label mb_10">Agreement Detail</label>
+                  <div class="common_input mb_20">
+                    <ckeditor name="agreementDetail" id="agreementDetail" [(ngModel)]="admissionCircular.agreementDetail" [editor]="Editor"></ckeditor>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="admissionCircular.active"> Is Active</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionCircular()"
+                          [disabled]="admissionCircularData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" (click)="cancelAdmissionCircular()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Circular
+                <button class="btn btn-danger float-end mr_10" (click)="deleteAdmissionCircular(admissionCircular)">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-success float-end mr_10" (click)="editAdmissionCircular(admissionCircular)">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Code </th>
+                  <td colspan="3">{{ admissionCircular.code }}</td>
+
+                </tr>
+                <tr>
+                  <th>Application Type</th>
+                  <td>{{admissionCircular.admissionApplicationType?.name}}</td>
+                  <th>Program Type </th>
+                  <td>{{admissionCircular.programType?.name}}</td>
+                </tr>
+
+                <tr>
+                  <th>Semester</th>
+                  <td>{{admissionCircular.semester.name}}</td>
+                  <th>Semester Type</th>
+                  <td>{{admissionCircular.semesterType.name}}</td>
+                </tr>
+                <tr>
+                  <th>Start Date</th>
+                  <td>{{ admissionCircular.issueDate | date:'dd MMMM yyyy'}}</td>
+                  <th>Expire Data</th>
+                  <td>{{ admissionCircular.expireDate | date:'dd MMMM yyyy'}}</td>
+                </tr>
+                <tr>
+                  <th>Admission Form Fee </th>
+                  <td>{{ admissionCircular.amount }}</td>
+                  <th>Maximum Number of Choose Program </th>
+                  <td>{{ admissionCircular.chooseNumber }}</td>
+                </tr>
+                <tr>
+                  <th>Remarks</th>
+                  <td colspan="3">{{admissionCircular.name}}</td>
+                </tr>
+                <tr>
+                  <th>Faculty</th>
+                  <td colspan="3">{{admissionCircular.faculty.name}}</td>
+                </tr>
+                <tr>
+                  <th>Program</th>
+                  <td colspan="2">
+                    <li *ngFor="let admission_circular_program of admission_circular_programs; let i=index;">{{admission_circular_program.program.code}} {{admission_circular_program.program.name}}
+                      <span style="color: red"><i class="fa fa-trash mr_10" aria-hidden="true" (click)="deleteAdmissionCircularProgram(admission_circular_program)"></i></span>
+                      <span style="color: green"><i class="fa fa-edit" aria-hidden="true" (click)="editAdmissionCircularProgram(admission_circular_program)"></i></span>
+                    </li>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionCircularProgramView()" *ngIf="!isAdmissionCircularProgram">
+                      <span> <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Program</span>
+                    </button>
+                  </td>
+                </tr>
+<!--                <tr>-->
+<!--                  <th>Test Schedule</th>-->
+<!--                  <td colspan="2">-->
+<!--                    <li *ngFor="let test_schedule of test_schedules; let i=index;"><b>Date:</b> {{test_schedule.testDate | date:'dd MMMM yyyy'}} <b>Time:</b> {{test_schedule.testTime}}-->
+<!--                      <span style="color: red"><i class="fa fa-trash" aria-hidden="true" (click)="deleteAdmissionCircularTestSchedule(test_schedule)"></i></span>-->
+<!--                    </li>-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionCircularTestScheduleView()" *ngIf="!isAdmissionCircularTestSchedule">-->
+<!--                      <span> <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Test Schedule</span>-->
+<!--                    </button>-->
+<!--                  </td>-->
+<!--                </tr>-->
+                <tr>
+                  <th>Education Level</th>
+                  <td colspan="2">
+                    <li *ngFor="let circular_education_level of circular_education_levels; let i=index;">{{circular_education_level.levelOfEducation.name}}
+                      <span class="badge bg-success mr_10" *ngIf="circular_education_level.isMandatory">Yes</span>
+                      <span class="badge bg-danger mr_10" *ngIf="!circular_education_level.isMandatory">No</span>
+                        <span style="color: red"><i class="fa fa-trash" aria-hidden="true" (click)="deleteAdmissionCircularEducationLevel(circular_education_level)"></i></span>
+                    </li>
+                  </td>
+                  <td>
+                    <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionCircularEducationLevelView()" *ngIf="!isAdmissionCircularEducationLevel">
+                      <span> <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Education Level</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="admissionCircular.enableAgreement">
+                  <th>Agreement Detail</th>
+                  <td colspan="3" [innerHTML]="admissionCircular.agreementDetail"></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-admission-circular-intake *ngIf="admissionCircular.id" [admissionCircular]="admissionCircular"></app-admission-circular-intake>
+    <app-admission-test-schedule *ngIf="admissionCircular.id" [admissionCircular]="admissionCircular"></app-admission-test-schedule>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

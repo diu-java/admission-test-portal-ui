@@ -1,0 +1,165 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+
+      <div class="col-lg-12" *ngIf="isAdmissionExamView">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Add Admission Exam</h4>
+              <h4 *ngIf="isUpdateButton">Update Admission Exam</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #admissionExamForm="ngForm">
+              <div class="row" ngModelGroup="admissionExamData" #admissionExamData="ngModelGroup">
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Semester</label>
+                  <div class="mb_20">
+                    <ng-select name="semester" [(ngModel)]="admissionExam.semesterId" #semester="ngModel" [disabled]="isUpdateButton">
+                      <ng-option *ngFor="let semester of semesters" [value]="semester.id">{{semester.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="semester.invalid && semester.touched">Semester is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Admission Circular</label>
+                  <div class="mb_20">
+                    <ng-select name="circular" [(ngModel)]="admissionExam.admissionCircularId" #circular="ngModel" [disabled]="isUpdateButton">
+                      <ng-option *ngFor="let admission_circular of admission_circulars" [value]="admission_circular.id">{{admission_circular.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="circular.invalid && circular.touched">Admission Circular is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="form-label mb_10">Mark Template</label>
+                  <div class="mb_20">
+                    <ng-select name="admissionMarkTemplate" [(ngModel)]="admissionExam.admissionMarkTemplateId" #admissionMarkTemplate="ngModel" required>
+                      <ng-option *ngFor="let mark_distribution_template of mark_distribution_templates" [value]="mark_distribution_template.id">{{mark_distribution_template.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="admissionMarkTemplate.invalid && admissionMarkTemplate.touched">Admission Mark Template is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="admissionExam.active"> Is Active</label>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postAdmissionExam()"
+                          [disabled]="admissionExamData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionExam()"
+                          [disabled]="admissionExamData.invalid">
+                    <i class="fa fa-edit mr_10" aria-hidden="true"></i>UPdate
+                  </button>
+                  <button type="submit" class="btn btn-danger" (click)="cancelAdmissionExam()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Admission Exam List
+<!--                <button type="submit" class="btn btn-primary float-end" (click)="admissionMarkDistributionTemplateView()" *ngIf="!isAdmissionExamView">-->
+<!--                  <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New-->
+<!--                </button>-->
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-3">
+                <label class="form-label mb_10"> Semester</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="semesterCode">
+                    <ng-option *ngFor="let semester of semesters" [value]="semester.code">{{semester.name}} ({{semester.code}})</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label mb_10">Faculty</label>
+                <div class="mb_20">
+                  <ng-select name="semesterCode" [(ngModel)]="facultyCode">
+                    <ng-option *ngFor="let faculty of faculties" [value]="faculty.code">{{faculty.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-lg-1">
+                <label class="form-label mb_10">&nbsp;</label>
+                <div class="common_input mt_5">
+                  <button class="btn btn-primary" (click)="getAdmissionExam()">Search</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">SL</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Semester</th>
+                      <th scope="col">Admission Circular</th>
+                      <th scope="col">Mark Template</th>
+                      <th scope="col">Total Applicant</th>
+                      <th scope="col">Total Selected Applicant</th>
+                      <th scope="col">Total Waiting </th>
+                      <th scope="col">Total  Rejected</th>
+                      <th scope="col">Active</th>
+                      <th scope="col" colspan="2">View</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let i=index;let admission_exam of admission_exams | paginate: { itemsPerPage: size, currentPage: p+1, totalItems: total };">
+                      <td>{{i+1}}</td>
+                      <td>{{admission_exam.code}}</td>
+                      <td>{{admission_exam.semester.name}}</td>
+                      <td>{{admission_exam.admissionCircular.name}}</td>
+                      <td>{{admission_exam.admissionMarkTemplate?.name}}</td>
+                      <td>{{admission_exam.totalApplicant}}</td>
+                      <td>{{admission_exam.totalSelectedApplicant}}</td>
+                      <td>{{admission_exam.totalWaiting}}</td>
+                      <td>{{admission_exam.totalRejected}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="admission_exam.active">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!admission_exam.active">No</span>
+                      </td>
+                      <td>
+                        <button class="btn btn-success" (click)="editAdmissionExam(admission_exam)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-primary" (click)="admissionMarkDistributionTemplateFind(admission_exam)">
+                          <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls (pageChange)="pageChangeEvent($event)" class="text-center" style="background: #373063e6 !important;"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

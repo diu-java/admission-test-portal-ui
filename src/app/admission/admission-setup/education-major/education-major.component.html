@@ -1,0 +1,165 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-6" >
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Create Education Major</h4>
+              <h4 *ngIf="isUpdateButton">Update Education Major</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #educationMajorForm="ngForm">
+              <div class="row" ngModelGroup="educationMajorData" #educationMajorData="ngModelGroup">
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Level of Education </label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="cityId" id="cityId" (change)="getDegree(educationMajor.levelOfEducationId)" [(ngModel)]="educationMajor.levelOfEducationId" #levelOfEducation="ngModel" required [disabled]="isUpdateButton">
+                      <ng-option *ngFor="let level_of_education of level_of_educations" [value]="level_of_education.id">{{level_of_education.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="levelOfEducation.invalid && levelOfEducation.touched">Level of Education is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label mb_10">Degree </label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="subDistrictId" id="subDistrictId" [(ngModel)]="educationMajor.degreeId" #degree="ngModel" required>
+                      <ng-option *ngFor="let degree of degrees"
+                                 [value]="degree.id">{{degree.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="degree.invalid && degree.touched">Degree is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Code</label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      name="code"
+                      id="code"
+                      class="form-control" [(ngModel)]="educationMajor.code" #code="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="code.invalid && code.touched">Code is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Name</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="name"
+                      id="name"
+                      type="text"
+                      class="form-control" [(ngModel)]="educationMajor.name" #name="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="educationMajor.active"> Is Active</label>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="postEducationMajor()"
+                          [disabled]="educationMajorData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putEducationMajor()"
+                          [disabled]="educationMajorData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" *ngIf="isUpdateButton" (click)="cancelEducationMajor()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Education Major List</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-6">
+                <label class="form-label mb_10">Level of Education</label>
+                <div class="mb_20">
+                  <ng-select name="countryId" [(ngModel)]="levelOfEducationId" (change)="getDegreeList(levelOfEducationId)">
+                    <ng-option *ngFor="let value of level_of_educations" [value]="value.id"> {{value.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <label class="form-label mb_10">Degree</label>
+                <div class="mb_20">
+                  <ng-select name="degree" id="degree" [(ngModel)]="degreeId" (change)="getEducationMajor()">
+                    <ng-option *ngFor="let degree of degree_lists" [value]="degree.id"> {{degree.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col" colspan="2" class="text-center">Action</th>
+                      <th scope="col">SL</th>
+                      <th scope="col">Degree</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Active</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let education_major of education_majors;let i = index;">
+                      <td>
+                        <button class="btn btn-success btn-sm float-end" (click)="editEducationMajor(education_major)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteEducationMajor(education_major)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>{{i + 1}}</td>
+                      <td>{{education_major.degree?.name}}</td>
+                      <td>{{education_major.code}}</td>
+                      <td>{{education_major.name}}</td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="education_major.active">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!education_major.active">No</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

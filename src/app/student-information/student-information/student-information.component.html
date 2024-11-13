@@ -1,0 +1,252 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-12">
+        <div class="main-title mb_30">
+          <h3 class="m-0">Student Look Up</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="white_card card_height_100 mb_30">
+          <div class="white_card_body">
+            <div class="row mt_20">
+              <div class="col-lg-10 mb_20">
+                <div class="form-outline">
+                  <label class="form-label mb_10" *ngIf="studentId">Student ID or UGC ID</label>
+                  <input
+                    type="search"
+                    id="searchStudent"
+                    class="form-control"
+                    placeholder="Search By Student ID or UGC ID"
+                    [(ngModel)]="studentId" (keydown)="onKeydownStudentInformation($event)"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <label class="form-label" style="margin-top:45px;" *ngIf="studentId"></label>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="getStudentInformation()">
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12" *ngIf="studentInformation.studentPerson">
+        <div class="white_card card_height_100 mb_20 pt_25">
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="d-flex mb_15 border_bottom_1px pb-3">
+                  <div class="flex-shrink-0" *ngIf="studentInformation.studentPerson.photoAttachment">
+                    <img class="me-3 rounded me-0 me-sm-3"
+                         [src]="'data:' + studentInformation.studentPerson.photoAttachment.fileType + ';base64,' + studentInformation.studentPerson.photoAttachment.file"
+                         alt="{{studentInformation.studentPerson.fullName}}" style="width:100px;height:100px;">
+                  </div>
+                  <div class="flex-shrink-0" *ngIf="!studentInformation.studentPerson.photoAttachment">
+                    <img class="me-3 rounded me-0 me-sm-3" src="/assets/img/profile.jpg" alt="{{studentInformation.studentPerson.fullName}}"
+                         style="width:100px;height:100px;">
+                  </div>
+                  <div class="flex-grow-1">
+                    <h4 class="mb-2">{{ studentInformation.studentPerson.fullName }}</h4>
+                    <p class="mb-1"><span><i class="fa fa-phone me-2 text-primary"></i></span> {{ studentInformation.studentPerson?.personalPhone }}
+                    </p>
+                    <p class="mb-1"><span><i class="fa fa-envelope me-2 text-primary"></i></span>
+                      <b>{{ studentInformation.email }}</b>
+                    </p>
+                    <p class="mb-1" *ngIf="studentInformation.studentPerson.gender">
+                  <span *ngIf="studentInformation.studentPerson.gender.name==='Male'" class="mr_10"><i
+                    class="fa fa-male me-2 text-primary"></i><b>{{ studentInformation.studentPerson.gender.name }}</b></span>
+                      <span *ngIf="studentInformation.studentPerson.gender.name==='Female'" class="mr_10"><i
+                        class="fa fa-female me-2 text-primary"></i><b>{{ studentInformation.studentPerson.gender.name }}</b></span>
+                      <span><i class="fa fa-tint me-2 text-primary"></i><b>{{ studentInformation.studentPerson?.bloodGroup?.name }}</b></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="status-menu">
+                  <h4>Profile Status </h4>
+                  <div class="progress-bar mb_15">
+                    <div class="progress" [style.width.%]="getProgressPercentage()"></div>
+                  </div>
+                  <ul *ngIf="studentInformation.studentPerson" class="border_right">
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 1}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(1)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Person Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 1"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 2}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(2)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Academic Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 2"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 3}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(3)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Address Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 3"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 4}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(4)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Emergency Contact</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 4"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 5}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(5)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>VISA Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 5"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 6}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(6)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Passport Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 6"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 7}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(7)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Bank Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 7"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 8}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(8)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Education Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 8"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 9}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(9)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Skill Information</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 9"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 10}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(10)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Job Experience</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 10"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 11}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(11)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Family</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 11"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 12}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(12)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Publication</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 12"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 13}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(13)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Award</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 13"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                    <li class="menu-item" [ngClass]="{'active': activeTab === 14}">
+                      <i class="fa fa-check-circle fa-2x text-success" aria-hidden="true"
+                         *ngIf="studentInformation.studentPerson"></i>
+                      <i class="fa fa-sync-alt fa-2x text-warning" aria-hidden="true"
+                         *ngIf="!studentInformation.studentPerson"></i>
+                      <a (click)="activateTab(14)" class="menu-link d-flex justify-content-between align-items-center">
+                        <span>Research</span>
+                        <i class="fa fa-arrow-circle-right text-success" aria-hidden="true" *ngIf="activeTab === 14"></i> <!-- Align icon at the end -->
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-9">
+                <app-student-person-information *ngIf="studentInformation && activeTab === 1" [studentInformation]="studentInformation"></app-student-person-information>
+                <app-student-academic-information *ngIf="studentInformation && activeTab === 2" [studentInformation]="studentInformation"></app-student-academic-information>
+                <app-student-address *ngIf="activeTab === 3" [studentInformation]="studentInformation"></app-student-address>
+                <app-student-emergency-contact-information *ngIf="activeTab === 4" [studentInformation]="studentInformation"></app-student-emergency-contact-information>
+                <app-student-visa *ngIf="activeTab === 5" [studentInformation]="studentInformation"></app-student-visa>
+                <app-student-passport *ngIf="activeTab === 6" [studentInformation]="studentInformation"></app-student-passport>
+                <app-student-bank *ngIf="activeTab === 7" [studentInformation]="studentInformation"></app-student-bank>
+                <app-student-education *ngIf="activeTab === 8"></app-student-education>
+                <app-student-skill-information *ngIf="activeTab === 9" [studentInformation]="studentInformation"></app-student-skill-information>
+                <app-student-job-experience-information *ngIf="activeTab === 10" [studentInformation]="studentInformation"></app-student-job-experience-information>
+                <app-student-family-information *ngIf="activeTab === 11" [studentInformation]="studentInformation"></app-student-family-information>
+                <app-student-publication-information *ngIf="activeTab === 12" [studentInformation]="studentInformation"></app-student-publication-information>
+                <app-student-award-information *ngIf="activeTab === 13" [studentInformation]="studentInformation"></app-student-award-information>
+                <app-student-research-information *ngIf="activeTab === 14" [studentInformation]="studentInformation"></app-student-research-information>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+
+

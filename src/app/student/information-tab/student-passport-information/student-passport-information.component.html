@@ -1,0 +1,157 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div>
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Passport Information
+              <button type="submit" class="btn btn-primary float-end" (click)="passportInfoView()">
+                <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+              </button>
+            </h4>
+          </div>
+        </div>
+<!--        <div class="white_card_body">-->
+<!--          <div class="row">-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+    </div>
+
+    <div *ngFor="let passport_information of passport_informations; let i=index;">
+      <div class="white_card card_height_100 mb_20" >
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Passport {{passport_information.passportNo}}
+              <button class="btn btn-danger float-end mr_10" (click)="deletePassportInformation(passport_information)">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+              <button class="btn btn-success float-end mr_10" (click)="editPassportInformation(passport_information)">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th>Passport Number</th>
+                    <td colspan="3">{{passport_information.passportNo}}</td>
+
+                  </tr>
+                  <tr>
+                    <th>Issue Place</th>
+                    <td colspan="3">{{passport_information.issuePlace}}</td>
+                  </tr>
+                  <tr>
+                    <th>Issue Country</th>
+                    <td colspan="3"><span *ngIf="passport_information.issueCountry">{{passport_information.issueCountry.name}}</span></td>
+                  </tr>
+                  <tr>
+                    <th>Issue Date</th>
+                    <td colspan="3">{{passport_information.issueDate}}</td>
+                  </tr>
+                  <tr>
+                    <th>Expired Date</th>
+                    <td colspan="3">{{passport_information.expiredDate}}</td>
+                  </tr>
+                  <tr *ngIf="passport_information.attachment">
+                    <th>Attachment</th>
+                    <td colspan="3"><button class="btn btn-primary" *ngIf="passport_information.attachment" (click)="getDocument(passport_information.attachment.code, passport_information.attachment.name, passport_information.attachment.fileExtension)">Download</button></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isPassportInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>New Passport Info</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #passportInformationForm="ngForm">
+          <div class="row" ngModelGroup="passportInformationData" #passportInformationData="ngModelGroup">
+            <div class="col-md-12">
+              <label class="form-label mb_10">Passport Number</label>
+              <div class="common_input mb_20">
+                <input type="text" name="passportNo" id="passportNo" class="form-control" [(ngModel)]="passportInformation.passportNo" #passportNo="ngModel" required/>
+                <div>
+                  <small *ngIf="passportNo.invalid && passportNo.touched">Passport No is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Issue Place</label>
+              <div class="common_input mb_20">
+                <input type="text" name="issuePlace" id="issuePlace" class="form-control" [(ngModel)]="passportInformation.issuePlace" #issuePlace="ngModel" required/>
+                <div>
+                  <small *ngIf="issuePlace.invalid && issuePlace.touched">Issue Place is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Issue Country</label>
+              <div class="mb_20">
+                <ng-select name="issueCountryId" [(ngModel)]="passportInformation.issueCountryId" #issueCountryId="ngModel" required>
+                  <ng-option *ngFor="let country of countries" [value]="country.id">{{country.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="issueCountryId.invalid && issueCountryId.touched">Issue Country is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Issue Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="issueDate" class="form-control" [(ngModel)]="passportInformation.issueDate" #issueDate="ngModel" required/>
+                <div>
+                  <small *ngIf="issueDate.invalid && issueDate.touched">Issue Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Expired Date</label>
+              <div class="common_input mb_20">
+                <input type="date" name="expiredDate" class="form-control" [(ngModel)]="passportInformation.expiredDate" #expiredDate="ngModel" required/>
+                <div>
+                  <small *ngIf="expiredDate.invalid && expiredDate.touched">Expire Date is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">Attachment</label>
+              <div class="mb_20">
+                <input type="file" class="form-control" name="attachmentId" (change)="postDocument($event)">
+              </div>
+              <div class="mb-3" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary" (click)="postPassportInformation()" *ngIf="isSaveButton" [disabled]="passportInformationData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putPassportInformation()" *ngIf="isUpdateButton" [disabled]="passportInformationData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelPassportInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

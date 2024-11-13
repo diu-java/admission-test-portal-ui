@@ -1,0 +1,192 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4 *ngIf="isSaveButton">Create Education Institute</h4>
+              <h4 *ngIf="isUpdateButton">Update Education Institute</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <form #educationInstituteForm="ngForm">
+              <div class="row" ngModelGroup="educationInstituteData" #educationInstituteData="ngModelGroup">
+                <div class="col-md-12">
+                  <label class="form-label mb_10">Education Institute Type </label>
+                  <div class="mb_20 pt_10">
+                    <ng-select name="educationInstituteType" id="educationInstituteType" [(ngModel)]="educationInstitute.educationInstituteTypeId" #educationInstituteType="ngModel" required>
+                      <ng-option *ngFor="let institute_type of institute_types"
+                                 [value]="institute_type.id">{{institute_type.name}}</ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="educationInstituteType.invalid && educationInstituteType.touched">Education Institute is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Code</label>
+                  <div class="common_input mb_20">
+                    <input
+                      type="text"
+                      name="code"
+                      id="code"
+                      class="form-control" [(ngModel)]="educationInstitute.code" #code="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="code.invalid && code.touched">Code is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Name</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="name"
+                      id="name"
+                      type="text"
+                      class="form-control" [(ngModel)]="educationInstitute.name" #name="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="name.invalid && name.touched">Name is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10">Address</label>
+                  <div class="common_input mb_20">
+                    <input
+                      name="address"
+                      id="address"
+                      type="text"
+                      class="form-control" [(ngModel)]="educationInstitute.address" #address="ngModel" required
+                    />
+                    <div>
+                      <small *ngIf="address.invalid && address.touched">Address is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <label class="form-label mb_10"> Level of Education</label>
+                  <div class="mb_20">
+                    <ng-select name="educationLevel" (change)="instituteLevelOfEducationVal()" [(ngModel)]="levels" [multiple]="true" #educationLevel="ngModel" required>
+                      <ng-option *ngFor="let level_of_education of level_of_educations" [value]="level_of_education.id">
+                        {{level_of_education.name}}
+                      </ng-option>
+                    </ng-select>
+                    <div>
+                      <small *ngIf="educationLevel.invalid && educationLevel.touched">Level of Education is a required field</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="isUpdateButton">
+                  <div class="mb-3 form-check">
+                    <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active" id="active"  [(ngModel)]="educationInstitute.active"> Is Active</label>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn btn-primary" *ngIf="isSaveButton" (click)="postEducationInstitute()"
+                          [disabled]="educationInstituteData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                  </button>
+                  <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putEducationInstitute()"
+                          [disabled]="educationInstituteData.invalid">
+                    <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+                  </button>
+                  <button type="submit" class="btn btn-danger" *ngIf="isUpdateButton" (click)="cancelEducationInstitute()">
+                    <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Education Institute List</h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+<!--            <div class="row">-->
+
+<!--              <div class="col-lg-6">-->
+<!--                <label class="form-label mb_10">Degree</label>-->
+<!--                <div class="mb_20">-->
+<!--                  <ng-select name="degree" id="instituteType" [(ngModel)]="instituteTypeId" (change)="getEducationInstitute()">-->
+<!--                    <ng-option *ngFor="let degree of degrees" [value]="degree.id"> {{degree.name}}, {{degree.code}}</ng-option>-->
+<!--                  </ng-select>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-outline">
+                  <input
+                    type="search"
+                    id="form1"
+                    class="form-control"
+                    placeholder="Search" [(ngModel)]="search"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <button class="btn btn-primary" (click)="getEducationInstitute()">Search</button>
+              </div>
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col" colspan="2" class="text-center">Action</th>
+                      <th scope="col">SL</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Institute Type</th>
+                      <th scope="col">Education Level</th>
+                      <th scope="col">Active</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let i = index;let education_institute of education_institutes | paginate: { itemsPerPage: size, currentPage: page+1, totalItems: total };">
+                      <td>
+                        <button class="btn btn-success btn-sm float-end" (click)="editEducationInstitute(education_institute)">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger btn-sm" (click)="deleteEducationInstitute(education_institute)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                      <td>{{ page * 10 + (i +1) }}</td>
+                      <td>{{education_institute.code}}</td>
+                      <td>{{education_institute.name}}</td>
+                      <td>{{education_institute.educationInstituteType?.name}}</td>
+                      <td>
+                            <span *ngFor="let value of education_institute.educationInstituteLevels	">
+                              {{value.levelOfEducation.name}}<br>
+                            </span>
+                      </td>
+                      <td>
+                        <span class="badge bg-success" *ngIf="education_institute.active">Yes</span>
+                        <span class="badge bg-danger" *ngIf="!education_institute.active">No</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <pagination-controls (pageChange)="pageChangeEvent($event)" class="text-center" style="background: #373063e6 !important;"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

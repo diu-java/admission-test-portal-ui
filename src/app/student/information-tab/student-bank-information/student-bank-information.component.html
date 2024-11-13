@@ -1,0 +1,120 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Bank Information
+            <button type="submit" class="btn btn-primary float-end" (click)="bankInfoView()">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Account Holder Name</th>
+                  <th scope="col">Account No</th>
+                  <th scope="col">Bank Name</th>
+                  <th scope="col">Currency</th>
+                  <th scope="col" colspan="2">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let bank_information of bank_informations;let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{bank_information.accountName}}</td>
+                  <td>{{bank_information.accountNo}}</td>
+                  <td>{{bank_information.bank.name}}</td>
+                  <td>{{bank_information.currency.name}}</td>
+                  <td>
+                    <button class="btn btn-success mr_10" (click)="editBankInformation(bank_information)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger ml_5" (click)="deleteBankInformation(bank_information)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isBankInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>New Bank Info</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #bankInformationForm="ngForm">
+          <div class="row" ngModelGroup="bankInformationData" #bankInformationData="ngModelGroup">
+            <div class="col-md-12">
+              <label class="form-label mb_10">Account Holder Name</label>
+              <div class="common_input mb_20">
+                <input type="text" name="accountName" class="form-control" [(ngModel)]="bankInformation.accountName" #accountName="ngModel" required/>
+                <div>
+                  <small *ngIf="accountName.invalid && accountName.touched">Account Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Account No</label>
+              <div class="common_input mb_20">
+                <input type="text" name="accountNo" class="form-control" [(ngModel)]="bankInformation.accountNo" #accountNo="ngModel" required/>
+                <div>
+                  <small *ngIf="accountNo.invalid && accountNo.touched">Account No is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Bank Name</label>
+              <div class="mb_20">
+                <ng-select name="bankId" [(ngModel)]="bankInformation.bankId" #bankId="ngModel" required>
+                  <ng-option *ngFor="let bank of banks" [value]="bank.id">{{bank.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="bankId.invalid && bankId.touched">Bank is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Currency</label>
+              <div class="mb_20">
+                <ng-select name="currencyId" [(ngModel)]="bankInformation.currencyId" #currencyId="ngModel" required>
+                  <ng-option *ngFor="let currency of currencies" [value]="currency.id">{{currency.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="currencyId.invalid && currencyId.touched">Currency is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary" (click)="postBankInformation()" *ngIf="isSaveButton" [disabled]="bankInformationData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putBankInformation()" *ngIf="isUpdateButton" [disabled]="bankInformationData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelBankInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

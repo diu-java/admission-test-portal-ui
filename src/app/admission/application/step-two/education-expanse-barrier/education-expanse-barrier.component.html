@@ -1,0 +1,228 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h6>Education Expense Bearer (Applicable for Guardian Group Life
+            Insurance)
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="groupInsuranceView()"
+                    *ngIf="group_insurances.length===0">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h6>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #groupInsuranceForm="ngForm">
+          <div class="row" ngModelGroup="groupInsuranceData" #groupInsuranceData="ngModelGroup"
+               *ngIf="isGroupInsuranceView">
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Select Nominee <span style="color: red;">*</span></label>
+              <div class="mb_20">
+                <ng-select id="guardianSelect" name="guardianSelect"
+                           (change)="getFamily(admissionPerson.id, applicantGroupInsurance.relationNominee)"
+                           [(ngModel)]="applicantGroupInsurance.relationNominee" #relationNominee="ngModel" required>
+                  <ng-container *ngFor="let relation of relations">
+                    <ng-option [value]="relation.code" *ngIf="relation.code === 'F' || relation.code === 'M' || relation.code === 'O'">{{ relation.name }}</ng-option>
+                  </ng-container>
+                </ng-select>
+                <small class="form-text">You can not select late person</small>
+                <div>
+                  <small *ngIf="relationNominee.invalid && formSubmitted">Nominee is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6" *ngIf="applicantGroupInsurance.relationNominee === 'O'">
+              <label class="form-label mb_10">Relation <span style="color: red;">*</span></label>
+              <div class="mb_20">
+                <ng-select id="relationGroup" name="relationGroup" [(ngModel)]="applicantGroupInsurance.relationId">
+                  <ng-container *ngFor="let relation of relations">
+                    <ng-option  [value]="relation.id" *ngIf="relation.code !== 'F'  && relation.code !== 'M' && relation.code !== 'O' ">{{ relation.name }}</ng-option>
+                  </ng-container>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-lg-6" *ngIf="applicantGroupInsurance.relationNominee !== 'O'"></div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Name <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  class="form-control" (input)="applicantGroupInsurance.name = formatName(applicantGroupInsurance.name)" [(ngModel)]="applicantGroupInsurance.name"
+                  [disabled]="applicantGroupInsurance.relationNominee !== 'O'" #groupInsuranceName="ngModel" required
+                />
+                <div>
+                  <small *ngIf="groupInsuranceName.invalid && formSubmitted">Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Mobile Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="guardianMobile"
+                  id="guardianMobile"
+                  class="form-control" [(ngModel)]="applicantGroupInsurance.mobileNumber"
+                  [disabled]="applicantGroupInsurance.relationNominee !== 'O'" #groupInsuranceMobile="ngModel" required
+                />
+                <div>
+                  <small *ngIf="groupInsuranceMobile.invalid && formSubmitted">Mobile Number is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <label class="form-label mb_10">Email <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  class="form-control" [(ngModel)]="applicantGroupInsurance.email"
+                  [disabled]="applicantGroupInsurance.relationNominee !== 'O'" #groupInsuranceEmail="ngModel" required
+                />
+                <div>
+                  <small *ngIf="groupInsuranceEmail.invalid && formSubmitted">Email is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Date of Birth <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="date"
+                  name="guardianDesignation"
+                  id="guardianDesignation"
+                  class="form-control" [(ngModel)]="applicantGroupInsurance.dateOfBirth"
+                  [disabled]="applicantGroupInsurance.relationNominee !== 'O'" #groupInsuranceDoB="ngModel" required
+                />
+                <div>
+                  <small *ngIf="groupInsuranceDoB.invalid && formSubmitted">Date of Birth is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Age</label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="fatherAge"
+                  id="fatherAge"
+                  class="form-control" [value]="calculateAge(applicantGroupInsurance.dateOfBirth)" [disabled]="true"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">National ID <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="nid"
+                  id="nid"
+                  class="form-control" [(ngModel)]="applicantGroupInsurance.nationalId"
+                  [disabled]="applicantGroupInsurance.relationNominee !== 'O'" #groupInsuranceNational="ngModel" required
+                />
+                <div>
+                  <small *ngIf="groupInsuranceNational.invalid && formSubmitted">National ID is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Annual Income <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="annualIncome"
+                  id="annualIncome"
+                  class="form-control" [(ngModel)]="applicantGroupInsurance.annualIncome"
+                  [disabled]="applicantGroupInsurance.relationNominee !== 'O'" #groupInsuranceIncome="ngModel" required
+                />
+                <div>
+                  <small *ngIf="groupInsuranceIncome.invalid && formSubmitted">Annual income is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postGroupInsurance()">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putGroupInsurance()">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelGroupInsurance()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div *ngIf="group_insurances.length  === 0" class="col-lg-12 text-center" style="font-size: 18px">
+            <p>No Data found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let group_insurance of group_insurances; let i=index;">
+    <div class="white_card card_height_100" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Guardian Group Life Insurance: {{group_insurance.relation?.name}}
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deleteGroupInsurance(group_insurance)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editGroupInsurance(group_insurance)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Name</th>
+                  <td colspan="3">{{group_insurance.name}}</td>
+                </tr>
+                <tr>
+                  <th>Mobile Number</th>
+                  <td colspan="3">{{group_insurance.mobileNumber}}</td>
+                </tr>
+                <tr>
+                  <th>Email</th>
+                  <td colspan="3">{{group_insurance.email}}</td>
+                </tr>
+                <tr>
+                  <th>Date of Birth</th>
+                  <td>{{ group_insurance.dateOfBirth | date}}</td>
+                  <th>Age</th>
+                  <td>{{ calculateAge(group_insurance.dateOfBirth) }}</td>
+                </tr>
+                <tr>
+                  <th>National ID</th>
+                  <td colspan="3">{{ group_insurance.nationalId }}</td>
+                </tr>
+                <tr>
+                  <th>Annual Income</th>
+                  <td colspan="3">{{group_insurance.annualIncome}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

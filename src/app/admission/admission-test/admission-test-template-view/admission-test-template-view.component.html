@@ -1,0 +1,50 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="dashboard_breadcam mb_30">
+          <p><a (click)="getBack()">Test Template List </a> <i class="fas fa-caret-right"></i> Test Template </p>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>Test Template
+<!--                <button class="btn btn-danger float-end mr_10" (click)="deleteAdmissionCircular(admissionCircular)">-->
+<!--                  <i class="fa fa-trash" aria-hidden="true"></i>-->
+<!--                </button>-->
+<!--                <button class="btn btn-success float-end mr_10" (click)="editAdmissionCircular(admissionCircular)">-->
+<!--                  <i class="fa fa-edit" aria-hidden="true"></i>-->
+<!--                </button>-->
+              </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th>Code </th>
+                    <td>{{ admissionTestTemplate.code }}</td>
+                  </tr>
+                  <tr>
+                    <th>Name </th>
+                    <td>{{ admissionTestTemplate.name }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-admission-template-category *ngIf="admissionTestTemplate.id" [admissionTestTemplate]="admissionTestTemplate"></app-admission-template-category>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>
+

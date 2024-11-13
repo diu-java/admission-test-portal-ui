@@ -1,0 +1,95 @@
+<nav class="sidebar dark_sidebar">
+  <div class="logo d-flex justify-content-between">
+    <a class="large_logo" routerLink=""
+    ><img src="/assets/img/logo_white.png" alt=""
+    /></a>
+    <a class="small_logo" routerLink=""><img src="/assets/img/diu.ico" alt=""/></a>
+    <div class="sidebar_close_icon d-lg-none">
+      <i class="ti-close"></i>
+    </div>
+  </div>
+  <ul id="sidebar_menu">
+    <li class="">
+      <a routerLink="dashboard" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/dashboard.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Dashboard</span>
+        </div>
+      </a>
+    </li>
+    <li class="">
+      <a routerLink="dashboard" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/dashboard.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Applicant Selection</span>
+        </div>
+      </a>
+    </li>
+    <li class="">
+      <a routerLink="admission-test-mark-entry" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/dashboard.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Mark Entry</span>
+        </div>
+      </a>
+    </li>
+    <li class="">
+      <a routerLink="dashboard" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/dashboard.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Test Approval</span>
+        </div>
+      </a>
+    </li>
+    <li class="">
+      <a routerLink="admission-test" aria-expanded="false" routerLinkActive="active">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/dashboard.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Admission Test</span>
+        </div>
+      </a>
+    </li>
+
+    <li class="">
+      <a class="has-arrow" href="#" aria-expanded="false">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/course.png" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Configuration</span>
+        </div>
+      </a>
+      <ul>
+        <li><a routerLink="admission-test" routerLinkActive="active">Admission Test</a></li>
+        <li><a routerLink="admission-test-committee" routerLinkActive="active">Test Committee</a></li>
+        <li><a routerLink="admission-test-template" routerLinkActive="active">Test Template</a></li>
+        <li><a routerLink="admission-test-category" routerLinkActive="active">Category</a></li>
+        <li><a routerLink="admission-test-subject" routerLinkActive="active">Subject</a></li>
+        <li><a routerLink="admission-test-committee-role" routerLinkActive="active">Committee Role</a></li>
+        <li><a routerLink="admission-test-approval-role" routerLinkActive="active">Approval Role</a></li>
+      </ul>
+    </li>
+
+    <li class="">
+      <a aria-expanded="false" (click)="logout()">
+        <div class="nav_icon_small">
+          <img src="/assets/img/menu-icon/14.svg" alt="" />
+        </div>
+        <div class="nav_title">
+          <span>Logout</span>
+        </div>
+      </a>
+    </li>
+  </ul>
+</nav>
+

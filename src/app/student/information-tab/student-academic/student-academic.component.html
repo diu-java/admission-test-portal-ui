@@ -1,0 +1,293 @@
+<div class="row">
+  <div class="col-lg-6">
+    <div>
+      <div class="white_card card_height_100 mb_20" >
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>Academic Information
+              <button type="submit" class="btn btn-primary float-end" (click)="academicInfoView()">
+                <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+              </button>
+            </h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let student_information of student_informations; let i=index;">
+      <div class="white_card card_height_100 mb_20" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>{{student_information.program.name}}
+              <button class="btn btn-success float-end mr_10" (click)="editAcademic(student_information)">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>Student ID</th>
+                      <td>{{student_information.ugcId}}</td>
+                      <th>Registration</th>
+                      <td>{{student_information.studentId}}</td>
+                    </tr>
+                    <tr>
+                      <th>Batch</th>
+                      <td colspan="3">{{student_information.batch.code}}</td>
+                    </tr>
+                    <tr>
+                      <th>Department</th>
+                      <td colspan="3">{{student_information.department.name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Faculty</th>
+                      <td colspan="3">{{student_information.faculty.name}}</td>
+                    </tr>
+                      <tr>
+                        <th>Syllabus Template</th>
+                        <td colspan="3"><span *ngIf="student_information.syllabusTemplate">{{student_information.syllabusTemplate.name}}</span></td>
+                      </tr>
+                    <tr>
+                      <th>Level Term Scheme Template</th>
+                      <td colspan="3"><span *ngIf="student_information.levelTermTemplate">{{student_information.levelTermTemplate.name}}</span></td>
+                    </tr>
+                    <tr>
+                      <th>Payment Scheme Template</th>
+                      <td colspan="3"><span *ngIf="student_information.paymentSchemeTemplate">{{student_information.paymentSchemeTemplate.name}}</span></td>
+                    </tr>
+                    <tr>
+                      <th>Issue Date</th>
+                      <td>{{student_information.issueDate}}</td>
+                      <th>Expire Date</th>
+                      <td colspan="3">{{student_information.expireDate}}</td>
+                    </tr>
+<!--                    <tr>-->
+<!--                      <th>Expire Date</th>-->
+<!--                      <td colspan="3">{{student_information.expireDate}}</td>-->
+<!--                    </tr>-->
+                  </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="col-lg-6" *ngIf="isAcademicInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">New Academic</h4>
+          <h4 *ngIf="isUpdateButton">Update Academic</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #academicForm="ngForm">
+          <div class="row" ngModelGroup="academicData" #academicData="ngModelGroup">
+            <div class="col-md-6">
+              <label class="form-label mb_10">UGC ID</label>
+              <div class="common_input mb_20">
+                <input type="text" name="ugcId" id="ugcId" class="form-control"
+                       [(ngModel)]="studentInformation.ugcId" #ugcId="ngModel" required/>
+                <div>
+                  <small *ngIf="ugcId.invalid && ugcId.touched">UGC ID is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Student ID</label>
+              <div class="common_input mb_20">
+                <input type="text" name="studentId" id="studentId" class="form-control"
+                       [(ngModel)]="studentInformation.studentId" #studentId="ngModel" required/>
+                <div>
+                  <small *ngIf="studentId.invalid && studentId.touched">Student ID is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Email</label>
+              <div class="common_input mb_20">
+                <input type="email" name="email" id="email" class="form-control"
+                       [(ngModel)]="studentInformation.email" [disabled]="true"/>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label mb_10">Faculty:</label>
+              <div class="mb_20">
+                <ng-select name="faculty" id="faculty" (change)="getDepartment(studentInformation.facultyId)"
+                           [(ngModel)]="studentInformation.facultyId" #faculty="ngModel" [disabled]="isUpdateButton">
+                  <ng-option *ngFor="let faculty of faculties"
+                             [value]="faculty.id">{{faculty.name}}, {{faculty.code}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="faculty.invalid && faculty.touched">Faculty is a required field</small>
+
+                </div>
+              </div>
+            </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Department:</label>
+                <div class="mb_20">
+                  <ng-select name="department" id="department" (change)="getProgram(studentInformation.departmentId)"
+                             [(ngModel)]="studentInformation.departmentId" #department="ngModel" [disabled]="isUpdateButton">
+                    <ng-option *ngFor="let department of departments"
+                               [value]="department.id">{{department.name}}, {{department.code}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="department.invalid && department.touched">Department is a required field</small>
+                  </div>
+                </div>
+              </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Program:</label>
+              <div class="mb_20">
+                <ng-select name="program" id="program"
+                           (change)="getBatch(studentInformation.programId); getLevelTermTemplate(studentInformation.programId); getSyllabusTemplate(studentInformation.programId);"
+                           [(ngModel)]="studentInformation.programId" #program="ngModel" [disabled]="isUpdateButton">
+                  <ng-option *ngFor="let program of programs"
+                             [value]="program.id">{{program.name}}, {{program.code}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="program.invalid && program.touched">Program is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Batch:</label>
+              <div class="mb_20">
+                <ng-select name="batch" id="batch"
+                           [(ngModel)]="studentInformation.batchId" #batch="ngModel" [disabled]="isUpdateButton">
+                  <ng-option *ngFor="let batch of batches"
+                             [value]="batch.id">{{batch.code}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="batch.invalid && batch.touched">Program is a required field</small>
+                </div>
+              </div>
+            </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Campus:</label>
+                <div class="mb_20">
+                  <ng-select name="campus" id="campus"
+                             [(ngModel)]="studentInformation.campusId" #campus="ngModel">
+                    <ng-option *ngFor="let campus of campuses"
+                               [value]="campus.id">{{campus.name}}, {{campus.code}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="campus.invalid && campus.touched">Campus is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Shift:</label>
+                <div class="mb_20">
+                  <ng-select name="shift" id="shift"
+                             [(ngModel)]="studentInformation.shiftId" #shift="ngModel">
+                    <ng-option *ngFor="let shift of shifts"
+                               [value]="shift.id">{{shift.name}}, {{shift.code}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="shift.invalid && shift.touched">Shift is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label mb_10">Semester:</label>
+                <div class="mb_20">
+                  <ng-select name="semester" id="semester"
+                             [(ngModel)]="studentInformation.semesterId" #semester="ngModel" [disabled]="isUpdateButton">
+                    <ng-option *ngFor="let semester of semesters"
+                               [value]="semester.id">{{semester.name}}, {{semester.code}}</ng-option>
+                  </ng-select>
+                  <div>
+                    <small *ngIf="semester.invalid && semester.touched">Semester is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label mb_10">Syllabus Template:</label>
+                <div class="mb_20">
+                  <ng-select name="syllabusTemplate" id="syllabusTemplate"
+                             [(ngModel)]="studentInformation.syllabusTemplateId" [disabled]="isUpdateButton">
+                    <ng-option *ngFor="let syllabus_template of syllabus_templates"
+                               [value]="syllabus_template.id">{{syllabus_template.name}}, {{syllabus_template.code}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label mb_10">Level Term Scheme Template:</label>
+                <div class="mb_20">
+                  <ng-select name="levelTermTemplate" id="levelTermTemplate" (change)="getPaymentSchemeTemplate()"
+                             [(ngModel)]="studentInformation.levelTermTemplateId" [disabled]="isUpdateButton">
+                    <ng-option *ngFor="let level_term_template of level_term_templates"
+                               [value]="level_term_template.id">{{level_term_template.name}}, {{level_term_template.code}}</ng-option>
+                  </ng-select>
+
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label mb_10">Payment Scheme Template:</label>
+                <div class="mb_20">
+                  <ng-select name="paymentSchemeTemplate" id="paymentSchemeTemplate"
+                             [(ngModel)]="studentInformation.paymentSchemeTemplateId" [disabled]="isUpdateButton">
+                    <ng-option *ngFor="let payment_scheme_template of payment_scheme_templates"
+                               [value]="payment_scheme_template.id">{{payment_scheme_template.name}}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Issue Date</label>
+                <div class="common_input mb_20">
+                  <input type="date" name="issueDate" id="issueDate" class="form-control"
+                         [(ngModel)]="studentInformation.issueDate" #issueDate="ngModel" required/>
+                  <div>
+                    <small *ngIf="issueDate.invalid && issueDate.touched">Issue Date is a required field</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label mb_10">Expire</label>
+                <div class="common_input mb_20">
+                  <input type="date" name="expireDate" id="expireDate" class="form-control"
+                         [(ngModel)]="studentInformation.expireDate" #expireDate="ngModel" required/>
+                  <div>
+                    <small *ngIf="expireDate.invalid && expireDate.touched">Expire Date is a required field</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <button type="submit" class="btn btn-primary mr_10" (click)="postAcademic()" *ngIf="isSaveButton"
+                        [disabled]="academicData.invalid">
+                  <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+                </button>
+                <button type="submit" class="btn btn-success mr_10" (click)="putAcademic()"
+                        *ngIf="isUpdateButton" [disabled]="academicData.invalid">
+                  <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+                </button>
+                <button type="submit" class="btn btn-danger mr_10" (click)="cancelAcademic()"
+                        *ngIf="isUpdateButton">
+                  <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+                </button>
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

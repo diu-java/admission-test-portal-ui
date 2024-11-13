@@ -1,0 +1,171 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4> <span *ngIf="address_informations.length  === 0">Address Information</span>
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="addressInfoView()" *ngIf="!isAddressInfoView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #addressInformationForm="ngForm">
+          <div class="row" ngModelGroup="addressInformationData" #addressInformationData="ngModelGroup" *ngIf="isAddressInfoView">
+
+            <div class="col-md-12">
+              <label class="form-label mb_10">Address Type:</label>
+              <div class="mb_20">
+                <ng-select name="addressTypeId" id="addressTypeId"
+                           [(ngModel)]="addressInformation.addressTypeId" #addressTypeId="ngModel" required>
+                  <ng-option *ngFor="let address_type of address_types"
+                             [value]="address_type.id">{{address_type.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="addressTypeId.invalid && addressTypeId.touched">Address Type is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Address</label>
+              <div class="common_input mb_20">
+                <input type="text" name="address" id="address" class="form-control"
+                       [(ngModel)]="addressInformation.address" #address="ngModel" required/>
+                <div>
+                  <small *ngIf="address.invalid && address.touched">Address is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label mb_10">Post Code</label>
+              <div class="common_input mb_20">
+                <input type="text" name="postCode" id="postCode" class="form-control"
+                       [(ngModel)]="addressInformation.postCode" #postCode="ngModel" required/>
+                <div>
+                  <small *ngIf="postCode.invalid && postCode.touched">Post Code is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Country</label>
+              <div class="mb_20">
+                <ng-select name="countryId" id="countryId" (change)="getState()" [(ngModel)]="addressInformation.countryId" #countryId="ngModel" required>
+                  <ng-option *ngFor="let country of countries" [value]="country.id"> {{country.name}}, {{country.code}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="countryId.invalid && countryId.touched">Country is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">State / Division</label>
+              <div class="mb_20">
+                <ng-select name="stateId" id="stateId" (change)="getCity()" [(ngModel)]="addressInformation.stateId"
+                           #stateId="ngModel" required>
+                  <ng-option *ngFor="let state of states" [value]="state.id">{{state.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="stateId.invalid && stateId.touched">State is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label mb_10">City / District</label>
+              <div class="mb_20">
+                <ng-select name="cityId" id="cityId" (change)="getSubDistrict()" [(ngModel)]="addressInformation.cityId" #cityId="ngModel" required>
+                  <ng-option *ngFor="let city of cities" [value]="city.id">{{city.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="cityId.invalid && cityId.touched">City is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Sub District</label>
+              <div class="mb_20">
+                <ng-select name="subDistrictId" id="subDistrictId" [(ngModel)]="addressInformation.subDistrictId" #subDistrictId="ngModel" required>
+                  <ng-option *ngFor="let sub_district of sub_districts"
+                             [value]="sub_district.id">{{sub_district.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="subDistrictId.invalid && subDistrictId.touched">Sub District is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary btn-sm mr_10" (click)="postAddressInformation()" *ngIf="isSaveButton"
+                      [disabled]="addressInformationData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success btn-sm mr_10" (click)="putAddressInformation()"
+                      *ngIf="isUpdateButton" [disabled]="addressInformationData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger btn-sm mr_10" (click)="cancelAddressInformation()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let address_information of address_informations; let i=index;">
+    <div class="white_card card_height_100 mb_20" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>{{address_information.addressType.name}}
+
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deleteAddressInformation(address_information)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editAddressInformation(address_information)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                <tr>
+                  <th>Address</th>
+                  <td colspan="3">{{address_information.address}}</td>
+
+                </tr>
+                <tr>
+                  <th>Post Code</th>
+                  <td colspan="3">{{address_information.postCode}}</td>
+                </tr>
+                <tr>
+                  <th>Sub District</th>
+                  <td colspan="3"><span *ngIf="address_information.subDistrict">{{address_information.subDistrict.name}}</span></td>
+                </tr>
+                <tr>
+                  <th>City / District</th>
+                  <td colspan="3"><span *ngIf="address_information.city">{{address_information.city.name}}</span></td>
+                </tr>
+                <tr>
+                  <th>State/Division</th>
+                  <td colspan="3">{{address_information.state.name}}</td>
+                </tr>
+                <tr>
+                  <th>Country</th>
+                  <td colspan="3">{{address_information.country.name}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

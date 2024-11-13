@@ -1,0 +1,125 @@
+<div class="row">
+  <div class="col-lg-12" *ngIf="isSkillInfoView">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">New Student Skill</h4>
+          <h4 *ngIf="isUpdateButton">Update Student Skill</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #employeeSkillForm="ngForm">
+          <div class="row" ngModelGroup="employeeSkillData" #employeeSkillData="ngModelGroup">
+            <div class="col-md-6">
+              <label class="form-label mb_10">Skill Category</label>
+              <div class="mb_20">
+                <ng-select name="skillCategoryId"  (change)="getSkill(studentSkill.skillCategoryId)" [(ngModel)]="studentSkill.skillCategoryId" #skillCategoryId="ngModel" required>
+                  <ng-option *ngFor="let skill_category of skill_categories" [value]="skill_category.id">{{skill_category.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="skillCategoryId.invalid && skillCategoryId.touched">Skill Category is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Skill</label>
+              <div class="mb_20">
+                <ng-select name="skillId"  [(ngModel)]="studentSkill.skillId" #skillId="ngModel" required>
+                  <ng-option *ngFor="let skill of skills" [value]="skill.id">{{skill.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="skillId.invalid && skillId.touched">Skill is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Proficiency</label>
+              <div class="mb_20">
+                <ng-select name="proficiencyId"  [(ngModel)]="studentSkill.proficiencyId" #proficiencyId="ngModel" required>
+                  <ng-option *ngFor="let proficiency of proficiencies" [value]="proficiency.id">{{proficiency.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="proficiencyId.invalid && proficiencyId.touched">Proficiency is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_10">Skill Learned By</label>
+              <div class="mb_20">
+                <ng-select name="skillLearnedById"  [(ngModel)]="studentSkill.skillLearnedById" #skillLearnedById="ngModel" required>
+                  <ng-option *ngFor="let skill_learned_by of skill_learned_bys" [value]="skill_learned_by.id">{{skill_learned_by.name}}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="skillLearnedById.invalid && skillLearnedById.touched">Skill Learn By is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary btn-sm mr_10" (click)="postStudentSkill()" *ngIf="isSaveButton" [disabled]="employeeSkillData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success btn-sm mr_10" (click)="putStudentSkill()" *ngIf="isUpdateButton" [disabled]="employeeSkillData.invalid">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger btn-sm mr_10" (click)="cancelStudentSkill()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Student Skill Information
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="skillInfoView()">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Skill Category</th>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Proficiency</th>
+                  <th scope="col">Skill learned by</th>
+                  <th scope="col" colspan="2">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let student_skill of student_skills;let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{student_skill.skillCategory.name}}</td>
+                  <td>{{student_skill.skill.name}}</td>
+                  <td>{{student_skill.proficiency.name}}</td>
+                  <td>{{student_skill.skillLearnedBy.name}}</td>
+                  <td>
+                    <button class="btn btn-success btn-sm" (click)="editStudentSkill(student_skill)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-sm float-end" (click)="deleteStudentSkill(student_skill)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

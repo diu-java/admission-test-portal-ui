@@ -1,0 +1,765 @@
+<div class="main_content_iner overly_inner">
+  <div class="container-fluid p-0">
+<!--    <app-admission-stage></app-admission-stage>-->
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="dashboard_breadcam mb_30">
+          <p><a (click)="getBack()">Admission Application</a> <i class="fas fa-caret-right"></i> Review</p>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12" *ngFor="let person of admissionApplication.admissionPersons">
+                <div class="d-flex mb_15 border_bottom_1px pb-3">
+                  <div class="flex-shrink-0" *ngIf="person.photoAttachment">
+                    <img class="me-3 rounded me-0 me-sm-3"
+                         [src]="'data:' + person.photoAttachment.fileType + ';base64,' + person.photoAttachment.file"
+                         alt="{{person.fullName}}" style="width:100px;height:100px;">
+                  </div>
+                  <div class="flex-shrink-0" *ngIf="!person.photoAttachment">
+                    <img class="me-3 rounded me-0 me-sm-3" src="/assets/img/profile.jpg" alt="{{person.fullName}}"
+                         style="width:100px;height:100px;">
+                  </div>
+                  <div class="flex-grow-1">
+                    <h4 class="mb-2">{{ person.fullName }}</h4>
+                    <p class="mb-1"><span><i class="fa fa-phone me-2 text-primary"></i></span> {{ person?.personalPhone }}
+                    </p>
+                    <p class="mb-1"><span><i class="fa fa-envelope me-2 text-primary"></i></span>
+                      <b>{{ person.personalEmail }}</b>
+                    </p>
+                    <p class="mb-1" *ngIf="person.gender">
+                  <span *ngIf="person.gender.name==='Male'" class="mr_10"><i
+                    class="fa fa-male me-2 text-primary"></i><b>{{ person.gender.name }}</b></span>
+                      <span *ngIf="person.gender.name==='Female'" class="mr_10"><i
+                        class="fa fa-female me-2 text-primary"></i><b>{{ person.gender.name }}</b></span>
+                      <span><i class="fa fa-tint me-2 text-primary"></i><b>{{ person?.bloodGroup?.name }}</b></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="white_card card_height_100 mb_20">
+          <div class="white_card_header">
+            <div class="white_box_tittle">
+              <h4>A. Admission Information </h4>
+            </div>
+          </div>
+          <div class="white_card_body">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                    <tr>
+                      <th>Application Form Serial</th>
+                      <td>{{ admissionApplication.code }}</td>
+                      <th>Application Type</th>
+                      <td>{{ admissionApplication.admissionApplicationType?.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Academic Session</th>
+                      <td>{{ admissionApplication.semester.name }}</td>
+                      <th>Program Type</th>
+                      <td>{{ admissionApplication.programType.name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th>Admission Form Fee</th>
+                      <td colspan="3">
+                        <span *ngIf="admissionApplication.paymentStatus === 2">{{ admissionApplication.paymentAmount }}
+                          (Unpaid)</span>
+                        <span
+                          *ngIf="admissionApplication.paymentStatus === 1">{{ admissionApplication.admissionApplicationPayments[0]?.amount }}
+                          (Paid) {{ admissionApplication.admissionApplicationPayments[0].paymentType.code }}, Transaction Number: {{ admissionApplication.admissionApplicationPayments[0]?.transactionNo }}
+                          , Payment Date: {{ admissionApplication.admissionApplicationPayments[0]?.paymentDate | date }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Faculty</th>
+                      <td colspan="3">{{ admissionApplication.admissionCircular.faculty.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Program Choice List</th>
+
+                      <td colspan="3">
+                        <li
+                          *ngFor="let application_program of admissionApplication.admissionApplicationProgramChooses;let i = index;">
+                          Choice-{{ i + 1 }}: {{ application_program.admissionCircularProgram.program.name }}
+                        </li>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span *ngFor="let person of admissionApplication.admissionPersons">
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>B. Applicant Information</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <th>Name (As in Certificate) </th>
+                        <td colspan="3">{{ person.fullName }}</td>
+                      </tr>
+                      <tr>
+                        <th>Gender</th>
+                        <td>{{ person.gender?.name }}</td>
+                        <th>Religion</th>
+                        <td><span *ngIf="person.religion">{{ person.religion?.name }}</span></td>
+                      </tr>
+                      <tr>
+                        <th>Blood Group</th>
+                        <td>{{ person.bloodGroup?.name }}</td>
+                        <th>Marital Status</th>
+                        <td>{{ person.maritalStatus?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Mobile Number </th>
+                        <td>{{ person.personalPhone }}</td>
+                        <th>Personal E-Mail</th>
+                        <td>{{ person.personalEmail }}</td>
+                      </tr>
+                      <tr>
+                        <th>Date of Birth (As in Certificate)</th>
+                        <td colspan="3">{{ person.dateOfBirth }}</td>
+<!--                        <th>Place of Birth Town/City</th>-->
+<!--                        <td>{{ person.placeOfBirth }}</td>-->
+                      </tr>
+                      <tr>
+                        <th>Country of Birth</th>
+                        <td>{{ person.countryOfBirth?.name }}</td>
+                        <th>Nationality</th>
+                        <td>{{ person.nationality?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>National ID</th>
+                        <td>{{ person.nationalId }}</td>
+                        <th>Birth Certificate No</th>
+                        <td>{{ person.birthCertificateNo }}</td>
+                      </tr>
+                      <tr>
+                        <th>Photo</th>
+                        <td colspan="3">
+                          <span *ngIf="person.photoAttachment">
+                            <img
+                              [src]="'data:' + person.photoAttachment.fileType + ';base64,' + person.photoAttachment.file"
+                              alt="Image Preview" style="width:150px;height:150px;">
+                          </span>
+                        </td>
+<!--                        <th>Signature</th>-->
+<!--                        <td>-->
+<!--                          <span *ngIf="person.signatureAttachment">-->
+<!--                            <img-->
+<!--                              [src]="'data:' + person.signatureAttachment.fileType + ';base64,' + person.signatureAttachment.file"-->
+<!--                              alt="Image Preview" style="width:150px;height:65px;">-->
+<!--                          </span>-->
+<!--                        </td>-->
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>C. Address Information</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-6" *ngFor="let address of person.addressInformations">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <th colspan="2" style="text-align: center">{{ address.addressType?.name }}</th>
+                      </tr>
+                      <tr>
+                        <th>Road/Street/Village</th>
+                        <td>{{ address.address }}</td>
+                      </tr>
+                      <tr>
+                        <th>Post Code</th>
+                        <td>{{ address.postCode }}</td>
+                      </tr>
+                      <tr>
+                        <th>Upazila/Police Station</th>
+                        <td>{{ address.subDistrict?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>District/City</th>
+                        <td>{{ address.city?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Division</th>
+                        <td>{{ address.state?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Country</th>
+                        <td>{{ address.country?.name }}</td>
+                      </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>D. Parents' Information</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-6" *ngFor="let family of person.admissionFamilies">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <th colspan="2" style="text-align: center">{{ family.relation?.name }} Information</th>
+                      </tr>
+                      <tr>
+                        <th>Name</th>
+                        <td>{{ family.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Mobile Number</th>
+                        <td>{{ family.mobileNumber }}</td>
+                      </tr>
+                      <tr>
+                        <th>NID / Passport</th>
+                        <td>{{ family.nationalId }}</td>
+                      </tr>
+                      <tr>
+                        <th>Date of birth</th>
+                        <td>{{ family.dateOfBirth }}</td>
+                      </tr>
+                      <tr>
+                        <th>Age</th>
+                        <td>{{ calculateAge(family.dateOfBirth) }}</td>
+                      </tr>
+                      <tr>
+                        <th>Occupation</th>
+                        <td>{{ family.occupation }}</td>
+                      </tr>
+
+                      <tr>
+                        <th>Designation</th>
+                        <td>{{ family.occupationDesignation }}</td>
+                      </tr>
+                      <tr>
+                        <th>Organization Name</th>
+                        <td>{{ family.occupationOrganization }}</td>
+                      </tr>
+                      <tr>
+                        <th>Annual income</th>
+                        <td>{{ family.annualIncome }}</td>
+                      </tr>
+                      <tr>
+                        <th>NID / Passport Attachment</th>
+                        <td>
+                          <span *ngIf="family.nidAttachment">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!family.nidAttachment">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>E. Local Guardian Information</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12" *ngFor="let local_guardian of person.admissionEmergencyContacts">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <th>Name</th>
+                        <td>{{ local_guardian.contactName }}</td>
+                        <th>Relationship</th>
+                        <td>{{ local_guardian.relation?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Mobile Number</th>
+                        <td>{{ local_guardian.mobileNumber }}</td>
+                        <th>E-mail</th>
+                        <td>{{ local_guardian.email }}</td>
+                      </tr>
+                      <tr>
+                        <th>National ID</th>
+                        <td>{{local_guardian.nationalId}}</td>
+                        <th>Address</th>
+                        <td>{{ local_guardian.address }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>F. Education Expense Bearer/Guardian Group Life Insurance</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12" *ngFor="let expense_bearer of person.admissionGroupInsurances">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <th>Name</th>
+                        <td>{{ expense_bearer.name }}</td>
+                        <th>Relationship</th>
+                        <td>{{ expense_bearer.relation?.name }}</td>
+                      </tr>
+                      <tr>
+
+                        <th>Date of Birth</th>
+                        <td>{{ expense_bearer.dateOfBirth }}</td>
+                        <th>Age</th>
+                        <td>{{ calculateAge(expense_bearer.dateOfBirth) }}</td>
+                      </tr>
+                      <tr>
+                        <th>Mobile Number</th>
+                        <td>{{ expense_bearer.mobileNumber }}</td>
+                        <th>Email</th>
+                        <td>{{ expense_bearer.email }}</td>
+                      </tr>
+                      <tr>
+                        <th>National ID</th>
+                        <td>{{ expense_bearer.nationalId }}</td>
+                        <th>Annual Income</th>
+                        <td>{{ expense_bearer.annualIncome }}</td>
+                      </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>G. Educational Information</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Level of
+                          Education </th>
+                        <th>Name Of the Institution </th>
+                        <th>Board / University </th>
+                        <th>Group/ Major </th>
+                        <th>Class/Division/Grade </th>
+                        <th>Marks/CGPA </th>
+                        <th>Passing year</th>
+                        <th>Transcript</th>
+                        <th>Certificate</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let education of person.admissionEducationalInformations">
+                        <td>{{ education.degree.name }}</td>
+                        <td>{{ education.instituteName }}</td>
+                        <td>{{ education.instituteName }}</td>
+                        <td>{{ education.majorName }}</td>
+                        <td>{{ education.resultType.name }}</td>
+                        <td>
+                          <span *ngIf="education.resultType.isMark">{{ education.mark }}</span>
+                          <span *ngIf="education.resultType.isCgpa">{{ education.cgpa }}</span>
+                        </td>
+                        <td>{{ education.passingYear }}</td>
+                        <td>
+                          <span *ngIf="education.transcriptAttachment">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!education.transcriptAttachment">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                        <td>
+                          <span *ngIf="education.certificateAttachment">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!education.certificateAttachment">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>H. Passport Information (If Any)</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Passport Number </th>
+                        <th>Issue Place </th>
+                        <th>Issue Country </th>
+                        <th>Issue Date </th>
+                        <th>Expired Date </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let passport of person.admissionPassportInformations">
+                        <td>{{ passport.passportNo }}</td>
+                        <td>{{ passport.issuePlace }}</td>
+                        <td>{{ passport.issueCountry?.name }}</td>
+                        <td>{{ passport.issueDate }}</td>
+                        <td>{{ passport.expiredDate }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>I. In case of Credit Transfer from other University (If any)</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Institute Name</th>
+                        <th>Program Name</th>
+                        <th>Courses completed</th>
+                        <th>CGPA</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let credit_transfer of person.admissionCreditTransfers">
+                        <td>{{ credit_transfer.instituteName }}</td>
+                        <td>{{ credit_transfer.programName }}</td>
+                        <td>{{ credit_transfer.courseCompletedNumber }}</td>
+                        <td>{{ credit_transfer.cgpa }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>J. Merit Scholarship, Academic Achievements or Award (If any)</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th scope="col">SL</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Organization</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Country</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let award of person.admissionAwards;let i=index;">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ award.title }}</td>
+                        <td>{{ award.organization }}</td>
+                        <td>{{ award.issueDate }}</td>
+                        <td>{{ award.country?.name }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>K. Professional Experience (If any)</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>SL</th>
+                        <th>Company Name</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Country</th>
+                        <th>Start Date </th>
+                        <th>End Date </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let professional_experience of person.admissionJobExperiences;let i=index;">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ professional_experience.companyName }}</td>
+                        <td>{{ professional_experience.designation }}</td>
+                        <td>{{ professional_experience.department }}</td>
+                        <td>{{ professional_experience.country.name }}</td>
+                        <td>{{ professional_experience.startDate }}</td>
+                        <td>{{ professional_experience?.endDate }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="white_card card_height_100 mb_20">
+            <div class="white_card_header">
+              <div class="white_box_tittle">
+                <h4>L. Others Information</h4>
+              </div>
+            </div>
+            <div class="white_card_body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr *ngFor="let admission_reference of person.admissionReferences;let i=index;">
+                        <th>How you Know the Daffodil International University </th>
+                        <td
+                          colspan="3">{{ admission_reference.reference?.name }}<span *ngIf="admission_reference.referenceUnit">, {{admission_reference.referenceUnit?.name }}</span>
+                           <span *ngIf="admission_reference.referenceSubUnit">, {{admission_reference.referenceSubUnit?.name }}</span><span *ngIf="admission_reference.code">({{ admission_reference?.code }})</span>  </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                      <tr>
+                        <th rowspan="6">Quota if Applicable</th>
+                        <th>Parents is freedom fighter</th>
+                        <td>
+                         <span *ngIf="isFreedomFighter.length">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!isFreedomFighter.length">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>If you are a tribal</th>
+                        <td>
+                        <span *ngIf="isTribal.length">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!isTribal.length">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Physical disorder</th>
+                        <td>
+                        <span *ngIf="isPhysicalDisorder.length">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!isPhysicalDisorder.length">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          1st division Player
+                        </th>
+                        <td>
+                        <span *ngIf="isFirstDivisionPlayer.length">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!isFirstDivisionPlayer.length">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          DIU Employee
+                        </th>
+                        <td>
+                        <span *ngIf="isDIUEmployee.length">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!isDIUEmployee.length">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>
+                          DIU Alumni
+                        </th>
+                        <td>
+                        <span *ngIf="isDIUAlumni.length">
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </span>
+                          <span *ngIf="!isDIUAlumni.length">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                          </span>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+      <div class="white_card card_height_100 mb_20">
+        <div class="white_card_header">
+          <div class="white_box_tittle">
+            <h4>M. Declaration</h4>
+          </div>
+        </div>
+        <div class="white_card_body">
+          <div class="row">
+            <div class="col-lg-12">
+              <table class="table table-borderless">
+                <tbody>
+                <tr>
+                  <td>a. I declare that the information provided by me in the form is true and correct to the best of my knowledge.</td>
+                </tr>
+                <tr>
+                  <td>b. I understand that if the information provided in the form is found to be incorrect, I may be denied admission to this university.</td>
+                </tr>
+                <tr>
+                  <td>c. I will also submit hard copies of all uploaded documents along with a printed copy of the application to the appropriate person
+                    in the admissions office.</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <hr>
+            <div class="col-lg-12">
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="active" id="active" [checked]="admissionApplication.status === 1">
+                <label class="form-label mb_10"> I have read all the rules and regulations of Daffodil International University (DIU), and having understood that if I am admitted
+                  into DIU, I will abide by the rules & regulations of this university. I shall accept any decision taken by DIU authority, if I do any
+                  misconduct that violates the rules of DIU.</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      </span>
+    </div>
+  </div>
+</div>
+
+

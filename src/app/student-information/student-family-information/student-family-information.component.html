@@ -1,0 +1,316 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Family Information
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="familyView()" *ngIf="!isFamilyView">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #familyForm="ngForm">
+          <div class="row family-view" ngModelGroup="familyData" #familyData="ngModelGroup" *ngIf="isFamilyView">
+            <div class="col-lg-12">
+              <span style="color: red;">(*) Required Field</span>
+            </div>
+            <div class="col-lg-4">
+              <label class="form-label mb_10">Relation <span style="color: red;">*</span></label>
+              <div class=" pt_10">
+                <ng-select id="relation" name="relation" [(ngModel)]="family.relationId" #relation="ngModel" required>
+                  <ng-option *ngFor="let relation of relations" [value]="relation.id">{{ relation.name }}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="relation.invalid && formSubmitted">Relation is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Name <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  class="form-control" [(ngModel)]="family.name" (input)="family.name = formatName(family.name)" #name="ngModel" required
+                />
+                <div>
+                  <small *ngIf="name.invalid && formSubmitted">Name is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="mb-3 form-check">
+                <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="motherLate" id="motherLate" [(ngModel)]="family.late"> Late</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Mobile Number <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="mobile"
+                  id="mobile"
+                  class="form-control" [(ngModel)]="family.mobileNumber" #mobile="ngModel" required [disabled]="family.late"
+                />
+                <div>
+                  <small *ngIf="mobile.invalid && formSubmitted">Mobile is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Email </label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  class="form-control" [(ngModel)]="family.email" [disabled]="family.late"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">National ID / Passport<span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="nationalId"
+                  id="nationalId"
+                  class="form-control" [(ngModel)]="family.nationalId" #nationalId="ngModel" required [disabled]="family.late"
+                />
+                <div>
+                  <small *ngIf="nationalId.invalid && formSubmitted">National ID is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Date of Birth <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  id="dateOfBirth"
+                  class="form-control" [(ngModel)]="family.dateOfBirth" #dateOfBirth="ngModel" required [disabled]="family.late"
+                />
+                <div>
+                  <small *ngIf="dateOfBirth.invalid && formSubmitted">Date of Birth is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Age</label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="fatherAge"
+                  id="fatherAge"
+                  class="form-control" [value]="calculateAge(family.dateOfBirth)" [disabled]="true"
+                />
+
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Highest Education <span style="color: red;">*</span></label>
+              <div class="mb_20">
+                <ng-select id="education" name="education" [(ngModel)]="family.education" #education="ngModel" required [disabled]="family.late">
+                  <ng-option *ngFor="let education of educations" [value]="education.code" >{{ education.name }}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="education.invalid && formSubmitted">Education is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Occupation<span style="color: red;">*</span></label>
+              <div class="mb_20 pt_10">
+                <ng-select id="occupation" name="occupation" [(ngModel)]="family.occupation" #occupation="ngModel" required [disabled]="family.late">
+                  <ng-option *ngFor="let occupation of occupations" [value]="occupation.name" >{{ occupation.name }}</ng-option>
+                </ng-select>
+                <div>
+                  <small *ngIf="occupation.invalid && formSubmitted">Occupation is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Designation <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="occupationDesignation"
+                  id="occupationDesignation"
+                  class="form-control" (input)="family.occupationDesignation = formatName(family.occupationDesignation)"  [(ngModel)]="family.occupationDesignation" #occupationDesignation="ngModel" required [disabled]="family.late || isDesignationDisabled()"
+                />
+                <div>
+                  <small *ngIf="occupationDesignation.invalid && formSubmitted">Designation is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb_10">Organization Name <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="occupationOrganization"
+                  id="occupationOrganization"
+                  class="form-control" (input)="family.occupationOrganization = formatName(family.occupationOrganization)" [(ngModel)]="family.occupationOrganization" #occupationOrganization="ngModel" required [disabled]="family.late || isDesignationDisabled()"
+                />
+                <div>
+                  <small *ngIf="occupationOrganization.invalid && formSubmitted">Organization Name is a required field</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label mb_10">Annual Income <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="number"
+                  name="annualIncome"
+                  id="annualIncome"
+                  class="form-control" [(ngModel)]="family.annualIncome" #annualIncome="ngModel" required [disabled]="family.late"
+                />
+                <div>
+                  <small *ngIf="annualIncome.invalid && formSubmitted">Annual Income is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label mb_20">NID / Passport Attachment</label>
+              <!--              <div *ngIf="isOpenAttachment">-->
+              <!--                <input type="file" class="form-control" name="attachmentId" (change)="postDocument($event)" accept=".pdf, .png, .jpg,.jpeg">-->
+              <!--                <small class="form-text">File must be jpg/jpeg/png/pdf format. File size not more than 500 KB.</small>-->
+              <!--              </div>-->
+              <div class="row align-items-center" *ngIf="isOpenAttachment">
+                <div class="col-md-8">
+                  <input type="file" class="form-control" id="attachmentId" name="attachmentId"
+                         (change)="postDocument($event)">
+                </div>
+                <div class="col-md-1 text-center">
+                        <span class="text-highlighted" style="font-weight: bold; color: #007bff; background-color: #e9f5ff; padding: 5px; border-radius: 5px;">
+                          or
+                        </span>
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-primary btn-block" (click)="getDocumentScanDemo(family.id, family, 'Family', 'Family', 'application/pdf')">
+                    <i class="fa fa-laptop mr-2"></i> Scan
+                  </button>
+                </div>
+              </div>
+              <div class="" *ngIf="sMessage">
+                <span style="color: #0c4128">{{sMessage}}</span>
+              </div>
+              <br *ngIf="family.nidAttachment && !isOpenAttachment"/>
+
+              <a *ngIf="family.nidAttachment && !isOpenAttachment" href="javascript:void(0)" class="mr_10"
+                 (click)="getDocument(family.nidAttachment.code, family.nidAttachment.name, family.nidAttachment.fileExtension)">
+                Attachment <span><i class="fa fa-download"></i></span>
+              </a>
+              <button type="submit" class="btn btn-primary"  *ngIf="family.nidAttachment && !isOpenAttachment" (click)="isOpenFile()">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postFamilyInformation()" *ngIf="isSaveButton" >
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>save
+              </button>
+
+              <button type="submit" class="btn btn-success mr_10" (click)="putFamilyInformation()" *ngIf="isUpdateButton">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger mr_10" (click)="cancelFamilyInformation()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div *ngIf="families.length  === 0" class="col-lg-12 text-center" style="font-size: 18px">
+            <p>No Data found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12" *ngFor="let family_information of families; let i=index;">
+    <div class="white_card card_height_100" >
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>{{family_information.relation?.name}}
+            <button class="btn btn-danger btn-sm float-end mr_10" (click)="deleteFamilyInformation(family_information)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-success btn-sm float-end mr_10" (click)="editFamilyInformation(family_information)">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <th>Name <span *ngIf="family_information.late" class="red_text">Late</span></th>
+                  <td colspan="3">{{family_information.name}}</td>
+                </tr>
+
+                <tr>
+                  <th>Mobile Number</th>
+                  <td>{{family_information.mobileNumber}}</td>
+                  <th>Email</th>
+                  <td>{{family_information.email}}</td>
+                </tr>
+                <tr>
+                  <th>NID / Passport</th>
+                  <td colspan="3"><span>{{family_information.nationalId}}</span></td>
+                </tr>
+                <tr>
+                  <th>Date of Birth</th>
+                  <td>{{family_information.dateOfBirth | date }}</td>
+                  <th>Age</th>
+                  <td>{{calculateAge(family_information.dateOfBirth)}}</td>
+                </tr>
+                <tr>
+                  <th>Highest Education</th>
+                  <td colspan="3">{{family_information.education}}</td>
+                </tr>
+                <tr>
+                  <th>Occupation</th>
+                  <td>{{family_information.occupation}}</td>
+                  <th>Designation</th>
+                  <td>{{family_information.occupationDesignation}}</td>
+                </tr>
+                <tr>
+                  <th>Organization Name</th>
+                  <td>{{family_information.occupationOrganization}}</td>
+                  <th>Annual Income</th>
+                  <td>{{family_information.annualIncome}}</td>
+                </tr>
+                <tr>
+                  <th>NID / Passport Attachment</th>
+                  <td>
+                    <button class="btn btn-primary btn-sm mr_10" *ngIf="family_information.nidAttachment" (click)="getDocumentPreview(family_information.nidAttachment.code, family_information.nidAttachment.name, family_information.nidAttachment.fileExtension)" title="Preview"><i class="fa fa-eye" aria-hidden="true"></i></button>
+
+                    <button class="btn btn-success btn-sm" *ngIf="family_information.nidAttachment" (click)="getDocument(family_information.nidAttachment.code, family_information.nidAttachment.name, family_information.nidAttachment.fileExtension)" title="Download"><i class="fa fa-download" aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,134 @@
+<div class="row">
+  <div class="col-lg-12 test" *ngIf="isAdmissionCircularTestSchedule">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4 *ngIf="isSaveButton">Add Test Schedule</h4>
+          <h4 *ngIf="isUpdateButton">Update Test Schedule</h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <form #admissionCircularTestScheduleForm="ngForm">
+          <div class="row" ngModelGroup="admissionCircularTestScheduleData" #admissionCircularTestScheduleData="ngModelGroup">
+
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Admission Circular</label>
+              <div class="common_input mb_20">
+                <input
+                  name="admission_circular"
+                  type="text"
+                  class="form-control" [value]="admissionCircular.code" [disabled]="true"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Faculty</label>
+              <div class="common_input mb_20">
+                <input
+                  name="faculty"
+                  type="text"
+                  class="form-control" [value]="admissionCircular.faculty?.name" [disabled]="true"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Test Date</label>
+              <div class="common_input mb_20">
+                <input
+                  name="testDate"
+                  id="testDate"
+                  type="date"
+                  class="form-control" [(ngModel)]="admissionAdnCircularTestSchedule.testDate"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <label class="form-label mb_10">Test Time</label>
+              <div class="common_input mb_20">
+                <input
+                  name="testTime"
+                  id="testTime"
+                  type="time"
+                  class="form-control" [(ngModel)]="admissionAdnCircularTestSchedule.testTime"
+                />
+              </div>
+            </div>
+
+            <div class="col-lg-12" *ngIf="isUpdateButton">
+              <div class="mb-3 form-check">
+                <label class="form-label mb_10"><input type="checkbox" class="form-check-input" name="active"  [(ngModel)]="admissionAdnCircularTestSchedule.active"> Is Active</label>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" *ngIf="isSaveButton" (click)="postAdmissionCircularTestSchedule()"
+                      [disabled]="admissionCircularTestScheduleData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" *ngIf="isUpdateButton" (click)="putAdmissionCircularTestSchedule()"
+                      [disabled]="admissionCircularTestScheduleData.invalid">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Update
+              </button>
+              <button type="submit" class="btn btn-danger" (click)="cancelAdmissionCircularTestSchedule()">
+                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Admission Test Schedule
+            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="admissionCircularTestScheduleView()" *ngIf="!isAdmissionCircularTestSchedule">
+              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New
+            </button>
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Test Date</th>
+                  <th scope="col">Test Time</th>
+                  <th scope="col" colspan="2" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let test_schedule of test_schedules; let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{test_schedule.testDate  | date:'dd MMMM yyyy'}}</td>
+                  <td>{{test_schedule.testTime}}</td>
+                  <td>
+                    <button class="btn btn-success btn-sm float-end" (click)="editAdmissionCircularTestSchedule(test_schedule)">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="deleteAdmissionCircularTestSchedule(test_schedule)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader-overlay" *ngIf="loading">
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+</div>

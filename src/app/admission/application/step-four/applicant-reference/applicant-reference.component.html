@@ -1,0 +1,327 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+      <div class="white_card_header">
+        <div class="white_box_tittle">
+          <h4>Reference
+            <!--            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="referenceView()" *ngIf="admission_references.length ===0">-->
+            <!--              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New-->
+            <!--            </button>-->
+          </h4>
+        </div>
+      </div>
+      <div class="white_card_body">
+        <!--        <form #admissionReferenceForm="ngForm">-->
+        <!--          <div class="row" ngModelGroup="admissionReferenceData" #admissionReferenceData="ngModelGroup" *ngIf="isReferenceView">-->
+        <!--            <div class="col-md-4">-->
+        <!--              <label class="form-label mb_10">Reference</label>-->
+        <!--              <div class="mb_20">-->
+        <!--                <ng-select id="reference" name="reference" (change)="getReferenceUnit();checkReference(admissionReference.referenceId)" [(ngModel)]="admissionReference.referenceId" #referenceId="ngModel" required>-->
+        <!--                  <ng-option *ngFor="let reference of references" [value]="reference.id">{{ reference.name }}</ng-option>-->
+        <!--                </ng-select>-->
+        <!--                <div>-->
+        <!--                  <small *ngIf="referenceId.invalid && referenceId.touched">Reference is a required field</small>-->
+        <!--                </div>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--            <div class="col-md-4" *ngIf="!isReferenceCode && reference_units.length">-->
+        <!--              <label class="form-label mb_10">Reference Unit</label>-->
+        <!--              <div class="mb_20">-->
+        <!--                <ng-select name="referenceUnit" id="referenceUnit" [(ngModel)]="admissionReference.referenceUnitId" (change)="getReferenceSubUnit();checkReferenceUnit(admissionReference.referenceUnitId)">-->
+        <!--                  <ng-option *ngFor="let reference_unit of reference_units" [value]="reference_unit.id">{{reference_unit.name}}</ng-option>-->
+        <!--                </ng-select>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--            <div class="col-md-4" *ngIf="!isReferenceUnitCode && reference_sub_units.length">-->
+        <!--              <label class="form-label mb_10">Reference Sub Unit </label>-->
+        <!--              <div class="mb_20">-->
+        <!--                <ng-select name="referenceSubUnit" id="referenceSubUnit" [(ngModel)]="admissionReference.referenceSubUnitId" (change)="checkReferenceSubUnit(admissionReference.referenceSubUnitId)">-->
+        <!--                  <ng-option *ngFor="let reference_sub_unit of reference_sub_units" [value]="reference_sub_unit.id">{{reference_sub_unit.name}}</ng-option>-->
+        <!--                </ng-select>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--            <div class="col-lg-6" *ngIf="isOpenCode">-->
+        <!--              <label class="form-label mb_10">User ID / Code</label>-->
+        <!--              <div class="common_input mb_20">-->
+        <!--                <input-->
+        <!--                  type="text"-->
+        <!--                  name="code"-->
+        <!--                  id="code"-->
+        <!--                  class="form-control" [(ngModel)]="admissionReference.code" #code="ngModel" required/>-->
+        <!--                <div>-->
+        <!--                  <small *ngIf="code.invalid && code.touched">Code is a required field</small>-->
+        <!--                </div>-->
+        <!--              </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="col-lg-12">-->
+        <!--              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionReference()" *ngIf="isSaveButton" [disabled]="admissionReferenceData.invalid">-->
+        <!--                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save-->
+        <!--              </button>-->
+        <!--              <button type="submit" class="btn btn-success mr_10" (click)="putAdmissionReference(admissionAffiliate.id)" *ngIf="isUpdateButton" [disabled]="admissionReferenceData.invalid">-->
+        <!--                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update-->
+        <!--              </button>-->
+        <!--              <button type="submit" class="btn btn-danger mr_10" (click)="cancelAdmissionReference()">-->
+        <!--                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel-->
+        <!--              </button>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </form>-->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">SL</th>
+                  <th scope="col">Reference</th>
+                  <th scope="col">Reference Unit</th>
+                  <th scope="col">Reference Sub Unit</th>
+                  <th scope="col">User ID / Code</th>
+                  <th scope="col" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let admission_reference of admission_references; let i=index;">
+                  <td>{{i+1}}</td>
+                  <td>{{admission_reference.reference?.name}}</td>
+                  <td>{{admission_reference.referenceUnit?.name}}</td>
+                  <td>{{admission_reference.referenceSubUnit?.name}}</td>
+                  <td>{{admission_reference.code}}</td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="deleteAdmissionReference(admission_reference)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="admission_references.length === 0">
+                  <td colspan="6" class="text-center"><p>No Data Found</p></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="white_card card_height_100 mb_20">
+<!--      <div class="white_card_header">-->
+<!--        <div class="white_box_tittle">-->
+<!--          <h4>Reference</h4>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div class="white_card_body">
+        <form #admissionReferenceForm="ngForm">
+          <div class="row" ngModelGroup="admissionReferenceData" #admissionReferenceData="ngModelGroup">
+            <div class="col-lg-3">
+              <div class="row">
+                <div class="col-sm-12"><h5>Reference <span style="color: red;">*</span></h5></div>
+                <div class="col-sm-12" *ngFor="let reference of references">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="referenceRadios"
+                           id="referenceRadios{{ reference.id }}"
+                           [(ngModel)]="admissionReference.referenceId"
+                           [value]="reference.id"
+                           (change)="getReferenceUnit();checkReference(admissionReference.referenceId)"
+                           #referenceId="ngModel" required
+                    >
+
+                    <label class="form-label form-check-label"
+                           for="referenceRadios{{ reference.id }}">
+                      {{ reference.name }}
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <small *ngIf="!admissionReference.referenceId && formSubmitted">Reference Unit is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3" *ngIf="!isReferenceCode && reference_units.length">
+              <div class="row">
+                <div class="col-sm-12"><h5>{{reference_units[0]?.reference.name}} <span style="color: red;">*</span></h5></div>
+
+                <div class="col-sm-12" *ngFor="let reference_unit of reference_units">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="unitRadios"
+                           id="unitRadios{{ reference_unit.id }}"
+                           [(ngModel)]="admissionReference.referenceUnitId"
+                           [value]="reference_unit.id" (change)="getReferenceSubUnit();checkReferenceUnit(admissionReference.referenceUnitId)"
+                           #referenceUnitId="ngModel" required
+                    >
+                    <label class="form-label form-check-label"
+                           for="unitRadios{{ reference_unit.id }}">
+                      {{ reference_unit.name }}
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <small *ngIf="!admissionReference.referenceUnitId && formSubmitted">Reference Unit is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3" *ngIf="!isReferenceUnitCode && reference_sub_units.length">
+              <div class="row">
+                <div class="col-sm-12"><h5>{{ reference_sub_units[0]?.referenceUnit?.name }} <span style="color: red;">*</span></h5></div>
+                <div class="col-sm-12" *ngFor="let reference_sub_unit of reference_sub_units">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="subUnitRadios"
+                           id="subUnitRadios{{ reference_sub_unit.id }}"
+                           [(ngModel)]="admissionReference.referenceSubUnitId"
+                           [value]="reference_sub_unit.id" (change)="checkReferenceSubUnit(admissionReference.referenceSubUnitId)"
+                           #referenceSubUnitId="ngModel" required
+                    >
+
+                    <label class="form-label form-check-label"
+                           for="subUnitRadios{{ reference_sub_unit.id }}">
+                      {{ reference_sub_unit.name }}
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <small *ngIf="!admissionReference.referenceSubUnitId && formSubmitted">Reference Unit is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3" *ngIf="isOpenCode">
+              <label class="form-label mb_10">User Name / ID <span style="color: red;">*</span></label>
+              <div class="common_input mb_20">
+                <input
+                  type="text"
+                  name="code"
+                  id="code"
+                  class="form-control" [(ngModel)]="admissionReference.code" #code="ngModel" required/>
+                <div>
+                  <small *ngIf="code.invalid && formSubmitted">User Name / ID is a required field</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <button type="submit" class="btn btn-primary mr_10" (click)="postAdmissionReference()" *ngIf="admission_references.length ===0">
+                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save
+              </button>
+              <button type="submit" class="btn btn-success mr_10" (click)="putAdmissionReference(admission_references[0]?.id)" *ngIf="admission_references.length >0">
+                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!--  <div class="col-lg-12">-->
+<!--    <div class="white_card card_height_100 mb_20">-->
+<!--      <div class="white_card_header">-->
+<!--        <div class="white_box_tittle">-->
+<!--          <h4>How do you know Daffodil International University (DIU)?-->
+<!--            <button type="submit" class="btn btn-primary btn-sm float-end" (click)="affiliateView()" *ngIf="affiliates.length ===0">-->
+<!--              <i class="fa fa-plus-square mr_10" aria-hidden="true"></i>Add New-->
+<!--            </button>-->
+<!--          </h4>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="white_card_body">-->
+<!--        <form #admissionAffiliateForm="ngForm">-->
+<!--          <div class="row" ngModelGroup="admissionAffiliateData" #admissionAffiliateData="ngModelGroup" *ngIf="isAffiliateView">-->
+<!--            <div class="col-lg-12">-->
+<!--              <label class="form-label mb_10">How do you know Daffodil International University (DIU)?</label>-->
+<!--              <div class="mb_20">-->
+<!--                <ng-select id="admissionAffiliateType" name="admissionAffiliateType" (change)="enableAffiliateOrganization(admissionAffiliate.admissionAffiliateTypeId)" [(ngModel)]="admissionAffiliate.admissionAffiliateTypeId" #admissionAffiliateType="ngModel" required>-->
+<!--                  <ng-option *ngFor="let affiliate_type of affiliate_types" [value]="affiliate_type.id">{{ affiliate_type.name }}</ng-option>-->
+<!--                </ng-select>-->
+<!--                <div>-->
+<!--                  <small *ngIf="admissionAffiliateType.invalid && admissionAffiliateType.touched">Affiliate Type is a required field</small>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-12" *ngIf="isOrganization">-->
+<!--              <label class="form-label mb_10">Organization</label>-->
+<!--              <div class="mb_20">-->
+<!--                <ng-select id="admissionAffiliateOrganization" name="admissionAffiliateOrganization" [(ngModel)]="admissionAffiliate.admissionAffiliateOrganizationId" #admissionAffiliateOrganization="ngModel" required>-->
+<!--                  <ng-option *ngFor="let affiliate_organization of affiliate_organizations" [value]="affiliate_organization.id">{{ affiliate_organization.name }}</ng-option>-->
+<!--                </ng-select>-->
+<!--                <div>-->
+<!--                  <small *ngIf="admissionAffiliateOrganization.invalid && admissionAffiliateOrganization.touched">Affiliate Organization is a required field</small>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-6" *ngIf="isAffiliateUser">-->
+<!--              <label class="form-label mb_10">User Type</label>-->
+<!--              <div class="mb_20 pt_10">-->
+<!--                <ng-select id="admissionAffiliateUserType" name="admissionAffiliateUserType" [(ngModel)]="admissionAffiliate.admissionAffiliateUserTypeId" #admissionAffiliateUserType="ngModel" required>-->
+<!--                  <ng-option *ngFor="let affiliate_user_type of affiliate_user_types" [value]="affiliate_user_type.id">{{ affiliate_user_type.name }}</ng-option>-->
+<!--                </ng-select>-->
+<!--                <div>-->
+<!--                  <small *ngIf="admissionAffiliateUserType.invalid && admissionAffiliateUserType.touched">Affiliate User Type is a required field</small>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-6" *ngIf="isAffiliateUser">-->
+<!--              <label class="form-label mb_10">Employee ID/ Student ID</label>-->
+<!--              <div class="common_input mb_20">-->
+<!--                <input type="text" name="code" id="code" class="form-control" [(ngModel)]="admissionAffiliate.code" #code="ngModel" required/>-->
+<!--                <div>-->
+<!--                  <small *ngIf="code.invalid && code.touched">Employee ID/ Student ID is a required field</small>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-12">-->
+<!--              <button type="submit" class="btn btn-primary mr_10" (click)="postAffiliateType()" *ngIf="isSaveButton" [disabled]="admissionAffiliateData.invalid">-->
+<!--                <i class="fa fa-save mr_10" aria-hidden="true"></i>Save-->
+<!--              </button>-->
+<!--              <button type="submit" class="btn btn-success mr_10" (click)="putAffiliateType(admissionAffiliate.id)" *ngIf="isUpdateButton" [disabled]="admissionAffiliateData.invalid">-->
+<!--                <i class="fa fa-edit mr_10" aria-hidden="true"></i>Update-->
+<!--              </button>-->
+<!--              <button type="submit" class="btn btn-danger mr_10" (click)="cancelAffiliate()">-->
+<!--                <i class="fa fa-window-close mr_10" aria-hidden="true"></i>Cancel-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--        <div class="row">-->
+<!--          <div class="col-lg-12">-->
+<!--            <div class="table-responsive">-->
+<!--              <table class="table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                  <th scope="col">SL</th>-->
+<!--                  <th scope="col">Category</th>-->
+<!--                  <th scope="col">Organization</th>-->
+<!--                  <th scope="col">User Type</th>-->
+<!--                  <th scope="col">Employee ID/ Student ID</th>-->
+<!--                  <th scope="col" colspan="2" class="text-center">Action</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr *ngFor="let affiliate of affiliates; let i=index;">-->
+<!--                  <td>{{i+1}}</td>-->
+<!--                  <td><span *ngIf="affiliate.admissionAffiliateType">{{affiliate.admissionAffiliateType.name}}</span></td>-->
+<!--                  <td><span *ngIf="affiliate.admissionAffiliateOrganization">{{affiliate.admissionAffiliateOrganization.name}}</span></td>-->
+<!--                  <td><span *ngIf="affiliate.admissionAffiliateUserType">{{affiliate.admissionAffiliateUserType.name}}</span></td>-->
+<!--                  <td>{{affiliate.code}}</td>-->
+<!--                  <td>-->
+<!--                    <button class="btn btn-success btn-sm float-end" (click)="editAffiliate(affiliate)">-->
+<!--                      <i class="fa fa-edit" aria-hidden="true"></i>-->
+<!--                    </button>-->
+<!--                  </td>-->
+<!--                  <td>-->
+<!--                    <button class="btn btn-danger btn-sm" (click)="deleteAffiliate(affiliate)">-->
+<!--                      <i class="fa fa-trash" aria-hidden="true"></i>-->
+<!--                    </button>-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                <tr *ngIf="affiliates.length === 0">-->
+<!--                  <td colspan="6" class="text-center"><p>No Data Found</p></td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--              </table>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+</div>
