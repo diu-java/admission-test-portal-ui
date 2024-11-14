@@ -59,7 +59,22 @@
                   <th>Test Committee </th>
                   <td>{{admissionTestTeacher.admissionTest?.admissionTestCommittee?.name}}</td>
                 </tr>
-  {{admissionTestTeacher|json}}
+                <tr>
+                  <th>Submitted Status</th>
+                  <td>
+                    <span *ngIf="admissionTestTeacher.status === 1">Submitted</span>
+                    <span *ngIf="admissionTestTeacher.status === 2">Not Submitted</span>
+                  </td>
+                  <th>Submitted At </th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Submitted By</th>
+                  <td></td>
+                  <th>Remark </th>
+                  <td></td>
+                </tr>
+<!--  {{admissionTestTeacher|json}}-->
 
 <!--                <tr *ngIf="!admissionTestSubmit.status">-->
 <!--                  <th >Admission Marks Submission</th>-->
@@ -99,7 +114,6 @@
                   <th scope="col">Application ID</th>
                   <th scope="col">Applicant</th>
                   <th scope="col">Attendance</th>
-                  <th scope="col">Selection</th>
                   <ng-container *ngFor="let category of admissionTestTeacher.admissionTest.admissionTestTemplate.categories">
                     <th scope="col" *ngFor="let subject of category.subjects">
                       {{ subject.admissionTestSubject.name }} ({{ subject.mark }})
@@ -114,18 +128,14 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let admission_applicant of admissionTestTeacher.admissionTest.applicants;let i=index;" [ngClass]="{'different-color': admission_applicant.selected}" (click)="changeMode(admission_applicant)">
-                  <td style="font-size: 12px;">{{admission_applicant.admissionApplication.code}}</td>
-                  <td style="font-size: 12px;">
+                  <td class="align-center">{{admission_applicant.admissionApplication.code}}</td>
+                  <td class="align-center">
 <!--                    {{admission_applicant.admissionApplication.admissionPersons[0]?.fullName}} -->
                     Mahfuz</td>
-                  <td>
+                  <td class="align-center">
                     <span class="badge bg-success" *ngIf="admission_applicant.attendance === 1">Present</span>
                     <span class="badge bg-danger" *ngIf="admission_applicant.attendance === 2">Absent</span>
                     <span class="badge bg-danger" *ngIf="admission_applicant.attendance === 3">Withheld</span>
-                  </td>
-                  <td>
-                    <span class="badge bg-success" *ngIf="admission_applicant.status === 1">Selected</span>
-                    <span class="badge bg-danger" *ngIf="admission_applicant.status === 0">Not Selected</span>
                   </td>
                   <ng-container *ngFor="let category of admissionTestTeacher.admissionTest.admissionTestTemplate.categories">
                     <td *ngFor="let subject of category.subjects; let j = index;">
@@ -139,12 +149,12 @@
                         [ngClass]="{'highlight-border': adMark.touched && adMark.dirty}"
                       />
                     </td>
-                    <td class="text-center">
+                    <td class="align-center">
                       {{ calculateCategoryTotal(admission_applicant, category) }}
                     </td>
                   </ng-container>
-                  <td *ngIf="!admissionTestSubmit.status" style="font-size: 12px;">
-                    <button class="btn btn-primary mt_10" (click)="postAdmissionMarkEntry(admission_applicant)" [ngClass]="{'button-color': admission_applicant.selected}">Save</button>
+                  <td *ngIf="!admissionTestSubmit.status" class="align-center">
+                    <button class="btn btn-primary btn-sm mt_10" (click)="postAdmissionMarkEntry(admission_applicant)" [ngClass]="{'button-color': admission_applicant.selected}">Save</button>
                     <!--                      <button class="btn btn-success mt_10" *ngIf="admission_applicant.mark" (click)="putAdmissionMarkEntry(admission_applicant)">Update</button>-->
                   </td>
                 </tr>

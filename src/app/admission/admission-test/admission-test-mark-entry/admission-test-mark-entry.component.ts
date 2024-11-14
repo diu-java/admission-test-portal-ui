@@ -65,9 +65,9 @@ export class AdmissionTestMarkEntryComponent implements OnInit{
     admission_applicant.selected = true;
   }
   postAdmissionMarkEntry(admission_applicant: any) {
-    this.loading = true;
+    console.log(this.admissionTestTeacher)
     this.admissionTestApplicantMark.admissionEnrollId = admission_applicant.id
-    this.admissionTestApplicantMark.admissionMarkDistributionId = this.admissionTestTeacher.admissionMarkDistribution.id;
+    this.admissionTestApplicantMark.admissionTemplateCategorySubjectId = 0;
     this.admissionTestApplicantMark.admissionMarkTeacherId = this.admissionTestTeacher.id;
     this.admissionTestApplicantMark.mark = admission_applicant.mark;
     if(admission_applicant.markId){
@@ -81,6 +81,7 @@ export class AdmissionTestMarkEntryComponent implements OnInit{
         }
       })
     }else {
+      this.loading = false;
       this.admissionTestApplicantMarkService.postAdmissionTestApplicantMark(this.admissionTestApplicantMark).subscribe((response:any)=>{
         this.loading = false;
         if(response.status){
@@ -92,4 +93,30 @@ export class AdmissionTestMarkEntryComponent implements OnInit{
       })
     }
   }
+  postAdmissionMarkEntry2(admission_applicant:any) {
+    console.log(admission_applicant)
+    const marksArray = [];
+    for (const categoryId in admission_applicant.marks) {
+      if (admission_applicant.marks.hasOwnProperty(categoryId)) {
+        for (const subjectId in admission_applicant.marks[categoryId]) {
+          if (admission_applicant.marks[categoryId].hasOwnProperty(subjectId)) {
+            marksArray.push({
+              categoryId: categoryId,
+              subjectId: subjectId,
+              mark: admission_applicant.marks[categoryId][subjectId]
+            });
+          }
+        }
+      }
+    }
+    const payload:any = {
+      admissionEnrollId: admission_applicant.id,
+      marks: marksArray
+    };
+    console.log(payload)
+    this.admissionTestApplicantMarkService.postAdmissionTestApplicantMark(payload).subscribe((response:any) => {
+      // Handle response, e.g., show confirmation or update view
+    });
+  }
+
 }

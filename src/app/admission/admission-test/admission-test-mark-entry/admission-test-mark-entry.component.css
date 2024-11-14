@@ -14,3 +14,12 @@ input[type="number"] {
 .button-color {
   background-color: #7061d2; /* Set your desired color */
 }
+.align-center {
+  vertical-align: middle;
+  text-align: center;
+}
+.form-control-inline {
+  width: 60px; /* Adjust width as needed */
+  display: inline-block;
+  vertical-align: middle;
+}
